@@ -8,6 +8,16 @@
  - Yuki Yu (y447yu)
  - Yihui Lu (y489lu)
 
+ Supported gradle tasks:
+
+| Tasks   | Description                                          |
+|:--------|:-----------------------------------------------------|
+| clean   | Remove build/ directory                              |
+| build   | Build the application project in build/ directory    |
+| run     | Run the application or console project               |
+| distZip | Create run scripts in application/build/distribution |
+| distTar | Create run scripts in application/build/distribution |
+
 
 ## Goal
 A brief description of your product. What is it? What does it do?

@@ -39,7 +39,7 @@ tasks.withType<JavaCompile> {
 
 application {
     mainModule.set("application")
-    mainClass.set("net.codebot.application.Main")
+    mainClass.set("wb.Main")
 }
 
 javafx {

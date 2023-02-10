@@ -4,6 +4,7 @@ import javafx.application.Application
 import javafx.scene.Scene
 import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
+import wb.frontend.ToolMenu
 import wb.frontend.TopMenu
 
 class Main : Application() {
@@ -16,7 +17,7 @@ class Main : Application() {
         stage.minHeight = 240.0
 
         border.top = TopMenu()
-
+        border.left = ToolMenu()
         stage.show()
     }
 

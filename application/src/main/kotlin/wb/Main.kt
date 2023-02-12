@@ -2,7 +2,6 @@ package wb
 
 import javafx.application.Application
 import javafx.scene.Scene
-import javafx.scene.layout.StackPane
 import javafx.stage.Stage
 
 import wb.frontend.*
@@ -29,12 +28,10 @@ class Main : Application() {
         stage.minHeight = 240.0
 
         var root = BorderPane()
-        val stack = StackPane()
         root.top = TopMenu()
         root.left = ToolMenu(::setCursorType)
 
-        root.center = stack
-        stack.children.add(canvas)
+        root.center = canvas
         stage.scene = Scene(root, 800.0, 600.0)
         canvas.resize(stage.width, stage.height)
 
@@ -53,18 +50,10 @@ class Main : Application() {
         }
     }
     private fun initDraw(gc: GraphicsContext, cv: ResizableCanvas) {
-        val canvasWidth = gc.canvas.width
-        val canvasHeight = gc.canvas.height
         gc.fill = Color.LIGHTGRAY
         gc.stroke = Color.BLACK
         gc.lineWidth = 5.0
         gc.fill()
-        gc.strokeRect(
-            0.0,  //x of the upper left corner
-            0.0,  //y of the upper left corner
-            canvasWidth,  //width of the rectangle
-            canvasHeight
-        ) //height of the rectangle
         gc.fill = Color.RED
         gc.stroke = Color.BLUE
         gc.lineWidth = 1.0

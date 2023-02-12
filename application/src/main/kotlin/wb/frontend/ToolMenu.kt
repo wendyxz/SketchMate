@@ -8,9 +8,8 @@ import javafx.scene.control.*
 import javafx.scene.layout.VBox
 import javafx.stage.PopupWindow.AnchorLocation
 import wb.CursorType
-import wb.setCursorType
 
-class ToolMenu() : ToolBar() {
+class ToolMenu(setCursorType: (ct : CursorType) -> Unit) : ToolBar() {
     private val cursorOption = Button("Cursor")
     private val textOption = Button("Text")
     private val penOption = ToggleButton("Pen")
@@ -37,6 +36,7 @@ class ToolMenu() : ToolBar() {
         orientationProperty().set(Orientation.VERTICAL)
 
         // Cursor
+
         cursorOption.setOnMouseClicked { setCursorType(CursorType.cursor) }
         textOption.setOnMouseClicked {
             setCursorType(CursorType.textbox)

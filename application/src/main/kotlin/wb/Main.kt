@@ -13,7 +13,6 @@ import javafx.scene.transform.Scale
 import javafx.stage.Stage
 import wb.frontend.*
 
-
 enum class CursorType {
     cursor,
     textbox,
@@ -22,11 +21,15 @@ enum class CursorType {
     circle,
     eraser
 }
+
 class Main : Application() {
     private var ct = CursorType.cursor
     private val rootcanvas = Pane()
     private val scale = Scale()
     private var root = BorderPane()
+    private var strokecolor = Color.RED
+    private var strokewidth = 2.0
+    private var linestyle = "Solid"
 
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
@@ -36,7 +39,7 @@ class Main : Application() {
         scale.pivotY = 0.0
 
         root.top = TopMenu()
-        root.left = ToolMenu(::setCursorType)
+        root.left = ToolMenu(::setCursorType, ::strokecolor, ::strokewidth, ::linestyle)
         root.center = rootcanvas
         stage.scene = Scene(root, 800.0, 600.0)
         scale.xProperty().bind(stage.scene.widthProperty())
@@ -56,6 +59,7 @@ class Main : Application() {
             CursorType.eraser -> println("eraser")
         }
     }
+
     private fun initDraw(rc: Pane) {
         var path = Path()
         rc.addEventHandler(
@@ -63,8 +67,18 @@ class Main : Application() {
         ) { event ->
             path = Path()
             var moveTo = MoveTo()
-            path.stroke = Color.RED
-            path.strokeWidth = 2.0
+            path.stroke = strokecolor
+            path.strokeWidth = strokewidth
+            if (linestyle == "Dashed") {
+                path.strokeDashArray.clear()
+                path.strokeDashArray.addAll(20.0, 20.0)
+            } else if (linestyle == "Dotted") {
+                path.strokeDashArray.clear()
+                path.strokeDashArray.addAll(5.0, 15.0)
+            }
+            else {
+                path.strokeDashArray.clear()
+            }
             moveTo.x = event.x
             moveTo.y = event.y
             path.elements.add(moveTo)

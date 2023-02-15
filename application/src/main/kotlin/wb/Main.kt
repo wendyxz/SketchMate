@@ -1,6 +1,7 @@
 package wb
 
 import javafx.application.Application
+import javafx.event.EventHandler
 import javafx.scene.Scene
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.BorderPane
@@ -30,6 +31,42 @@ class Main : Application() {
     private var strokecolor = Color.RED
     private var strokewidth = 2.0
     private var linestyle = "Solid"
+    private var path = Path()
+
+    private val startDraw = EventHandler<MouseEvent> {
+            event ->
+        path = Path()
+        var moveTo = MoveTo()
+        path.stroke = strokecolor
+        path.strokeWidth = strokewidth
+        if (linestyle == "Dashed") {
+            path.strokeDashArray.clear()
+            path.strokeDashArray.addAll(20.0, 20.0)
+        } else if (linestyle == "Dotted") {
+            path.strokeDashArray.clear()
+            path.strokeDashArray.addAll(5.0, 15.0)
+        }
+        else {
+            path.strokeDashArray.clear()
+        }
+        moveTo.x = event.x
+        moveTo.y = event.y
+        path.elements.add(moveTo)
+        rootcanvas.children.add(path)
+    }
+
+    private val drawProcess = EventHandler<MouseEvent> {
+            event ->
+        val lineTo = LineTo()
+        lineTo.x = event.x
+        lineTo.y = event.y
+        path.elements.add(lineTo)
+    }
+
+    private val drawComplete = EventHandler<MouseEvent> {
+        path.transforms.add(Scale(1.0/scale.x, 1.0/scale.y))
+        path.transforms.add(scale)
+    }
 
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
@@ -51,7 +88,7 @@ class Main : Application() {
     private fun setCursorType(ctype: CursorType) {
         ct = ctype
         when (ct) {
-            CursorType.cursor -> println("cursor")
+            CursorType.cursor -> cancelDraw(rootcanvas)
             CursorType.textbox -> println("text")
             CursorType.pen -> initDraw(rootcanvas)
             CursorType.rectangle -> println("rectangle")
@@ -61,42 +98,22 @@ class Main : Application() {
     }
 
     private fun initDraw(rc: Pane) {
-        var path = Path()
+
         rc.addEventHandler(
-            MouseEvent.MOUSE_PRESSED
-        ) { event ->
-            path = Path()
-            var moveTo = MoveTo()
-            path.stroke = strokecolor
-            path.strokeWidth = strokewidth
-            if (linestyle == "Dashed") {
-                path.strokeDashArray.clear()
-                path.strokeDashArray.addAll(20.0, 20.0)
-            } else if (linestyle == "Dotted") {
-                path.strokeDashArray.clear()
-                path.strokeDashArray.addAll(5.0, 15.0)
-            }
-            else {
-                path.strokeDashArray.clear()
-            }
-            moveTo.x = event.x
-            moveTo.y = event.y
-            path.elements.add(moveTo)
-            rc.children.add(path)
-        }
+            MouseEvent.MOUSE_PRESSED, startDraw
+        )
         rc.addEventHandler(
-            MouseEvent.MOUSE_DRAGGED
-        ) { event ->
-            val lineTo = LineTo()
-            lineTo.x = event.x
-            lineTo.y = event.y
-            path.elements.add(lineTo)
-        }
+            MouseEvent.MOUSE_DRAGGED, drawProcess
+        )
         rc.addEventHandler(
-            MouseEvent.MOUSE_RELEASED
-        ) {
-            path.transforms.add(Scale(1.0/scale.x, 1.0/scale.y))
-            path.transforms.add(scale)
-        }
+            MouseEvent.MOUSE_RELEASED, drawComplete
+        )
+    }
+
+    private fun cancelDraw(rc: Pane) {
+        rc.removeEventHandler(MouseEvent.MOUSE_PRESSED, startDraw)
+        rc.removeEventHandler(MouseEvent.MOUSE_DRAGGED, drawProcess)
+        rc.removeEventHandler(MouseEvent.MOUSE_RELEASED, drawComplete)
     }
 }
+

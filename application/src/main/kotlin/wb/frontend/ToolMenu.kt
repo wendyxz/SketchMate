@@ -20,6 +20,7 @@ class ToolMenu(
     private val eraserOption = Button("Eraser")
 
     private val penMenu = ContextMenu()
+    private val eraserMenu = ContextMenu()
 
     private val stSolid = MenuItem("solid")
     private val stDashed = MenuItem("dashed")
@@ -36,12 +37,17 @@ class ToolMenu(
     private val coOrange = MenuItem("orange")
 
     private val sp2 = SeparatorMenuItem()
-
     private val sz1 = MenuItem("1.0")
     private val sz2 = MenuItem("2.0")
     private val sz3 = MenuItem("3.0")
     private val sz4 = MenuItem("4.0")
     private val sz5 = MenuItem("5.0")
+
+    private val eraser1 = MenuItem("1.0")
+    private val eraser2 = MenuItem("3.0")
+    private val eraser3 = MenuItem("5.0")
+    private val eraser4 = MenuItem("8.0")
+    private val eraser5 = MenuItem("10.0")
 
     private val rectangle = MenuItem("rect")
     private val circle = MenuItem("circ")
@@ -54,9 +60,6 @@ class ToolMenu(
         textOption.setOnMouseClicked {
             setCursorType(CursorType.textbox)
         }
-
-        // Eraser
-        eraserOption.setOnMouseClicked { setCursorType(CursorType.eraser) }
 
         // Pen
         penMenu.isAutoHide = false
@@ -104,13 +107,31 @@ class ToolMenu(
             sz4,
             sz5
         )
-
         penOption.setOnMouseClicked {
             setCursorType(CursorType.pen)
+            strokewidth.set(2.0)
             if (!penMenu.isShowing) {
                 penMenu.show(penOption, Side.RIGHT, 0.0, -100.0)
             } else {
                 penMenu.hide()
+            }
+        }
+
+        eraser1.setOnAction { strokewidth.set(1.0) }
+        eraser2.setOnAction { strokewidth.set(3.0) }
+        eraser3.setOnAction { strokewidth.set(5.0) }
+        eraser4.setOnAction { strokewidth.set(8.0) }
+        eraser5.setOnAction { strokewidth.set(10.0) }
+
+        eraserMenu.items.addAll(eraser1, eraser2, eraser3, eraser4, eraser5)
+
+        eraserOption.setOnMouseClicked {
+            setCursorType(CursorType.pen)
+            strokecolor.set(Color.WHITE)
+            if (!eraserMenu.isShowing) {
+                eraserMenu.show(eraserOption, Side.RIGHT, 0.0, -100.0)
+            } else {
+                eraserMenu.hide()
             }
         }
 

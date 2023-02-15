@@ -82,6 +82,7 @@ class Main : Application() {
             moveTo.x = event.x
             moveTo.y = event.y
             path.elements.add(moveTo)
+            rc.children.add(path)
         }
         rc.addEventHandler(
             MouseEvent.MOUSE_DRAGGED
@@ -96,7 +97,6 @@ class Main : Application() {
         ) {
             path.transforms.add(Scale(1.0/scale.x, 1.0/scale.y))
             path.transforms.add(scale)
-            rc.children.add(path)
         }
     }
 }

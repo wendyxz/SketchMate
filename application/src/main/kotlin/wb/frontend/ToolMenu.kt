@@ -79,13 +79,31 @@ class ToolMenu(
         coBlue.setOnAction { strokecolor.set(Color.BLUE) }
         coPurple.setOnAction { strokecolor.set(Color.PURPLE) }
 
-        sz1.setOnAction { strokewidth.set(1.0)}
-        sz2.setOnAction { strokewidth.set(2.0)}
-        sz3.setOnAction { strokewidth.set(3.0)}
-        sz4.setOnAction { strokewidth.set(4.0)}
-        sz5.setOnAction { strokewidth.set(5.0)}
+        sz1.setOnAction { strokewidth.set(1.0) }
+        sz2.setOnAction { strokewidth.set(2.0) }
+        sz3.setOnAction { strokewidth.set(3.0) }
+        sz4.setOnAction { strokewidth.set(4.0) }
+        sz5.setOnAction { strokewidth.set(5.0) }
 
-        penMenu.items.addAll(stSolid, stDashed, stDotted, sp1, coBlack, coRed, coOrange, coYellow, coGreen, coBlue, coPurple, sp2, sz1, sz2, sz3, sz4, sz5)
+        penMenu.items.addAll(
+            stSolid,
+            stDashed,
+            stDotted,
+            sp1,
+            coBlack,
+            coRed,
+            coOrange,
+            coYellow,
+            coGreen,
+            coBlue,
+            coPurple,
+            sp2,
+            sz1,
+            sz2,
+            sz3,
+            sz4,
+            sz5
+        )
 
         penOption.setOnMouseClicked {
             setCursorType(CursorType.pen)
@@ -98,7 +116,7 @@ class ToolMenu(
 
         // Shapes: Rectangle, Circle
         shapeOption.items.addAll(rectangle, circle)
-        
+
         // Tool Menu
         items.addAll(cursorOption, textOption, penOption, shapeOption, eraserOption)
     }

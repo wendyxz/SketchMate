@@ -81,8 +81,7 @@ class Main : Application() {
         rc.removeEventHandler(MouseEvent.MOUSE_RELEASED, pathComplete)
     }
 
-    private val startPath = EventHandler<MouseEvent> {
-            event ->
+    private val startPath = EventHandler<MouseEvent> { event ->
         path = Path()
         var moveTo = MoveTo()
         path.stroke = strokecolor
@@ -93,8 +92,7 @@ class Main : Application() {
         } else if (linestyle == "Dotted") {
             path.strokeDashArray.clear()
             path.strokeDashArray.addAll(5.0, 15.0)
-        }
-        else {
+        } else {
             path.strokeDashArray.clear()
         }
         moveTo.x = event.x
@@ -103,8 +101,7 @@ class Main : Application() {
         rootcanvas.children.add(path)
     }
 
-    private val pathProcess = EventHandler<MouseEvent> {
-            event ->
+    private val pathProcess = EventHandler<MouseEvent> { event ->
         val lineTo = LineTo()
         lineTo.x = event.x
         lineTo.y = event.y
@@ -112,7 +109,7 @@ class Main : Application() {
     }
 
     private val pathComplete = EventHandler<MouseEvent> {
-        path.transforms.add(Scale(1.0/scale.x, 1.0/scale.y))
+        path.transforms.add(Scale(1.0 / scale.x, 1.0 / scale.y))
         path.transforms.add(scale)
     }
 }

@@ -4,7 +4,7 @@ import javafx.scene.control.*
 import javafx.scene.control.Alert.AlertType
 
 
-class TopMenu(): MenuBar() {
+class TopMenu() : MenuBar() {
     // Menu choices
     private val fileMenu = Menu("File")
     private val editMenu = Menu("Edit")

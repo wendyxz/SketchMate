@@ -1,10 +1,10 @@
 package wb
 
 import javafx.application.Application
+import javafx.geometry.Insets
 import javafx.scene.Scene
 import javafx.scene.input.MouseEvent
-import javafx.scene.layout.BorderPane
-import javafx.scene.layout.Pane
+import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.LineTo
 import javafx.scene.shape.MoveTo
@@ -30,6 +30,9 @@ class Main : Application() {
     private var strokecolor = Color.RED
     private var strokewidth = 2.0
     private var linestyle = "Solid"
+    private var backgroundFill = BackgroundFill(Color.WHITE, null, null)
+    private var background = Background(backgroundFill)
+
 
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
@@ -37,14 +40,13 @@ class Main : Application() {
         stage.minHeight = 320.0
         scale.pivotX = 0.0
         scale.pivotY = 0.0
-
         root.top = TopMenu()
         root.left = ToolMenu(::setCursorType, ::strokecolor, ::strokewidth, ::linestyle)
         root.center = rootcanvas
+        rootcanvas.background = background
         stage.scene = Scene(root, 800.0, 600.0)
         scale.xProperty().bind(stage.scene.widthProperty())
         scale.yProperty().bind(stage.scene.heightProperty())
-
         stage.show()
     }
 
@@ -75,9 +77,9 @@ class Main : Application() {
             } else if (linestyle == "Dotted") {
                 path.strokeDashArray.clear()
                 path.strokeDashArray.addAll(5.0, 15.0)
-            }
-            else {
+            } else {
                 path.strokeDashArray.clear()
+
             }
             moveTo.x = event.x
             moveTo.y = event.y
@@ -95,7 +97,7 @@ class Main : Application() {
         rc.addEventHandler(
             MouseEvent.MOUSE_RELEASED
         ) {
-            path.transforms.add(Scale(1.0/scale.x, 1.0/scale.y))
+            path.transforms.add(Scale(1.0 / scale.x, 1.0 / scale.y))
             path.transforms.add(scale)
         }
     }

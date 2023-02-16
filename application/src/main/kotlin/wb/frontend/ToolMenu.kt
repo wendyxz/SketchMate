@@ -34,22 +34,28 @@ class ToolMenu(
 
         // Cursor
         cursorOption.setOnMouseClicked { setCursorType(CursorType.cursor) }
-        textOption.setOnMouseClicked {
-            setCursorType(CursorType.textbox)
-        }
-        penOption.setOnMouseClicked { println("pen"); setCursorType(CursorType.pen) }
+        // Text
+        textOption.setOnMouseClicked { setCursorType(CursorType.textbox) }
+        // Pen
+        penOption.setOnMouseClicked { setCursorType(CursorType.pen) }
 
+        // Eraser
         eraserMenu.items.addAll(eraser1, eraser2, eraser3, eraser4, eraser5)
-
         eraserOption.setOnMouseClicked {
             setCursorType(CursorType.pen)
-//            strokecolor.set(Color.WHITE)
+            penTools.updatePen(Color.WHITE)
             if (!eraserMenu.isShowing) {
                 eraserMenu.show(eraserOption, Side.RIGHT, 0.0, -100.0)
             } else {
                 eraserMenu.hide()
             }
         }
+
+        eraser1.setOnAction { penTools.updatePen(1.0) }
+        eraser2.setOnAction { penTools.updatePen(3.0) }
+        eraser3.setOnAction { penTools.updatePen(5.0) }
+        eraser4.setOnAction { penTools.updatePen(8.0) }
+        eraser5.setOnAction {penTools.updatePen(10.0)}
 
         // Shapes: Rectangle, Circle
         shapeOption.items.addAll(rectangle, circle)
@@ -118,7 +124,7 @@ class PenOption(penTools: PenTools) : ToggleButton("Pen") {
             button.setOnMouseClicked { penTools.updatePen(Color.valueOf(button.text)) }
         }
         for (button in sizes) {
-            button.setOnAction { penTools.updatePen(button.text.toDouble()) }
+            button.setOnMouseClicked { penTools.updatePen(button.text.toDouble()) }
         }
         penMenu.isAutoHide = false
         penMenu.items.addAll(

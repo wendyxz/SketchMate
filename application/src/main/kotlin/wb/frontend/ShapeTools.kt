@@ -20,19 +20,19 @@ class ShapeTools(resizableCanvas: Pane) {
     }
 
     private fun onPressedEvent(shape: Shape, event: MouseEvent) {
-        // if (cursorType == CursorType.pen || cursorType = CursorType.eraser ) return
+        if (cursorType == CursorType.pen) return
         cursorAnchorX = event.sceneX
         cursorAnchorY = event.sceneY
         mouseOffsetX = event.sceneX-shape.layoutX
         mouseOffsetY = event.sceneY-shape.layoutY
     }
     private fun onDraggedEvent(shape: Shape, event: MouseEvent) {
-        // if (cursorType == CursorType.pen || cursorType = CursorType.eraser ) return
+        if (cursorType == CursorType.pen) return
         shape.translateX = event.getSceneX()-cursorAnchorX
         shape.translateY = event.getSceneY()-cursorAnchorY
     }
     private fun onReleasedEvent(shape: Shape, event: MouseEvent) {
-        // if (cursorType == CursorType.pen || cursorType = CursorType.eraser ) return
+        if (cursorType == CursorType.pen) return
         shape.layoutX = event.getSceneX() - mouseOffsetX
         shape.layoutY = event.getSceneY() - mouseOffsetY
         shape.translateX = 0.0
@@ -46,17 +46,13 @@ class ShapeTools(resizableCanvas: Pane) {
 
     // create shapes
     fun createRectangle() {
-        val r = Rectangle(50.0,50.00, Color.RED)
-        r.x = 50.0
-        r.y = 50.0
+        val r = Rectangle(50.0, 50.0, 50.0, 50.0)
         canvas.children.add(r)
         makeDraggable(r)
     }
 
     fun createCircle() {
-        val c = Circle(20.0, Color.BLUE)
-        c.centerX = 300.0
-        c.centerY = 100.0
+        val c = Circle(200.0, 100.0, 25.0, Color.BLUE)
         canvas.children.add(c)
         makeDraggable(c)
     }

@@ -5,7 +5,6 @@ import javafx.geometry.Side
 import javafx.scene.control.*
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
-import wb.CursorType
 
 
 class ToolMenu(
@@ -64,6 +63,8 @@ class ToolMenu(
 
         // Tool Menu
         items.addAll(cursorOption, textOption, penOption, shapeOption, eraserOption)
+
+
     }
 }
 
@@ -126,7 +127,7 @@ class PenOption(penTools: PenTools) : ToggleButton("Pen") {
         for (button in sizes) {
             button.setOnMouseClicked { penTools.updatePen(button.text.toDouble()) }
         }
-        penMenu.isAutoHide = false
+        //penMenu.isAutoHide = false
         penMenu.items.addAll(
             groupButtons(styles, styleToggles),
             SeparatorMenuItem(),

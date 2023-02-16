@@ -2,7 +2,6 @@ package wb
 
 import javafx.application.Application
 import javafx.event.EventHandler
-import javafx.geometry.Insets
 import javafx.scene.Scene
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.*
@@ -13,24 +12,14 @@ import javafx.scene.shape.Path
 import javafx.scene.transform.Scale
 import javafx.stage.Stage
 import wb.frontend.*
+import kotlin.math.max
 
-enum class CursorType {
-    cursor,
-    textbox,
-    pen,
-    rectangle,
-    circle,
-    eraser
-}
+
 
 class Main : Application() {
-    private var ct = CursorType.cursor
     private val rootcanvas = Pane()
     private val scale = Scale()
     private var root = BorderPane()
-//    private var strokecolor = Color.RED
-//    private var strokewidth = 2.0
-//    private var linestyle = "Solid"
     private var path = Path()
     private var backgroundFill = BackgroundFill(Color.WHITE, null, null)
     private var background = Background(backgroundFill)
@@ -43,7 +32,8 @@ class Main : Application() {
         stage.minHeight = 320.0
         scale.pivotX = 0.0
         scale.pivotY = 0.0
-        root.top = TopMenu()
+
+        root.top = TopMenu(::setBackgroundColour)
         root.left = ToolMenu(::setCursorType, penTools)
         root.center = rootcanvas
         rootcanvas.background = background
@@ -53,18 +43,22 @@ class Main : Application() {
         shapeTools = ShapeTools(rootcanvas)
         stage.show()
     }
-//    private fun updatePen(color: Color) { strokecolor = color }
-//    private fun updatePen(style: String) { linestyle = style }
-//    private fun updatePen(size: Double) { strokewidth = size}
+
     private fun setCursorType(ctype: CursorType) {
-        ct = ctype
-        when (ct) {
+        cursorType = ctype
+        when (cursorType) {
             CursorType.cursor -> cancelPath(rootcanvas)
             CursorType.textbox -> println("text")
             CursorType.pen -> initPath(rootcanvas)
-            CursorType.rectangle -> shapeTools.createRectangle()
-            CursorType.circle -> shapeTools.createCircle()
-            CursorType.eraser -> println("eraser")
+            CursorType.rectangle -> {
+                cancelPath(rootcanvas)
+                shapeTools.createRectangle()
+            }
+            CursorType.circle -> {
+                cancelPath(rootcanvas)
+                shapeTools.createCircle()
+            };
+            // CursorType.eraser -> println("eraser")
         }
     }
 
@@ -112,14 +106,20 @@ class Main : Application() {
 
     private val pathProcess = EventHandler<MouseEvent> { event ->
         val lineTo = LineTo()
-        lineTo.x = event.x
-        lineTo.y = event.y
+        lineTo.x = max(0.0,event.x)
+        lineTo.y = max(0.0,event.y)
         path.elements.add(lineTo)
     }
 
     private val pathComplete = EventHandler<MouseEvent> {
         path.transforms.add(Scale(1.0 / scale.x, 1.0 / scale.y))
         path.transforms.add(scale)
+    }
+
+
+    private fun setBackgroundColour(color: Color) {
+        println("HI")
+        rootcanvas.background = Background(BackgroundFill(color, null, null))
     }
 }
 

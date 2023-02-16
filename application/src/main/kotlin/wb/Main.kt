@@ -2,7 +2,6 @@ package wb
 
 import javafx.application.Application
 import javafx.event.EventHandler
-import javafx.geometry.Insets
 import javafx.scene.Scene
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.*
@@ -13,30 +12,19 @@ import javafx.scene.shape.Path
 import javafx.scene.transform.Scale
 import javafx.stage.Stage
 import wb.frontend.*
-import java.util.Collections.max
 import kotlin.math.max
 
-enum class CursorType {
-    cursor,
-    textbox,
-    pen,
-    rectangle,
-    circle,
-    eraser
-}
+
 
 class Main : Application() {
-    private var ct = CursorType.cursor
     private val rootcanvas = Pane()
     private val scale = Scale()
     private var root = BorderPane()
-    private var strokecolor = Color.RED
-    private var strokewidth = 2.0
-    private var linestyle = "Solid"
     private var path = Path()
     private var backgroundFill = BackgroundFill(Color.WHITE, null, null)
     private var background = Background(backgroundFill)
     private var shapeTools = ShapeTools(rootcanvas)
+    private var penTools = PenTools()
 
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
@@ -44,8 +32,9 @@ class Main : Application() {
         stage.minHeight = 320.0
         scale.pivotX = 0.0
         scale.pivotY = 0.0
+
         root.top = TopMenu(::setBackgroundColour)
-        root.left = ToolMenu(::setCursorType, ::strokecolor, ::strokewidth, ::linestyle)
+        root.left = ToolMenu(::setCursorType, penTools)
         root.center = rootcanvas
         rootcanvas.background = background
         stage.scene = Scene(root, 800.0, 600.0)
@@ -56,14 +45,20 @@ class Main : Application() {
     }
 
     private fun setCursorType(ctype: CursorType) {
-        ct = ctype
-        when (ct) {
+        cursorType = ctype
+        when (cursorType) {
             CursorType.cursor -> cancelPath(rootcanvas)
             CursorType.textbox -> println("text")
             CursorType.pen -> initPath(rootcanvas)
-            CursorType.rectangle -> shapeTools.createRectangle()
-            CursorType.circle -> shapeTools.createCircle()
-            CursorType.eraser -> println("eraser")
+            CursorType.rectangle -> {
+                cancelPath(rootcanvas)
+                shapeTools.createRectangle()
+            }
+            CursorType.circle -> {
+                cancelPath(rootcanvas)
+                shapeTools.createCircle()
+            };
+            // CursorType.eraser -> println("eraser")
         }
     }
 
@@ -89,12 +84,15 @@ class Main : Application() {
     private val startPath = EventHandler<MouseEvent> { event ->
         path = Path()
         var moveTo = MoveTo()
-        path.stroke = strokecolor
-        path.strokeWidth = strokewidth
-        if (linestyle == "Dashed") {
+        println(penTools.strokeColor)
+        println(penTools.strokeWidth)
+        println(penTools.lineStyle)
+        path.stroke = penTools.strokeColor
+        path.strokeWidth = penTools.strokeWidth
+        if (penTools.lineStyle == "dashed") {
             path.strokeDashArray.clear()
             path.strokeDashArray.addAll(20.0, 20.0)
-        } else if (linestyle == "Dotted") {
+        } else if (penTools.lineStyle == "dotted") {
             path.strokeDashArray.clear()
             path.strokeDashArray.addAll(5.0, 15.0)
         } else {

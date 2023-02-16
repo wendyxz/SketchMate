@@ -34,6 +34,7 @@ class Main : Application() {
     private var path = Path()
     private var backgroundFill = BackgroundFill(Color.WHITE, null, null)
     private var background = Background(backgroundFill)
+    private var shapeTools = ShapeTools(rootcanvas)
 
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
@@ -48,6 +49,7 @@ class Main : Application() {
         stage.scene = Scene(root, 800.0, 600.0)
         scale.xProperty().bind(stage.scene.widthProperty())
         scale.yProperty().bind(stage.scene.heightProperty())
+        shapeTools = ShapeTools(rootcanvas)
         stage.show()
     }
 
@@ -57,8 +59,8 @@ class Main : Application() {
             CursorType.cursor -> cancelPath(rootcanvas)
             CursorType.textbox -> println("text")
             CursorType.pen -> initPath(rootcanvas)
-            CursorType.rectangle -> println("rectangle")
-            CursorType.circle -> println("circle")
+            CursorType.rectangle -> shapeTools.createRectangle()
+            CursorType.circle -> shapeTools.createCircle()
             CursorType.eraser -> println("eraser")
         }
     }

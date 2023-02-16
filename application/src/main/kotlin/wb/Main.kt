@@ -111,13 +111,11 @@ class Main : Application() {
         lineTo.x = max(0.0,event.x)
         lineTo.y = max(0.0,event.y)
         path.elements.add(lineTo)
-        print("A")
     }
 
     private val pathComplete = EventHandler<MouseEvent> {
         path.transforms.add(Scale(1.0 / scale.x, 1.0 / scale.y))
         path.transforms.add(scale)
-        print("B")
     }
 
 

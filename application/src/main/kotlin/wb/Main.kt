@@ -42,7 +42,7 @@ class Main : Application() {
         stage.minHeight = 320.0
         scale.pivotX = 0.0
         scale.pivotY = 0.0
-        root.top = TopMenu()
+        root.top = TopMenu(::setBackgroundColour)
         root.left = ToolMenu(::setCursorType, ::strokecolor, ::strokewidth, ::linestyle)
         root.center = rootcanvas
         rootcanvas.background = background
@@ -114,6 +114,12 @@ class Main : Application() {
     private val pathComplete = EventHandler<MouseEvent> {
         path.transforms.add(Scale(1.0 / scale.x, 1.0 / scale.y))
         path.transforms.add(scale)
+    }
+
+
+    private fun setBackgroundColour(color: Color) {
+        println("HI")
+        rootcanvas.background = Background(BackgroundFill(color, null, null))
     }
 }
 

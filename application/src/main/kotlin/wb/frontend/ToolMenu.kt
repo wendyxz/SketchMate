@@ -54,7 +54,7 @@ class ToolMenu(
         eraser2.setOnAction { penTools.updatePen(3.0) }
         eraser3.setOnAction { penTools.updatePen(5.0) }
         eraser4.setOnAction { penTools.updatePen(8.0) }
-        eraser5.setOnAction {penTools.updatePen(10.0)}
+        eraser5.setOnAction { penTools.updatePen(10.0) }
 
         // Shapes: Rectangle, Circle
         shapeOption.items.addAll(rectangle, circle)
@@ -79,8 +79,10 @@ class PenOption(penTools: PenTools) : ToggleButton("Pen") {
         return listOf(
             ToggleButton("solid"),
             ToggleButton("dashed"),
-            ToggleButton("dotted"))
+            ToggleButton("dotted")
+        )
     }
+
     fun getColours(): List<ToggleButton> {
         return listOf(
             ToggleButton("black"),
@@ -92,6 +94,7 @@ class PenOption(penTools: PenTools) : ToggleButton("Pen") {
             ToggleButton("purple"),
         )
     }
+
     fun getSizes(): List<ToggleButton> {
         return listOf(
             ToggleButton("1.0"),

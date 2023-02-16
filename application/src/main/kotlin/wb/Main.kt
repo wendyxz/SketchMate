@@ -15,16 +15,18 @@ import wb.frontend.*
 import kotlin.math.max
 
 
-
 class Main : Application() {
     private val rootcanvas = Pane()
-//    private val scale = Scale()
+
+    //    private val scale = Scale()
     private var root = BorderPane()
-//    private var path = Path()
+
+    //    private var path = Path()
     private var backgroundFill = BackgroundFill(Color.WHITE, null, null)
     private var background = Background(backgroundFill)
     private var shapeTools = ShapeTools(rootcanvas)
-//    private var penTools = PenTools()
+
+    //    private var penTools = PenTools()
     private var pathTools = PathTools(rootcanvas)
 
     override fun start(stage: Stage) {
@@ -57,10 +59,12 @@ class Main : Application() {
             CursorType.pen -> {
                 pathTools.initPath()
             }
+
             CursorType.rectangle -> {
                 pathTools.cancelPath()
                 shapeTools.createRectangle()
             }
+
             CursorType.circle -> {
                 pathTools.cancelPath()
                 shapeTools.createCircle()

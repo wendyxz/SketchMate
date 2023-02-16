@@ -72,8 +72,8 @@ class PathTools(Canvas: Pane) {
 
     private val pathProcess = EventHandler<MouseEvent> { event ->
         val lineTo = LineTo()
-        lineTo.x = max(0.0,event.x)
-        lineTo.y = max(0.0,event.y)
+        lineTo.x = max(0.0, event.x)
+        lineTo.y = max(0.0, event.y)
         path.elements.add(lineTo)
     }
 

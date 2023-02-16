@@ -42,17 +42,13 @@ class ShapeTools(resizableCanvas: Pane) {
 
     // create shapes
     fun createRectangle() {
-        val r = Rectangle(50.0,50.00, Color.RED)
-        r.x = 50.0
-        r.y = 50.0
+        val r = Rectangle(50.0, 50.0, 50.0, 50.0)
         canvas.children.add(r)
         makeDraggable(r)
     }
 
     fun createCircle() {
-        val c = Circle(20.0, Color.BLUE)
-        c.centerX = 300.0
-        c.centerY = 100.0
+        val c = Circle(200.0, 100.0, 25.0, Color.BLUE)
         canvas.children.add(c)
         makeDraggable(c)
     }

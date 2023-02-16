@@ -3,45 +3,22 @@ package wb.frontend
 import javafx.geometry.Orientation
 import javafx.geometry.Side
 import javafx.scene.control.*
-import wb.CursorType
+import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
-import kotlin.reflect.KMutableProperty0
+import wb.CursorType
+
 
 class ToolMenu(
     setCursorType: (ct: CursorType) -> Unit,
-    strokecolor: KMutableProperty0<Color>,
-    strokewidth: KMutableProperty0<Double>,
-    linestyle: KMutableProperty0<String>
+    penTools: PenTools
 ) : ToolBar() {
     private val cursorOption = Button("Cursor")
     private val textOption = Button("Text")
-    private val penOption = ToggleButton("Pen")
+    private val penOption = PenOption(penTools)
     private val shapeOption = MenuButton("Shape")
     private val eraserOption = Button("Eraser")
 
-    private val penMenu = ContextMenu()
     private val eraserMenu = ContextMenu()
-
-    private val stSolid = MenuItem("solid")
-    private val stDashed = MenuItem("dashed")
-    private val stDotted = MenuItem("dotted")
-
-    private val sp1 = SeparatorMenuItem()
-
-    private val coBlack = MenuItem("black")
-    private val coBlue = MenuItem("blue")
-    private val coRed = MenuItem("red")
-    private val coGreen = MenuItem("green")
-    private val coPurple = MenuItem("purple")
-    private val coYellow = MenuItem("yellow")
-    private val coOrange = MenuItem("orange")
-
-    private val sp2 = SeparatorMenuItem()
-    private val sz1 = MenuItem("1.0")
-    private val sz2 = MenuItem("2.0")
-    private val sz3 = MenuItem("3.0")
-    private val sz4 = MenuItem("4.0")
-    private val sz5 = MenuItem("5.0")
 
     private val eraser1 = MenuItem("1.0")
     private val eraser2 = MenuItem("3.0")
@@ -60,74 +37,13 @@ class ToolMenu(
         textOption.setOnMouseClicked {
             setCursorType(CursorType.textbox)
         }
-
-        // Pen
-        penMenu.isAutoHide = false
-
-        stSolid.setOnAction {
-            linestyle.set("Solid")
-        }
-        stDashed.setOnAction {
-            linestyle.set("Dashed")
-        }
-        stDotted.setOnAction {
-            linestyle.set("Dotted")
-        }
-
-        coBlack.setOnAction { strokecolor.set(Color.BLACK) }
-        coRed.setOnAction { strokecolor.set(Color.RED) }
-        coOrange.setOnAction { strokecolor.set(Color.ORANGE) }
-        coYellow.setOnAction { strokecolor.set(Color.YELLOW) }
-        coGreen.setOnAction { strokecolor.set(Color.GREEN) }
-        coBlue.setOnAction { strokecolor.set(Color.BLUE) }
-        coPurple.setOnAction { strokecolor.set(Color.PURPLE) }
-
-        sz1.setOnAction { strokewidth.set(1.0) }
-        sz2.setOnAction { strokewidth.set(2.0) }
-        sz3.setOnAction { strokewidth.set(3.0) }
-        sz4.setOnAction { strokewidth.set(4.0) }
-        sz5.setOnAction { strokewidth.set(5.0) }
-
-        penMenu.items.addAll(
-            stSolid,
-            stDashed,
-            stDotted,
-            sp1,
-            coBlack,
-            coRed,
-            coOrange,
-            coYellow,
-            coGreen,
-            coBlue,
-            coPurple,
-            sp2,
-            sz1,
-            sz2,
-            sz3,
-            sz4,
-            sz5
-        )
-        penOption.setOnMouseClicked {
-            setCursorType(CursorType.pen)
-            strokewidth.set(2.0)
-            if (!penMenu.isShowing) {
-                penMenu.show(penOption, Side.RIGHT, 0.0, -100.0)
-            } else {
-                penMenu.hide()
-            }
-        }
-
-        eraser1.setOnAction { strokewidth.set(1.0) }
-        eraser2.setOnAction { strokewidth.set(3.0) }
-        eraser3.setOnAction { strokewidth.set(5.0) }
-        eraser4.setOnAction { strokewidth.set(8.0) }
-        eraser5.setOnAction { strokewidth.set(10.0) }
+        penOption.setOnMouseClicked { println("pen"); setCursorType(CursorType.pen) }
 
         eraserMenu.items.addAll(eraser1, eraser2, eraser3, eraser4, eraser5)
 
         eraserOption.setOnMouseClicked {
             setCursorType(CursorType.pen)
-            strokecolor.set(Color.WHITE)
+//            strokecolor.set(Color.WHITE)
             if (!eraserMenu.isShowing) {
                 eraserMenu.show(eraserOption, Side.RIGHT, 0.0, -100.0)
             } else {
@@ -137,11 +53,87 @@ class ToolMenu(
 
         // Shapes: Rectangle, Circle
         shapeOption.items.addAll(rectangle, circle)
-
         rectangle.setOnAction { setCursorType(CursorType.rectangle) }
         circle.setOnAction { setCursorType(CursorType.circle) }
 
         // Tool Menu
         items.addAll(cursorOption, textOption, penOption, shapeOption, eraserOption)
+    }
+}
+
+
+class PenOption(penTools: PenTools) : ToggleButton("Pen") {
+    private val penMenu = ContextMenu()
+    private val styleToggles = ToggleGroup()
+    private val colourToggles = ToggleGroup()
+    private val sizeToggles = ToggleGroup()
+
+    fun getStyles(): List<ToggleButton> {
+        return listOf(
+            ToggleButton("solid"),
+            ToggleButton("dashed"),
+            ToggleButton("dotted"))
+    }
+    fun getColours(): List<ToggleButton> {
+        return listOf(
+            ToggleButton("black"),
+            ToggleButton("blue"),
+            ToggleButton("red"),
+            ToggleButton("green"),
+            ToggleButton("yellow"),
+            ToggleButton("orange"),
+            ToggleButton("purple"),
+        )
+    }
+    fun getSizes(): List<ToggleButton> {
+        return listOf(
+            ToggleButton("1.0"),
+            ToggleButton("2.0"),
+            ToggleButton("3.0"),
+            ToggleButton("4.0"),
+            ToggleButton("5.0"),
+        )
+    }
+
+    private fun groupButtons(buttons: List<ToggleButton>, group: ToggleGroup): CustomMenuItem {
+        var vbox = VBox()
+        vbox.children.addAll(buttons)
+        for (button in buttons) {
+            button.toggleGroup = group
+        }
+        var menuItem = CustomMenuItem(vbox)
+        menuItem.isHideOnClick = false
+        return menuItem
+    }
+
+
+    init {
+        var styles = getStyles()
+        var colors = getColours()
+        var sizes = getSizes()
+        for (button in styles) {
+            button.setOnMouseClicked { penTools.updatePen(button.text) }
+        }
+        for (button in colors) {
+            button.setOnMouseClicked { penTools.updatePen(Color.valueOf(button.text)) }
+        }
+        for (button in sizes) {
+            button.setOnAction { penTools.updatePen(button.text.toDouble()) }
+        }
+        penMenu.isAutoHide = false
+        penMenu.items.addAll(
+            groupButtons(styles, styleToggles),
+            SeparatorMenuItem(),
+            groupButtons(colors, colourToggles),
+            SeparatorMenuItem(),
+            groupButtons(sizes, sizeToggles),
+        )
+        this.setOnAction {
+            if (!penMenu.isShowing) {
+                penMenu.show(this, Side.RIGHT, 0.0, -100.0)
+            } else {
+                penMenu.hide()
+            }
+        }
     }
 }

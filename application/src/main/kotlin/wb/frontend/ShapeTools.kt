@@ -8,6 +8,7 @@ import javafx.scene.shape.Rectangle
 import javafx.scene.shape.Shape
 
 
+
 class ShapeTools(resizableCanvas: Pane) {
     var cursorAnchorX = 0.0
     var cursorAnchorY = 0.0
@@ -19,16 +20,19 @@ class ShapeTools(resizableCanvas: Pane) {
     }
 
     private fun onPressedEvent(shape: Shape, event: MouseEvent) {
+        // if (cursorType == CursorType.pen || cursorType = CursorType.eraser ) return
         cursorAnchorX = event.sceneX
         cursorAnchorY = event.sceneY
         mouseOffsetX = event.sceneX-shape.layoutX
         mouseOffsetY = event.sceneY-shape.layoutY
     }
     private fun onDraggedEvent(shape: Shape, event: MouseEvent) {
+        // if (cursorType == CursorType.pen || cursorType = CursorType.eraser ) return
         shape.translateX = event.getSceneX()-cursorAnchorX
         shape.translateY = event.getSceneY()-cursorAnchorY
     }
     private fun onReleasedEvent(shape: Shape, event: MouseEvent) {
+        // if (cursorType == CursorType.pen || cursorType = CursorType.eraser ) return
         shape.layoutX = event.getSceneX() - mouseOffsetX
         shape.layoutY = event.getSceneY() - mouseOffsetY
         shape.translateX = 0.0

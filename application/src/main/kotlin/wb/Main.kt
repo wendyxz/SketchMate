@@ -28,13 +28,14 @@ class Main : Application() {
     private val rootcanvas = Pane()
     private val scale = Scale()
     private var root = BorderPane()
-    private var strokecolor = Color.RED
-    private var strokewidth = 2.0
-    private var linestyle = "Solid"
+//    private var strokecolor = Color.RED
+//    private var strokewidth = 2.0
+//    private var linestyle = "Solid"
     private var path = Path()
     private var backgroundFill = BackgroundFill(Color.WHITE, null, null)
     private var background = Background(backgroundFill)
     private var shapeTools = ShapeTools(rootcanvas)
+    private var penTools = PenTools()
 
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
@@ -43,7 +44,7 @@ class Main : Application() {
         scale.pivotX = 0.0
         scale.pivotY = 0.0
         root.top = TopMenu()
-        root.left = ToolMenu(::setCursorType, ::strokecolor, ::strokewidth, ::linestyle)
+        root.left = ToolMenu(::setCursorType, penTools)
         root.center = rootcanvas
         rootcanvas.background = background
         stage.scene = Scene(root, 800.0, 600.0)
@@ -52,7 +53,9 @@ class Main : Application() {
         shapeTools = ShapeTools(rootcanvas)
         stage.show()
     }
-
+//    private fun updatePen(color: Color) { strokecolor = color }
+//    private fun updatePen(style: String) { linestyle = style }
+//    private fun updatePen(size: Double) { strokewidth = size}
     private fun setCursorType(ctype: CursorType) {
         ct = ctype
         when (ct) {
@@ -87,12 +90,15 @@ class Main : Application() {
     private val startPath = EventHandler<MouseEvent> { event ->
         path = Path()
         var moveTo = MoveTo()
-        path.stroke = strokecolor
-        path.strokeWidth = strokewidth
-        if (linestyle == "Dashed") {
+        println(penTools.strokeColor)
+        println(penTools.strokeWidth)
+        println(penTools.lineStyle)
+        path.stroke = penTools.strokeColor
+        path.strokeWidth = penTools.strokeWidth
+        if (penTools.lineStyle == "dashed") {
             path.strokeDashArray.clear()
             path.strokeDashArray.addAll(20.0, 20.0)
-        } else if (linestyle == "Dotted") {
+        } else if (penTools.lineStyle == "dotted") {
             path.strokeDashArray.clear()
             path.strokeDashArray.addAll(5.0, 15.0)
         } else {

@@ -13,6 +13,8 @@ import javafx.scene.shape.Path
 import javafx.scene.transform.Scale
 import javafx.stage.Stage
 import wb.frontend.*
+import java.util.Collections.max
+import kotlin.math.max
 
 enum class CursorType {
     cursor,
@@ -106,14 +108,16 @@ class Main : Application() {
 
     private val pathProcess = EventHandler<MouseEvent> { event ->
         val lineTo = LineTo()
-        lineTo.x = event.x
-        lineTo.y = event.y
+        lineTo.x = max(0.0,event.x)
+        lineTo.y = max(0.0,event.y)
         path.elements.add(lineTo)
+        print("A")
     }
 
     private val pathComplete = EventHandler<MouseEvent> {
         path.transforms.add(Scale(1.0 / scale.x, 1.0 / scale.y))
         path.transforms.add(scale)
+        print("B")
     }
 
 

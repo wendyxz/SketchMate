@@ -42,7 +42,8 @@ class ToolMenu(
         eraserMenu.items.addAll(eraser1, eraser2, eraser3, eraser4, eraser5)
         eraserOption.setOnMouseClicked {
             setCursorType(CursorType.eraser)
-            // penTools.updatePen(Color.WHITE)
+            //setCursorType(CursorType.pen)
+            penTools.updatePen(Color.WHITE)
             if (!eraserMenu.isShowing) {
                 eraserMenu.show(eraserOption, Side.RIGHT, 0.0, -100.0)
             } else {

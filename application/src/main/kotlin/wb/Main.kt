@@ -14,11 +14,9 @@ class Main : Application() {
     private var backgroundFill = BackgroundFill(Color.WHITE, null, null)
     private var background = Background(backgroundFill)
     private var shapeTools = ShapeTools(rootcanvas)
-    private var penTools = PenTools()
     private var textTools = TextTools(rootcanvas)
     private var pathTools = PathTools(rootcanvas)
-
-
+    
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
         stage.minWidth = 480.0
@@ -33,6 +31,7 @@ class Main : Application() {
         pathTools.setScale(stage.scene)
         shapeTools = ShapeTools(rootcanvas)
         shapeTools.setScale(stage.scene)
+        textTools.setScale(stage.scene)
 
         stage.show()
     }
@@ -52,6 +51,7 @@ class Main : Application() {
                 pathTools.cancelPath()
                 shapeTools.createCircle()
             }
+
             CursorType.eraser -> {
                 pathTools.initPath()
                 //pathTools.cancelPath()

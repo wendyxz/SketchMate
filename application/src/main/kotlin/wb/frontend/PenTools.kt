@@ -9,9 +9,11 @@ class PenTools() {
     fun updatePen(style: String) {
         lineStyle = style
     }
+
     fun updatePen(size: Double) {
         strokeWidth = size
     }
+
     fun updatePen(color: Color) {
         strokeColor = color
     }

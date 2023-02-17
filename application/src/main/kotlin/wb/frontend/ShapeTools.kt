@@ -6,7 +6,7 @@ import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Rectangle
 import javafx.scene.shape.Shape
-
+import kotlin.math.max
 
 
 class ShapeTools(resizableCanvas: Pane) {
@@ -15,6 +15,7 @@ class ShapeTools(resizableCanvas: Pane) {
     var mouseOffsetX = 0.0
     var mouseOffsetY = 0.0
     var canvas = resizableCanvas
+
     init {
         println("ShapeTools initialized")
     }
@@ -23,21 +24,26 @@ class ShapeTools(resizableCanvas: Pane) {
         if (cursorType == CursorType.pen) return
         cursorAnchorX = event.sceneX
         cursorAnchorY = event.sceneY
-        mouseOffsetX = event.sceneX-shape.layoutX
-        mouseOffsetY = event.sceneY-shape.layoutY
+        mouseOffsetX = event.sceneX - shape.layoutX
+        mouseOffsetY = event.sceneY - shape.layoutY
     }
+
     private fun onDraggedEvent(shape: Shape, event: MouseEvent) {
         if (cursorType == CursorType.pen) return
-        shape.translateX = event.getSceneX()-cursorAnchorX
-        shape.translateY = event.getSceneY()-cursorAnchorY
+        shape.translateX = event.sceneX - cursorAnchorX
+        shape.translateY = event.sceneY - cursorAnchorY
     }
+
     private fun onReleasedEvent(shape: Shape, event: MouseEvent) {
         if (cursorType == CursorType.pen) return
-        shape.layoutX = event.getSceneX() - mouseOffsetX
-        shape.layoutY = event.getSceneY() - mouseOffsetY
+
+        shape.layoutX = max(-shape.layoutBounds.minX, event.sceneX - mouseOffsetX)
+        shape.layoutY = max(-shape.layoutBounds.minY, event.sceneY - mouseOffsetY)
+
         shape.translateX = 0.0
         shape.translateY = 0.0
     }
+
     private fun makeDraggable(shape: Shape) {
         shape.setOnMousePressed { event -> onPressedEvent(shape, event) }
         shape.setOnMouseDragged { event -> onDraggedEvent(shape, event) }

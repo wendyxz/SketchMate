@@ -50,8 +50,8 @@ class TopMenu(setBackgroundColour: (color: Color) -> Unit) : MenuBar() {
         accountMenu.items.addAll(accountLogIn, accountLogOut, accountCreate, accountChangeP)
 
         themeMenu.items.addAll(lightTheme, darkTheme)
-        darkTheme.setOnAction {setBackgroundColour(Color.BLACK) }
-        lightTheme.setOnAction {setBackgroundColour(Color.WHITE) }
+        darkTheme.setOnAction { setBackgroundColour(Color.BLACK) }
+        lightTheme.setOnAction { setBackgroundColour(Color.WHITE) }
 
         menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
     }

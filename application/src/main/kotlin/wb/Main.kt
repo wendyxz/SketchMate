@@ -53,7 +53,8 @@ class Main : Application() {
                 shapeTools.createCircle()
             }
             CursorType.eraser -> {
-                pathTools.cancelPath()
+                pathTools.initPath()
+                //pathTools.cancelPath()
                 // shapeTools.createRectangle()
             };
         }

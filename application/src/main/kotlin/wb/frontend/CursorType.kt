@@ -8,5 +8,6 @@ enum class CursorType {
     circle,
     eraser
 }
+
 var cursorType = CursorType.cursor
 

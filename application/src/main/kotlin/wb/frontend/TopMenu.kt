@@ -1,9 +1,6 @@
 package wb.frontend
 
 import javafx.scene.control.*
-import javafx.scene.control.Alert.AlertType
-import javafx.scene.layout.Background
-import javafx.scene.layout.BackgroundFill
 import javafx.scene.paint.Color
 
 
@@ -50,8 +47,8 @@ class TopMenu(setBackgroundColour: (color: Color) -> Unit) : MenuBar() {
         accountMenu.items.addAll(accountLogIn, accountLogOut, accountCreate, accountChangeP)
 
         themeMenu.items.addAll(lightTheme, darkTheme)
-        darkTheme.setOnAction {setBackgroundColour(Color.BLACK) }
-        lightTheme.setOnAction {setBackgroundColour(Color.WHITE) }
+        darkTheme.setOnAction { setBackgroundColour(Color.BLACK) }
+        lightTheme.setOnAction { setBackgroundColour(Color.WHITE) }
 
         menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
     }

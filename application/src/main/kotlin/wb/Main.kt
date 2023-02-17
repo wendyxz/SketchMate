@@ -51,12 +51,15 @@ class Main : Application() {
             CursorType.circle -> {
                 pathTools.cancelPath()
                 shapeTools.createCircle()
+            }
+            CursorType.eraser -> {
+                pathTools.cancelPath()
+                // shapeTools.createRectangle()
             };
         }
     }
 
     private fun setBackgroundColour(color: Color) {
-        println("HI")
         rootcanvas.background = Background(BackgroundFill(color, null, null))
     }
 }

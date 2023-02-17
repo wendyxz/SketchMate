@@ -32,6 +32,11 @@ class ShapeTools(resizableCanvas: Pane) {
 
     private fun onPressedEvent(shape: Shape, event: MouseEvent) {
         if (cursorType == CursorType.pen) return
+        if (cursorType == CursorType.eraser){
+            canvas.children.remove(shape)
+            return
+        }
+
         cursorAnchorX = event.sceneX
         cursorAnchorY = event.sceneY
         mouseOffsetX = event.sceneX - shape.layoutX
@@ -40,8 +45,12 @@ class ShapeTools(resizableCanvas: Pane) {
 
     private fun onDraggedEvent(shape: Shape, event: MouseEvent) {
         if (cursorType == CursorType.pen) return
-        shape.translateX = event.sceneX - cursorAnchorX
-        shape.translateY = event.sceneY - cursorAnchorY
+
+        else{
+            shape.translateX = event.sceneX - cursorAnchorX
+            shape.translateY = event.sceneY - cursorAnchorY
+        }
+
     }
 
     private fun onReleasedEvent(shape: Shape, event: MouseEvent) {

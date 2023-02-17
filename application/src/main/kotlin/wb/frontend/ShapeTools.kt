@@ -40,8 +40,8 @@ class ShapeTools(resizableCanvas: Pane) {
 
     private fun onDraggedEvent(shape: Shape, event: MouseEvent) {
         if (cursorType == CursorType.pen) return
-        shape.translateX = event.sceneX - cursorAnchorX
-        shape.translateY = event.sceneY - cursorAnchorY
+        shape.translateX = max(-shape.layoutBounds.minX, event.sceneX - cursorAnchorX)
+        shape.translateY = max(-shape.layoutBounds.minY,event.sceneY - cursorAnchorY)
     }
 
     private fun onReleasedEvent(shape: Shape, event: MouseEvent) {

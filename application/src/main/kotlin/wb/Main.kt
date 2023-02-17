@@ -28,8 +28,9 @@ class Main : Application() {
         rootcanvas.background = background
         stage.scene = Scene(root, 800.0, 600.0)
         pathTools.setScale(stage.scene)
-
         shapeTools = ShapeTools(rootcanvas)
+        shapeTools.setScale(stage.scene)
+
         stage.show()
     }
 

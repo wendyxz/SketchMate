@@ -25,6 +25,7 @@ class Main : Application() {
     private var background = Background(backgroundFill)
     private var shapeTools = ShapeTools(rootcanvas)
     private var penTools = PenTools()
+    private var textTools = TextTools(rootcanvas)
 
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
@@ -48,7 +49,7 @@ class Main : Application() {
         cursorType = ctype
         when (cursorType) {
             CursorType.cursor -> cancelPath(rootcanvas)
-            CursorType.textbox -> println("text")
+            CursorType.textbox -> textTools.createTextBox()
             CursorType.pen -> initPath(rootcanvas)
             CursorType.rectangle -> {
                 cancelPath(rootcanvas)

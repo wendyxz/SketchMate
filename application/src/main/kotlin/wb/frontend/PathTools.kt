@@ -53,6 +53,9 @@ class PathTools(Canvas: Pane) {
     private val startPath = EventHandler<MouseEvent> { event ->
         path = Path()
         var moveTo = MoveTo()
+        println(penTools.strokeColor)
+        println(penTools.strokeWidth)
+        println(penTools.lineStyle)
         path.stroke = penTools.strokeColor
         path.strokeWidth = penTools.strokeWidth
         if (penTools.lineStyle == "dashed") {
@@ -64,16 +67,16 @@ class PathTools(Canvas: Pane) {
         } else {
             path.strokeDashArray.clear()
         }
-        moveTo.x = event.x
-        moveTo.y = event.y
+        moveTo.x = max(penTools.strokeWidth * 0.5, event.x)
+        moveTo.y = max(penTools.strokeWidth * 0.5, event.y)
         path.elements.add(moveTo)
         rootcanvas.children.add(path)
     }
 
     private val pathProcess = EventHandler<MouseEvent> { event ->
         val lineTo = LineTo()
-        lineTo.x = max(0.0, event.x)
-        lineTo.y = max(0.0, event.y)
+        lineTo.x = max(penTools.strokeWidth * 0.5, event.x)
+        lineTo.y = max(penTools.strokeWidth * 0.5, event.y)
         path.elements.add(lineTo)
     }
 

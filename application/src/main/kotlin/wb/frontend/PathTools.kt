@@ -53,9 +53,6 @@ class PathTools(Canvas: Pane) {
     private val startPath = EventHandler<MouseEvent> { event ->
         path = Path()
         var moveTo = MoveTo()
-        println(penTools.strokeColor)
-        println(penTools.strokeWidth)
-        println(penTools.lineStyle)
         path.stroke = penTools.strokeColor
         path.strokeWidth = penTools.strokeWidth
         if (penTools.lineStyle == "dashed") {

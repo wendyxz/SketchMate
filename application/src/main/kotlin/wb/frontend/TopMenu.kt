@@ -1,9 +1,6 @@
 package wb.frontend
 
 import javafx.scene.control.*
-import javafx.scene.control.Alert.AlertType
-import javafx.scene.layout.Background
-import javafx.scene.layout.BackgroundFill
 import javafx.scene.paint.Color
 
 

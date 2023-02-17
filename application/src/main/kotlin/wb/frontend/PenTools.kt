@@ -3,9 +3,9 @@ package wb.frontend
 import javafx.scene.paint.Color
 
 class PenTools() {
-    public var strokeColor = Color.RED
-    public var strokeWidth = 2.0
-    public var lineStyle = "solid"
+    var strokeColor = Color.RED
+    var strokeWidth = 2.0
+    var lineStyle = "solid"
     fun updatePen(style: String) {
         lineStyle = style
     }

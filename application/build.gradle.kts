@@ -23,6 +23,15 @@ dependencies {
     implementation(project(":shared"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    // Jackson core library
+    implementation("com.fasterxml.jackson.core:jackson-core:2.13.1")
+
+    // Jackson databind module for JSON serialization/deserialization
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.1")
+
+    // Jackson module for Kotlin support
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
+
     testImplementation(kotlin("test"))
 }
 

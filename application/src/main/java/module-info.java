@@ -5,5 +5,7 @@ module application {
     requires shared;
     requires kotlinx.serialization.core;
     requires kotlinx.serialization.json;
+    requires com.fasterxml.jackson.kotlin;
+    requires com.fasterxml.jackson.databind;
     exports wb;
 }

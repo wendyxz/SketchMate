@@ -1,5 +1,6 @@
 package wb
 
+import com.fasterxml.jackson.core.JsonGenerator
 import javafx.application.Application
 import javafx.scene.Scene
 import javafx.scene.layout.Background
@@ -12,7 +13,11 @@ import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import java.io.*
 import kotlinx.serialization.Serializable
-
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import javafx.scene.shape.Rectangle
+import javafx.scene.shape.Shape
 import wb.frontend.*
 
 @Serializable
@@ -26,6 +31,10 @@ class Main : Application() {
     private var shapeTools = ShapeTools(rootcanvas)
     private var textTools = TextTools(rootcanvas)
     private var pathTools = PathTools(rootcanvas)
+    // Serializer/Deserializer
+    private val objectMapper = jacksonObjectMapper().registerModule(SimpleModule()
+        .addSerializer(Rectangle::class.java, RectangleSerializer())
+        .addDeserializer(Rectangle::class.java, RectangleDeserializer()))
     
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
@@ -72,14 +81,19 @@ class Main : Application() {
 
     private fun setBackgroundColour(color: Color) {
         rootcanvas.background = Background(BackgroundFill(color, null, null))
-        load("person.json")
+        // for now calling in "theme" component, should move to "save" and "load" on menu
+        save("data.json")
+        load("data.json")
     }
 
-    private fun save() {
-        val person = Person("Alice", 30)
-        val data = Json.encodeToString(person)
+    private fun save(filename: String) {
+        // we need to write smth like:
         // val data = serializeCanvas(rootcanvas)
-        val file = File("data.json")
+        val rectangle = Rectangle(100.0, 50.0, Color.BLUE)
+        val data = objectMapper.writeValueAsString(rectangle)
+        print(data)
+
+        val file = File(filename)
         val writer = BufferedWriter(FileWriter(file))
         writer.write(data)
         writer.close()
@@ -88,10 +102,14 @@ class Main : Application() {
     private fun load(filename: String) {
         val file = File(filename)
         val reader = BufferedReader(FileReader(file))
-        val json = reader.readText()
+        val data = reader.readText()
         reader.close()
-        val data = Json.decodeFromString<Person>(json)
-        // unserializeCanvas(json, rootcanvas)
+
+        // we need smth like:
+        // unserializeCanvas(data, rootcanvas)
+        // to replace the bottom section
+        var r: Rectangle = objectMapper.readValue(data, Rectangle::class.java)
+        rootcanvas.children.add(r)
         println(data)
     }
 }

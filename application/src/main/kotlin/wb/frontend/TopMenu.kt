@@ -4,7 +4,8 @@ import javafx.scene.control.*
 import javafx.scene.paint.Color
 
 
-class TopMenu(setBackgroundColour: (color: Color) -> Unit) : MenuBar() {
+class TopMenu(setBackgroundColour: (color: Color) -> Unit,
+    save: (filename: String) -> Unit, load: (filename: String) -> Unit) : MenuBar() {
     // Menu choices
     private val fileMenu = Menu("File")
     private val editMenu = Menu("Edit")
@@ -16,6 +17,7 @@ class TopMenu(setBackgroundColour: (color: Color) -> Unit) : MenuBar() {
     private val fileNew = MenuItem("New File")
     private val fileOpen = MenuItem("Open File")
     private val fileSave = MenuItem("Save")
+    private val fileLoad = MenuItem("Load")
     private val fileExport = MenuItem("Export as PNG")
     private val fileExPDF = MenuItem("Export as PDF")
     private val fileQuit = MenuItem("Quit")
@@ -41,7 +43,7 @@ class TopMenu(setBackgroundColour: (color: Color) -> Unit) : MenuBar() {
     private val darkTheme = MenuItem("dark")
 
     init {
-        fileMenu.items.addAll(fileNew, fileOpen, fileSave, fileExport, fileExPDF, fileQuit)
+        fileMenu.items.addAll(fileNew, fileOpen, fileSave, fileLoad, fileExport, fileExPDF, fileQuit)
         editMenu.items.addAll(editUndo, editRedo, editCut, editCopy, editPaste)
         helpMenu.items.addAll((helpAbout))
         accountMenu.items.addAll(accountLogIn, accountLogOut, accountCreate, accountChangeP)
@@ -49,6 +51,9 @@ class TopMenu(setBackgroundColour: (color: Color) -> Unit) : MenuBar() {
         themeMenu.items.addAll(lightTheme, darkTheme)
         darkTheme.setOnAction { setBackgroundColour(Color.BLACK) }
         lightTheme.setOnAction { setBackgroundColour(Color.WHITE) }
+
+        fileSave.setOnAction { save("data.json") }
+        fileLoad.setOnAction { load("data.json") }
 
         menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
     }

@@ -42,7 +42,7 @@ class Main : Application() {
         stage.minHeight = 320.0
 
         pathTools = PathTools(rootcanvas)
-        root.top = TopMenu(::setBackgroundColour)
+        root.top = TopMenu(::setBackgroundColour, ::save, ::load)
         root.left = ToolMenu(::setCursorType, pathTools.getPenTools())
         root.center = rootcanvas
         rootcanvas.background = background
@@ -81,9 +81,6 @@ class Main : Application() {
 
     private fun setBackgroundColour(color: Color) {
         rootcanvas.background = Background(BackgroundFill(color, null, null))
-        // for now calling in "theme" component, should move to "save" and "load" on menu
-        save("data.json")
-        load("data.json")
     }
 
     private fun save(filename: String) {

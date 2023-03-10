@@ -36,7 +36,10 @@ class ToolMenu(
         // Text
         textOption.setOnMouseClicked { setCursorType(CursorType.textbox) }
         // Pen
-        penOption.setOnMouseClicked { setCursorType(CursorType.pen) }
+        penOption.setOnMouseClicked {
+            setCursorType(CursorType.pen)
+            penTools.updateEraser(false)
+        }
 
         // Eraser
         eraserMenu.items.addAll(eraser1, eraser2, eraser3, eraser4, eraser5)
@@ -44,6 +47,7 @@ class ToolMenu(
             setCursorType(CursorType.eraser)
             //setCursorType(CursorType.pen)
             penTools.updatePen(Color.WHITE)
+            penTools.updateEraser(true)
             if (!eraserMenu.isShowing) {
                 eraserMenu.show(eraserOption, Side.RIGHT, 0.0, -100.0)
             } else {

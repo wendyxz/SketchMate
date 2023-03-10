@@ -6,6 +6,7 @@ class PenTools() {
     var strokeColor = Color.RED
     var strokeWidth = 2.0
     var lineStyle = "solid"
+    var eraser = false
     fun updatePen(style: String) {
         lineStyle = style
     }
@@ -16,5 +17,9 @@ class PenTools() {
 
     fun updatePen(color: Color) {
         strokeColor = color
+    }
+
+    fun updateEraser(turnOn: Boolean){
+        eraser = turnOn
     }
 }

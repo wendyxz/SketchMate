@@ -33,7 +33,9 @@ class Main : Application() {
     // Serializer/Deserializer
     private val objectMapper = jacksonObjectMapper().registerModule(SimpleModule()
         .addSerializer(Rectangle::class.java, RectangleSerializer())
-        .addDeserializer(Rectangle::class.java, RectangleDeserializer()))
+        .addDeserializer(Rectangle::class.java, RectangleDeserializer())
+        .addSerializer(Circle::class.java, CircleSerializer())
+        .addDeserializer(Circle::class.java, CircleDeserializer()))
     
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
@@ -147,9 +149,12 @@ class Main : Application() {
         // val data = serializeCanvas(rootcanvas)
         val elements = mutableListOf<String>()
         for (element in rootcanvas.children) {
-            if (element is Rectangle)  {
-                val str = TypeWrapper("Rectangle", objectMapper.writeValueAsString(element))
-                elements.add(Json.encodeToString(str))
+            when (element) {
+                is Rectangle -> elements.add(Json.encodeToString(
+                    TypeWrapper("Rectangle", objectMapper.writeValueAsString(element))))
+                is Circle -> elements.add(Json.encodeToString(
+                        TypeWrapper("Circle", objectMapper.writeValueAsString(element))))
+                else -> print("not defined")
             }
         }
 
@@ -175,6 +180,7 @@ class Main : Application() {
                 var element = Json.decodeFromString<TypeWrapper>(wrapper)
                 when (element.type) {
                     "Rectangle" -> rootcanvas.children.add(objectMapper.readValue(element.string, Rectangle::class.java))
+                    "Circle" -> rootcanvas.children.add(objectMapper.readValue(element.string, Circle::class.java))
                     else -> print("otherwise")
                 }
             }

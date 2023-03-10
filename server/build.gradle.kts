@@ -23,6 +23,10 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
+val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
+val compileJava: JavaCompile by tasks
+compileJava.destinationDirectory.set(compileKotlin.destinationDirectory)
+
 tasks.test {
     useJUnitPlatform()
 }

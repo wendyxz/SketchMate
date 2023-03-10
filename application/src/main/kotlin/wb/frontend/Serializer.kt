@@ -7,7 +7,6 @@ import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
 
 class RectangleSerializer : JsonSerializer<Rectangle>() {
-
     override fun serialize(value: Rectangle?, gen: JsonGenerator?, serializers: SerializerProvider?) {
         gen?.writeStartObject()
         gen?.writeNumberField("x", value?.x ?: 0.0)
@@ -29,7 +28,6 @@ class RectangleSerializer : JsonSerializer<Rectangle>() {
 }
 
 class RectangleDeserializer : JsonDeserializer<Rectangle>() {
-
     override fun deserialize(p: JsonParser?, ctxt: DeserializationContext?): Rectangle? {
         p?.let {
             val codec = it.codec
@@ -47,10 +45,11 @@ class RectangleDeserializer : JsonDeserializer<Rectangle>() {
             val brightness = fillNode.get("brightness").asDouble()
 
             val fill = Color.hsb(hue, saturation, brightness, if (opaque) 1.0 else 0.0)
-
-            return Rectangle(x, y, width, height).apply {
+            var rectangle = Rectangle(x, y, width, height).apply {
                 this.fill = fill
             }
+            makeDraggable(rectangle)
+            return rectangle
         }
 
         return null

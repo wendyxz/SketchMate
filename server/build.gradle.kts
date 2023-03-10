@@ -15,7 +15,7 @@ val exposedVersion: String by project
 
 dependencies {
     implementation("com.h2database:h2:1.3.148")
-//    implementation("org.xerial:sqlite-jdbc:3.39.4.1")
+    implementation("org.xerial:sqlite-jdbc:3.39.4.1")
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")

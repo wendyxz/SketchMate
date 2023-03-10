@@ -2,11 +2,12 @@ package wb.frontend
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.JsonToken
 import com.fasterxml.jackson.databind.*
+import com.fasterxml.jackson.databind.node.JsonNodeFactory
+import javafx.geometry.Point2D
 import javafx.scene.paint.Color
-import javafx.scene.shape.Circle
-import javafx.scene.shape.Rectangle
-
+import javafx.scene.shape.*
 
 
 class RectangleSerializer : JsonSerializer<Rectangle>() {
@@ -132,4 +133,66 @@ class CircleDeserializer : JsonDeserializer<Circle>() {
     }
 }
 
+class PathSerializer : JsonSerializer<Path>() {
+    override fun serialize(
+        value: Path?,
+        gen: JsonGenerator?,
+        serializers: SerializerProvider?
+    ) {
+        gen?.writeStartObject()
+        //gen?.writeStringField("color", value?.stroke.toString())
+        //gen?.writeNumberField("width", value?.strokeWidth ?: 0.0)
+        gen?.writeFieldName("elements")
+        gen?.writeStartArray()
 
+        value?.elements?.forEach { element ->
+            gen?.writeStartObject()
+            gen?.writeFieldName("type")
+            gen?.writeString(element::class.java.simpleName)
+            when (element) {
+                is MoveTo -> {
+                    gen?.writeNumberField("x", element.x)
+                    gen?.writeNumberField("y", element.y)
+                }
+                is LineTo -> {
+                    gen?.writeNumberField("x", element.x)
+                    gen?.writeNumberField("y", element.y)
+                }
+            }
+            gen?.writeEndObject()
+        }
+        gen?.writeEndArray()
+        gen?.writeEndObject()
+    }
+}
+
+
+class PathDeserializer : JsonDeserializer<Path>() {
+    override fun deserialize(parser: JsonParser?, ctxt: DeserializationContext?): Path {
+        val path = Path()
+        path.strokeWidth = 2.0
+        val root = parser?.codec?.readTree<JsonNode>(parser)
+        //val color : Color = Color.web(root?.get("color")?.toString() ?: "black")
+        //val width = root?.get("width").toString().toDouble()
+        val elements = root?.get("elements")
+        elements?.forEach { elementNode ->
+            when (val type = elementNode.get("type").asText()) {
+                "MoveTo" -> {
+                    val x = elementNode.get("x").asDouble()
+                    val y = elementNode.get("y").asDouble()
+                    path.elements.add(MoveTo(x, y))
+                }
+
+                "LineTo" -> {
+                    val x = elementNode.get("x").asDouble()
+                    val y = elementNode.get("y").asDouble()
+                    path.elements.add(LineTo(x, y))
+                }
+            }
+        }
+        //path.stroke = color
+
+        println(path)
+        return path
+    }
+}

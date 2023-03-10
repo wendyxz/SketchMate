@@ -12,6 +12,7 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
+import javafx.scene.shape.Path
 import javafx.scene.shape.Rectangle
 import javafx.stage.Stage
 import kotlinx.serialization.*
@@ -36,7 +37,9 @@ class Main : Application() {
         .addSerializer(Rectangle::class.java, RectangleSerializer())
         .addDeserializer(Rectangle::class.java, RectangleDeserializer())
         .addSerializer(Circle::class.java, CircleSerializer())
-        .addDeserializer(Circle::class.java, CircleDeserializer()))
+        .addDeserializer(Circle::class.java, CircleDeserializer())
+        .addSerializer(Path::class.java, PathSerializer())
+        .addDeserializer(Path::class.java, PathDeserializer()))
     
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
@@ -95,6 +98,8 @@ class Main : Application() {
                     TypeWrapper("Rectangle", objectMapper.writeValueAsString(element))))
                 is Circle -> elements.add(Json.encodeToString(
                         TypeWrapper("Circle", objectMapper.writeValueAsString(element))))
+                is Path -> elements.add(Json.encodeToString(
+                    TypeWrapper("Path", objectMapper.writeValueAsString(element))))
                 else -> print("not defined")
             }
         }
@@ -123,6 +128,7 @@ class Main : Application() {
                 when (element.type) {
                     "Rectangle" -> rootcanvas.children.add(objectMapper.readValue(element.string, Rectangle::class.java))
                     "Circle" -> rootcanvas.children.add(objectMapper.readValue(element.string, Circle::class.java))
+                    "Path" -> root.children.add(objectMapper.readValue(element.string, Path::class.java))
                     else -> print("otherwise")
                 }
             }

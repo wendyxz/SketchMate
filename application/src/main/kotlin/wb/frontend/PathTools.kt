@@ -69,6 +69,7 @@ class PathTools(Canvas: Pane) {
         moveTo.y = max(penTools.strokeWidth * 0.5, event.y)
         path.elements.add(moveTo)
         rootcanvas.children.add(path)
+        print(path)
     }
 
     private val pathProcess = EventHandler<MouseEvent> { event ->

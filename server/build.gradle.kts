@@ -32,6 +32,11 @@ tasks.test {
 //    jvmToolchain(8)
 //}
 
+// STDIN
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
+}
+
 application {
     mainClass.set("MainKt")
 }

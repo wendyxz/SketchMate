@@ -1,71 +1,3 @@
-//import org.jetbrains.exposed.sql.*
-//import org.jetbrains.exposed.sql.transactions.transaction
-//
-//object Users : Table() {
-//    val id = varchar("id", 10) // Column<String>
-//    val name = varchar("name", length = 50) // Column<String>
-//    val password = varchar("password", length = 50) // Column<String>
-//
-//    override val primaryKey = PrimaryKey(id, name = "PK_User_ID") // name is optional here
-//}
-//
-//
-//fun main() {
-//
-//    // this connection string will create on disk as `test.h2.db`
-//    Database.connect("jdbc:h2:user", driver = "org.h2.Driver", user = "root", password = "")
-//
-//    transaction {
-//        addLogger(StdOutSqlLogger)
-//
-//        SchemaUtils.drop (Users)
-//
-//        SchemaUtils.create (Users)
-//
-//
-//        Users.insert {
-//            it[id] = "andrey"
-//            it[name] = "Andrey"
-//            it[password] = "password"
-//        }
-//
-//        Users.insert {
-//            it[id] = "sergey"
-//            it[name] = "Sergey"
-//            it[password] = "password"
-//        }
-//
-//        Users.insert {
-//            it[id] = "eugene"
-//            it[name] = "Eugene"
-//            it[password] = "password"
-//        }
-//
-//        Users.insert {
-//            it[id] = "alex"
-//            it[name] = "Alex"
-//            it[password] = "password"
-//        }
-//
-//        Users.insert {
-//            it[id] = "smth"
-//            it[name] = "Something"
-//            it[password] = "password"
-//        }
-//
-//        Users.update({ Users.id eq "alex"}) {
-//            it[name] = "Alexey"
-//        }
-//
-//        println("All Users:")
-//
-//        for (user in Users.selectAll()) {
-//            println("${user[Users.id]}: ${user[Users.name]}, ${user[Users.name]}")
-//        }
-//
-//    }
-//}
-
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
@@ -123,29 +55,67 @@ fun main() {
     val db = Database()
     val session = UserSession()
 
-    // Logoff
-    val username = "example_user"
-    val password = "password123"
-    val success = db.registerUser(username, password)
-    if (success) {
-        println("User registered successfully")
-    } else {
-        println("User registration failed")
+//    var input = -1
+    while (true) {
+        // Display menu options
+        println("1. Register")
+        println("2. Login")
+        println("3. Logoff")
+        println("4. Exit")
+
+        // Prompt user for input
+        println("Enter option number: ")
+        val input = readLine()?.toIntOrNull() ?: continue
+
+        when (input) {
+            1 -> {
+                // Register
+                print("Enter username: ")
+                val username = readLine() ?: continue
+                print("Enter password: ")
+                val password = readLine() ?: continue
+                val success = db.registerUser(username, password)
+                if (success) {
+                    println("User registered successfully")
+                } else {
+                    println("User registration failed")
+                }
+            }
+
+            2 -> {
+                // Login
+                print("Enter username: ")
+                val username = readLine() ?: continue
+                print("Enter password: ")
+                val password = readLine() ?: continue
+                val user = db.getUser(username)
+                if (user != null && user.password == password) {
+                    session.user = user
+                    println("User logged in: ${user.username}")
+                } else {
+                    println("Invalid username or password")
+                }
+            }
+
+            3 -> {
+                // Logoff
+                session.user = null
+                println("User logged off")
+            }
+
+            4 -> {
+                // Exit
+                db.close()
+                return
+            }
+
+            else -> {
+                // Invalid option
+                println("Invalid option")
+            }
+        }
     }
 
-    // Login
-    val user = db.getUser(username)
-    if (user != null && user.password == password) {
-        session.user = user
-        println("User logged in: ${user.username}")
-    } else {
-        println("Invalid username or password")
-    }
-
-    // Logoff
-    session.user = null
-    println("User logged off")
 
     db.close()
 }
-

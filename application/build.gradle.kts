@@ -6,7 +6,6 @@ plugins {
     id("org.openjfx.javafxplugin") version "0.0.13"
     id("org.beryx.jlink") version "2.25.0"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.6.10"
-
 }
 
 group = "net.codebot"
@@ -23,8 +22,17 @@ repositories {
 dependencies {
     implementation(project(":shared"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    testImplementation(kotlin("test"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    // Jackson core library
+    implementation("com.fasterxml.jackson.core:jackson-core:2.13.1")
+
+    // Jackson databind module for JSON serialization/deserialization
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.1")
+
+    // Jackson module for Kotlin support
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
+
+    testImplementation(kotlin("test"))
 }
 
 tasks.test {

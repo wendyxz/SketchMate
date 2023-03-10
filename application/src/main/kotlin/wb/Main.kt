@@ -1,12 +1,27 @@
 package wb
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import javafx.application.Application
+import javafx.scene.Node
 import javafx.scene.Scene
-import javafx.scene.layout.*
+import javafx.scene.layout.Background
+import javafx.scene.layout.BackgroundFill
+import javafx.scene.layout.BorderPane
+import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
+import javafx.scene.shape.Circle
+import javafx.scene.shape.Rectangle
 import javafx.stage.Stage
+import kotlinx.serialization.*
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.*
 import wb.frontend.*
+import java.io.*
 
+@Serializable
+class TypeWrapper(val type: String, val string: String)
 
 class Main : Application() {
     private val rootcanvas = Pane()
@@ -16,6 +31,12 @@ class Main : Application() {
     private var shapeTools = ShapeTools(rootcanvas)
     private var textTools = TextTools(rootcanvas)
     private var pathTools = PathTools(rootcanvas)
+    // Serializer/Deserializer
+    private val objectMapper = jacksonObjectMapper().registerModule(SimpleModule()
+        .addSerializer(Rectangle::class.java, RectangleSerializer())
+        .addDeserializer(Rectangle::class.java, RectangleDeserializer())
+        .addSerializer(Circle::class.java, CircleSerializer())
+        .addDeserializer(Circle::class.java, CircleDeserializer()))
     
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
@@ -23,7 +44,7 @@ class Main : Application() {
         stage.minHeight = 320.0
 
         pathTools = PathTools(rootcanvas)
-        root.top = TopMenu(::setBackgroundColour)
+        root.top = TopMenu(::setBackgroundColour, ::save, ::load)
         root.left = ToolMenu(::setCursorType, pathTools.getPenTools())
         root.center = rootcanvas
         rootcanvas.background = background
@@ -62,6 +83,53 @@ class Main : Application() {
 
     private fun setBackgroundColour(color: Color) {
         rootcanvas.background = Background(BackgroundFill(color, null, null))
+    }
+
+    private fun save(filename: String) {
+        // we need to write smth like:
+        // val data = serializeCanvas(rootcanvas)
+        val elements = mutableListOf<String>()
+        for (element in rootcanvas.children) {
+            when (element) {
+                is Rectangle -> elements.add(Json.encodeToString(
+                    TypeWrapper("Rectangle", objectMapper.writeValueAsString(element))))
+                is Circle -> elements.add(Json.encodeToString(
+                        TypeWrapper("Circle", objectMapper.writeValueAsString(element))))
+                else -> print("not defined")
+            }
+        }
+
+        val file = File(filename)
+        val writer = BufferedWriter(FileWriter(file))
+        writer.write(objectMapper.writeValueAsString(elements))
+        writer.close()
+        print("done")
+    }
+    private fun load(filename: String) {
+        val file = File(filename)
+        val reader = BufferedReader(FileReader(file))
+        val data = reader.readText()
+        reader.close()
+        print("reader closed")
+        // we need smth like:
+        // unserializeCanvas(data, rootcanvas)
+        // to replace the bottom section
+
+        rootcanvas.children.removeAll(rootcanvas.children)
+        var elements = Json.decodeFromString<List<String>?>(data)
+        if (elements != null) {
+            for (wrapper in elements) {
+                var element = Json.decodeFromString<TypeWrapper>(wrapper)
+                when (element.type) {
+                    "Rectangle" -> rootcanvas.children.add(objectMapper.readValue(element.string, Rectangle::class.java))
+                    "Circle" -> rootcanvas.children.add(objectMapper.readValue(element.string, Circle::class.java))
+                    else -> print("otherwise")
+                }
+            }
+        }
+
+
+        println("decoded")
     }
 }
 

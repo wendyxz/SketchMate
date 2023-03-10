@@ -68,6 +68,7 @@
 
 import java.sql.Connection
 import java.sql.DriverManager
+import java.sql.SQLException
 
 data class User(val id: Int, val username: String, val password: String)
 
@@ -77,6 +78,20 @@ class Database {
     init {
         Class.forName("org.sqlite.JDBC")
         connection = DriverManager.getConnection("jdbc:sqlite:users.db")
+    }
+
+    fun registerUser(username: String, password: String): Boolean {
+        return try {
+            val statement = connection.createStatement()
+            val query = "INSERT INTO users (username, password) VALUES ('$username', '$password')"
+            statement.executeUpdate(query)
+            true
+        } catch (e: ClassNotFoundException) {
+            false
+        } catch (e: SQLException) {
+            false
+        }
+        return false
     }
 
     fun getUser(username: String): User? {
@@ -93,16 +108,12 @@ class Database {
         return null
     }
 
-    fun addUser(id: String, username: String, password: String) {
-        val statement = connection.prepareStatement("INSERT INTO users(username, password) VALUES (?, ?)")
-//        statement.setString(1, id)
-        statement.setString(1, username)
-        statement.setString(2, password)
-        statement.executeUpdate()
-    }
-
     fun close() {
-        connection.close()
+        try {
+            connection.close()
+        } catch (e: SQLException) {
+            e.printStackTrace()
+        }
     }
 }
 
@@ -112,9 +123,17 @@ fun main() {
     val db = Database()
     val session = UserSession()
 
+    // Logoff
+    val username = "example_user"
+    val password = "password123"
+    val success = db.registerUser(username, password)
+    if (success) {
+        println("User registered successfully")
+    } else {
+        println("User registration failed")
+    }
+
     // Login
-    val username = "john"
-    val password = "password"
     val user = db.getUser(username)
     if (user != null && user.password == password) {
         session.user = user

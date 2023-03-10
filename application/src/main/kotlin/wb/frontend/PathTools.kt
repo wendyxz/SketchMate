@@ -1,17 +1,19 @@
 package wb.frontend
 
 import javafx.event.EventHandler
+import javafx.scene.Node
 import javafx.scene.Scene
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
 import javafx.scene.shape.LineTo
 import javafx.scene.shape.MoveTo
 import javafx.scene.shape.Path
+import javafx.scene.shape.Shape
 import javafx.scene.transform.Scale
 import kotlin.math.max
+import kotlin.math.min
 
 class PathTools(Canvas: Pane) {
-
     private var path = Path()
     private var penTools = PenTools()
     private var rootcanvas = Canvas
@@ -32,7 +34,6 @@ class PathTools(Canvas: Pane) {
     }
 
     fun initPath() {
-
         rootcanvas.addEventHandler(
             MouseEvent.MOUSE_PRESSED, startPath
         )
@@ -80,6 +81,71 @@ class PathTools(Canvas: Pane) {
     private val pathComplete = EventHandler<MouseEvent> {
         path.transforms.add(Scale(1.0 / scale.x, 1.0 / scale.y))
         path.transforms.add(scale)
+
+        if(penTools.eraser) eraseFor()
     }
 
+    private fun eraseFor() {
+        val eraseList: MutableList<Node> = mutableListOf()
+        for(eac in rootcanvas.children)
+            if(shouldErase(eac)) eraseList.add(eac)
+
+        for(eac in eraseList) rootcanvas.children.remove(eac)
+    }
+
+    private fun shouldErase(node: Node) = when(node) {
+        is Path -> erasePath(node)
+        is Shape -> eraseShape(node)
+        else -> false
+    }
+
+    class Point(val x: Double, val y: Double)
+    class Line(val first: Point, val second: Point)
+
+    private fun findLineList(node: Path): List<Line>{
+        val returnList: MutableList<Line> = mutableListOf()
+        for(index in 1 until node.elements.size){
+            val previous = node.elements[index-1]
+            val current = node.elements[index]
+
+            val previousX = if (previous is MoveTo) previous.x else (previous as LineTo).x
+            val previousY = if (previous is MoveTo) previous.y else (previous as LineTo).y
+            val currentX = if (current is MoveTo) current.x else (current as LineTo).x
+            val currentY = if (current is MoveTo) current.y else (current as LineTo).y
+
+            val previousPoint = Point(previousX, previousY)
+            val currentPoint = Point(currentX, currentY)
+
+            returnList.add(Line(previousPoint, currentPoint))
+        }
+        return returnList
+    }
+
+    private fun isCounterClockWise(A: Point, B: Point, C: Point): Boolean{
+        return (C.y-A.y)*(B.x-A.x) > (B.y-A.y)*(C.x-A.x)
+    }
+
+    // DOES NOT HANDLE COLLINEAR CASE!!!
+    private fun lineIntersect(first: Line, second: Line): Boolean{
+        return (
+                (isCounterClockWise(first.first, second.first, second.second) != isCounterClockWise(first.second, second.first, second.second))
+                &&
+                (isCounterClockWise(first.first, first.second, second.first) != isCounterClockWise(first.first, first.second, second.second))
+            )
+    }
+
+    private fun erasePath(node: Path): Boolean{
+        val nodeLine = findLineList(node)
+        val pathLine = findLineList(path)
+
+        for(eacNodeLine in nodeLine)
+            for(eacPathLine in pathLine)
+                if(lineIntersect(eacNodeLine, eacPathLine)) return true
+
+        return false
+    }
+
+    private fun eraseShape(shape: Shape): Boolean{
+        return false
+    }
 }

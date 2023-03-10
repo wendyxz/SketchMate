@@ -6,12 +6,18 @@ import com.fasterxml.jackson.databind.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
 
-class RectangleSerializer : JsonSerializer<Rectangle>() {
 
+
+class RectangleSerializer : JsonSerializer<Rectangle>() {
     override fun serialize(value: Rectangle?, gen: JsonGenerator?, serializers: SerializerProvider?) {
         gen?.writeStartObject()
+        gen?.writeStringField("type", "Rectangle")
         gen?.writeNumberField("x", value?.x ?: 0.0)
         gen?.writeNumberField("y", value?.y ?: 0.0)
+        gen?.writeNumberField("layoutX", value?.layoutX ?: 0.0)
+        gen?.writeNumberField("layoutY", value?.layoutY ?: 0.0)
+        gen?.writeNumberField("translateX", value?.translateX ?: 0.0)
+        gen?.writeNumberField("translateY", value?.translateY ?: 0.0)
         gen?.writeNumberField("width", value?.width ?: 0.0)
         gen?.writeNumberField("height", value?.height ?: 0.0)
         gen?.writeFieldName("fill")
@@ -29,7 +35,6 @@ class RectangleSerializer : JsonSerializer<Rectangle>() {
 }
 
 class RectangleDeserializer : JsonDeserializer<Rectangle>() {
-
     override fun deserialize(p: JsonParser?, ctxt: DeserializationContext?): Rectangle? {
         p?.let {
             val codec = it.codec
@@ -37,6 +42,10 @@ class RectangleDeserializer : JsonDeserializer<Rectangle>() {
 
             val x = node.get("x").asDouble()
             val y = node.get("y").asDouble()
+            val layoutX = node.get("layoutX").asDouble()
+            val layoutY = node.get("layoutY").asDouble()
+            val translateX = node.get("translateX").asDouble()
+            val translateY = node.get("translateY").asDouble()
             val width = node.get("width").asDouble()
             val height = node.get("height").asDouble()
 
@@ -47,10 +56,15 @@ class RectangleDeserializer : JsonDeserializer<Rectangle>() {
             val brightness = fillNode.get("brightness").asDouble()
 
             val fill = Color.hsb(hue, saturation, brightness, if (opaque) 1.0 else 0.0)
-
-            return Rectangle(x, y, width, height).apply {
+            var rectangle = Rectangle(x, y, width, height).apply {
                 this.fill = fill
+                this.layoutX = layoutX
+                this.layoutY = layoutY
+                this.translateX = translateX
+                this.translateY = translateY
             }
+            makeDraggable(rectangle)
+            return rectangle
         }
 
         return null

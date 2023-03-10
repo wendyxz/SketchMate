@@ -35,6 +35,8 @@ class ToolMenu(
         cursorOption.setOnMouseClicked { setCursorType(CursorType.cursor) }
         // Text
         textOption.setOnMouseClicked { setCursorType(CursorType.textbox) }
+        textOption.setOnAction { setCursorType(CursorType.cursor) }
+
         // Pen
         penOption.setOnMouseClicked {
             setCursorType(CursorType.pen)
@@ -68,7 +70,6 @@ class ToolMenu(
 
         // Tool Menu
         items.addAll(cursorOption, textOption, penOption, shapeOption, eraserOption)
-
     }
 }
 

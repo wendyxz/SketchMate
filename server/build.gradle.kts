@@ -1,6 +1,7 @@
 plugins {
     application
-    kotlin("jvm") version "1.8.0"
+//    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version "1.6.20"
 }
 
 group = "net.codebot"
@@ -23,17 +24,13 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
-val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
-val compileJava: JavaCompile by tasks
-compileJava.destinationDirectory.set(compileKotlin.destinationDirectory)
-
 tasks.test {
     useJUnitPlatform()
 }
 
-kotlin {
-    jvmToolchain(8)
-}
+//kotlin {
+//    jvmToolchain(8)
+//}
 
 application {
     mainClass.set("MainKt")

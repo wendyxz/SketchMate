@@ -57,8 +57,6 @@ class ShapeTools(resizableCanvas: Pane) {
 
         shape.translateX = 0.0
         shape.translateY = 0.0
-
-
     }
 
     private fun makeDraggable(shape: Shape) {

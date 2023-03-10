@@ -27,15 +27,21 @@ class Database {
     }
 
     fun getUser(username: String): User? {
-        val statement = connection.prepareStatement("SELECT * FROM users WHERE username = ?")
-        statement.setString(1, username)
-        val resultSet = statement.executeQuery()
-        if (resultSet.next()) {
-            return User(
-                resultSet.getInt("id"),
-                resultSet.getString("username"),
-                resultSet.getString("password")
-            )
+        try {
+            val statement = connection.prepareStatement("SELECT * FROM users WHERE username = ?")
+            statement.setString(1, username)
+            val resultSet = statement.executeQuery()
+            if (resultSet.next()) {
+                return User(
+                    resultSet.getInt("id"),
+                    resultSet.getString("username"),
+                    resultSet.getString("password")
+                )
+            }
+        } catch (e: ClassNotFoundException) {
+            return null
+        } catch (e: SQLException) {
+            return null
         }
         return null
     }

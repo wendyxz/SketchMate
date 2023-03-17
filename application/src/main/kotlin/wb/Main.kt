@@ -6,15 +6,26 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import javafx.application.Application
 import javafx.scene.Node
 import javafx.scene.Scene
+import javafx.scene.control.Button
+import javafx.scene.control.Label
+import javafx.scene.control.PasswordField
+import javafx.scene.control.TextField
+import javafx.scene.text.Text
+import javafx.scene.text.Font
+import javafx.scene.text.FontWeight
 import javafx.scene.layout.Background
 import javafx.scene.layout.BackgroundFill
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
+import javafx.scene.layout.VBox
+import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Path
 import javafx.scene.shape.Rectangle
 import javafx.stage.Stage
+import javafx.geometry.Pos
+import javafx.geometry.Insets
 import kotlinx.serialization.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
@@ -45,18 +56,47 @@ class Main : Application() {
         stage.title = "WhiteBoard"
         stage.minWidth = 480.0
         stage.minHeight = 320.0
+        val loginButton = Button("Log in")
 
-        pathTools = PathTools(rootcanvas)
-        root.top = TopMenu(::setBackgroundColour, ::save, ::load)
-        root.left = ToolMenu(::setCursorType, pathTools.getPenTools())
-        root.center = rootcanvas
-        rootcanvas.background = background
-        stage.scene = Scene(root, 800.0, 600.0)
-        pathTools.setScale(stage.scene)
-        shapeTools = ShapeTools(rootcanvas)
-        shapeTools.setScale(stage.scene)
-        textTools.setScale(stage.scene)
+        loginPage(stage, loginButton)
+        loginButton.setOnMouseClicked{
+            pathTools = PathTools(rootcanvas)
+            root.center = rootcanvas
+            root.top = TopMenu(::setBackgroundColour, ::save, ::load)
+            root.left = ToolMenu(::setCursorType, pathTools.getPenTools())
+            rootcanvas.background = background
+            stage.scene = Scene(root, 800.0, 600.0)
+            pathTools.setScale(stage.scene)
+            shapeTools = ShapeTools(rootcanvas)
+            shapeTools.setScale(stage.scene)
+            textTools.setScale(stage.scene)
+        }
+    }
 
+    private fun loginPage(stage: Stage, loginButton: Button) {
+        var login = VBox()
+        val title = Text("User Login / Sign up")
+        val registerButton = Button("Sign up")
+        login.alignment = javafx.geometry.Pos.CENTER
+        login.spacing = 20.0
+        val username = HBox()
+        username.alignment = javafx.geometry.Pos.CENTER
+        username.spacing = 10.0
+        val usernameLabel = Label("Username:")
+        val usernameField = TextField()
+        username.getChildren().addAll(usernameLabel, usernameField)
+        val password = HBox()
+        password.spacing = 12.0
+        password.alignment = javafx.geometry.Pos.CENTER
+        val passwordLabel = Label("Password:")
+        val passwordField = PasswordField()
+        password.getChildren().addAll(passwordLabel, passwordField)
+        val buttons = HBox()
+        buttons.spacing = 30.0
+        buttons.alignment = javafx.geometry.Pos.CENTER
+        buttons.getChildren().addAll(loginButton, registerButton)
+        login.getChildren().addAll(title, username, password, buttons)
+        stage.scene = Scene(login, 800.0, 600.0)
         stage.show()
     }
 

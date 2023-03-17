@@ -1,0 +1,304 @@
+package wb.frontend
+
+import javafx.event.EventHandler
+import javafx.scene.Cursor
+import javafx.scene.Node
+import javafx.scene.canvas.Canvas
+import javafx.scene.input.MouseEvent
+import javafx.scene.shape.Rectangle
+import kotlin.math.max
+
+/**
+ * ************* How to use ************************
+ *
+ * Rectangle rectangle = new Rectangle(50, 50);
+ * rectangle.setFill(Color.BLACK);
+ * DragResizeMod.makeResizable(rectangle, null);
+ *
+ * Pane root = new Pane();
+ * root.getChildren().add(rectangle);
+ *
+ * primaryStage.setScene(new Scene(root, 300, 275));
+ * primaryStage.show();
+ *
+ * ************* OnDragResizeEventListener **********
+ *
+ * You need to override OnDragResizeEventListener and
+ * 1) preform out of main field bounds check
+ * 2) make changes to the node
+ * (this class will not change anything in node coordinates)
+ *
+ * There is defaultListener and it works only with Canvas nad Rectangle
+ */
+interface OnDragResizeEventListener {
+    fun onDrag(node: Node, x: Double, y: Double, h: Double, w: Double)
+    fun onResize(node: Node, x: Double?, y: Double?, h: Double?, w: Double?)
+}
+class OnDragResizeEL: OnDragResizeEventListener {
+    override fun onDrag(node: Node, x: Double, y: Double, h: Double, w: Double) {
+        /*
+    // TODO find generic way to get parent width and height of any node
+    // can perform out of bounds check here if you know your parent size
+    if (x > width - w ) x = width - w;
+    if (y > height - h) y = height - h;
+    if (x < 0) x = 0;
+    if (y < 0) y = 0;
+    */
+        setNodeSize(node, x, y, h, w)
+    }
+
+    override fun onResize(node: Node, x: Double?, y: Double?, h: Double?, w: Double?) {
+        /*
+    // TODO find generic way to get parent width and height of any node
+    // can perform out of bounds check here if you know your parent size
+    if (w > width - x) w = width - x;
+    if (h > height - y) h = height - y;
+    if (x < 0) x = 0;
+    if (y < 0) y = 0;
+    */
+        setNodeSize(node, x, y, h, w)
+    }
+
+    private fun setNodeSize(node: Node, x: Double?, y: Double?, h: Double?, w: Double?) {
+        if (x != null) node.layoutX = x
+        if (y != null)node.layoutY = y
+        // TODO find generic way to set width and height of any node
+        // here we cant set height and width to node directly.
+        // or i just cant find how to do it,
+        // so you have to wright resize code anyway for your Nodes...
+        //something like this
+        if (node is Canvas) {
+            if (w != null) node.width = w
+            if (h != null) node.height = h
+        } else if (node is Rectangle) {
+            if (w != null) node.width = w
+            if (h != null) node.height = h
+        }
+    }
+}
+
+class DragResize private constructor(private val node: Node, listener: OnDragResizeEventListener?) {
+
+    enum class S {
+        DEFAULT, DRAG, NW_RESIZE, SW_RESIZE, NE_RESIZE, SE_RESIZE, E_RESIZE, W_RESIZE, N_RESIZE, S_RESIZE
+    }
+
+    private var clickX = 0.0
+    private var clickY = 0.0
+    private var offsetX = 0.0
+    private var offsetY = 0.0
+    private var nodeX = 0.0
+    private var nodeY = 0.0
+    private var nodeH = 0.0
+    private var nodeW = 0.0
+    private var state = S.DEFAULT
+    private val listener: OnDragResizeEventListener? = defaultListener
+
+    init {
+        //if (listener != null) this.listener = listener
+    }
+
+    protected fun mouseReleased(event: MouseEvent) {
+        if (state == S.DRAG) {
+            node.layoutX = max(-node.layoutBounds.minX, event.sceneX - offsetX)
+            node.layoutY = max(-node.layoutBounds.minY, event.sceneY - offsetY)
+
+            node.translateX = 0.0
+            node.translateY = 0.0
+        }
+        node.cursor = Cursor.DEFAULT
+        state = S.DEFAULT
+    }
+
+    protected fun mouseOver(event: MouseEvent) {
+        val state = currentMouseState(event)
+        val cursor = getCursorForState(state)
+        node.cursor = cursor
+    }
+
+    private fun currentMouseState(event: MouseEvent): S {
+        var state = S.DEFAULT
+        val left = isLeftResizeZone(event)
+        val right = isRightResizeZone(event)
+        val top = isTopResizeZone(event)
+        val bottom = isBottomResizeZone(event)
+        if (left && top) state = S.NW_RESIZE else if (left && bottom) state = S.SW_RESIZE else if (right && top) state =
+            S.NE_RESIZE else if (right && bottom) state = S.SE_RESIZE else if (right) state =
+            S.E_RESIZE else if (left) state = S.W_RESIZE else if (top) state = S.N_RESIZE else if (bottom) state =
+            S.S_RESIZE else if (isInDragZone(event)) state = S.DRAG
+        return state
+    }
+
+    protected fun mouseDragged(event: MouseEvent) {
+        if (listener != null) {
+            val mouseX = parentX(event.x)
+            val mouseY = parentY(event.y)
+            if (state == S.DRAG) {
+                node.translateX = event.sceneX - clickX
+                node.translateY = event.sceneY - clickY
+//                node.translateX = max(-node.layoutBounds.minX, event.sceneX - clickX)
+//                node.translateY = max(-node.layoutBounds.minY,event.sceneY - clickY)
+                //listener.onDrag(node, mouseX - clickX, mouseY - clickY, nodeH, nodeW)
+            } else if (state != S.DEFAULT) {
+                //resizing
+                var newX = nodeX
+                var newY = nodeY
+                var newH = nodeH
+                var newW = nodeW
+
+                // Right Resize
+                if (state == S.E_RESIZE || state == S.NE_RESIZE || state == S.SE_RESIZE) {
+                    newW = event.sceneX - clickX + nodeX
+                    listener.onResize(node, null, null, null, newW)
+                }
+                // Left Resize
+                if (state == S.W_RESIZE || state == S.NW_RESIZE || state == S.SW_RESIZE) {
+                    newX = mouseX
+                    newW = nodeW + nodeX - newX
+                }
+
+                // Bottom Resize
+                if (state == S.S_RESIZE || state == S.SE_RESIZE || state == S.SW_RESIZE) {
+                    newH = mouseY - nodeY
+                }
+                // Top Resize
+                if (state == S.N_RESIZE || state == S.NW_RESIZE || state == S.NE_RESIZE) {
+                    newY = mouseY
+                    newH = nodeH + nodeY - newY
+                }
+
+                //min valid rect Size Check
+                if (newW < MIN_W) {
+                    if (state == S.W_RESIZE || state == S.NW_RESIZE || state == S.SW_RESIZE) newX = newX - MIN_W + newW
+                    newW = MIN_W
+                }
+                if (newH < MIN_H) {
+                    if (state == S.N_RESIZE || state == S.NW_RESIZE || state == S.NE_RESIZE) newY = newY + newH - MIN_H
+                    newH = MIN_H
+                }
+//                listener.onResize(node, newX, newY, newH, newW)
+            }
+        }
+    }
+
+    protected fun mousePressed(event: MouseEvent) {
+        state = if (isInResizeZone(event)) {
+
+            setNewInitialEventCoordinates(event)
+            clickX = event.sceneX
+            clickY = event.sceneY
+            offsetX = event.sceneX - node.layoutX
+            offsetY = event.sceneY - node.layoutY
+            currentMouseState(event)
+        } else if (isInDragZone(event)) {
+            clickX = event.sceneX
+            clickY = event.sceneY
+            offsetX = event.sceneX - node.layoutX
+            offsetY = event.sceneY - node.layoutY
+            //setNewInitialEventCoordinates(event)
+            S.DRAG
+        } else {
+            S.DEFAULT
+        }
+    }
+
+    private fun setNewInitialEventCoordinates(event: MouseEvent) {
+        nodeX = nodeX()
+        nodeY = nodeY()
+        nodeH = nodeH()
+        nodeW = nodeW()
+        clickX = event.x
+        clickY = event.y
+    }
+
+    private fun isInResizeZone(event: MouseEvent): Boolean {
+        return (isLeftResizeZone(event) || isRightResizeZone(event)
+                || isBottomResizeZone(event) || isTopResizeZone(event))
+    }
+
+    private fun isInDragZone(event: MouseEvent): Boolean {
+        val xPos = parentX(event.x)
+        val yPos = parentY(event.y)
+        val nodeX = nodeX() + MARGIN
+        val nodeY = nodeY() + MARGIN
+        val nodeX0 = nodeX() + nodeW() - MARGIN
+        val nodeY0 = nodeY() + nodeH() - MARGIN
+        //return xPos > nodeX && xPos < nodeX0 && yPos > nodeY && yPos < nodeY0
+        return true
+    }
+
+    private fun isLeftResizeZone(event: MouseEvent): Boolean {
+        return intersect(0.0, event.sceneX)
+    }
+
+    private fun isRightResizeZone(event: MouseEvent): Boolean {
+        return intersect(nodeW(), event.sceneX)
+    }
+
+    private fun isTopResizeZone(event: MouseEvent): Boolean {
+        return intersect(0.0, event.y)
+    }
+
+    private fun isBottomResizeZone(event: MouseEvent): Boolean {
+        return intersect(nodeH(), event.y)
+    }
+
+    private fun intersect(side: Double, point: Double): Boolean {
+        return side + MARGIN > point && side - MARGIN < point
+    }
+
+    private fun parentX(localX: Double): Double {
+        return nodeX() + localX
+    }
+
+    private fun parentY(localY: Double): Double {
+        return nodeY() + localY
+    }
+
+    private fun nodeX(): Double {
+       // return node.boundsInParent.minX
+        return node.layoutX
+    }
+
+    private fun nodeY(): Double {
+        //return node.boundsInParent.minY
+        return node.layoutY
+    }
+
+    private fun nodeW(): Double {
+        return node.boundsInParent.width
+    }
+
+    private fun nodeH(): Double {
+        return node.boundsInParent.height
+    }
+
+    companion object {
+        private val defaultListener: OnDragResizeEventListener = OnDragResizeEL()
+        private const val MARGIN = 8
+        private const val MIN_W = 30.0
+        private const val MIN_H = 20.0
+        @JvmOverloads
+        fun makeResizable(node: Node, listener: OnDragResizeEventListener? = null) {
+            val resizer = DragResize(node, listener)
+            node.onMousePressed = EventHandler { event -> resizer.mousePressed(event) }
+            node.onMouseDragged = EventHandler { event -> resizer.mouseDragged(event) }
+            node.onMouseMoved = EventHandler { event -> resizer.mouseOver(event) }
+            node.onMouseReleased = EventHandler { event -> resizer.mouseReleased(event) }
+        }
+
+        private fun getCursorForState(state: S): Cursor {
+            return when (state) {
+                S.NW_RESIZE -> Cursor.NW_RESIZE
+                S.SW_RESIZE -> Cursor.SW_RESIZE
+                S.NE_RESIZE -> Cursor.NE_RESIZE
+                S.SE_RESIZE -> Cursor.SE_RESIZE
+                S.E_RESIZE -> Cursor.E_RESIZE
+                S.W_RESIZE -> Cursor.W_RESIZE
+                S.N_RESIZE -> Cursor.N_RESIZE
+                S.S_RESIZE -> Cursor.S_RESIZE
+                else -> Cursor.DEFAULT
+            }
+        }
+    }
+}

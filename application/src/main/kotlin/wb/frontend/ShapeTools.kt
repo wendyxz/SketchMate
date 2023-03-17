@@ -71,8 +71,11 @@ class ShapeTools(resizableCanvas: Pane) {
     fun createRectangle() {
         val r = Rectangle(50.0, 50.0, 50.0, 50.0)
         r.fill = Color.RED
+
+
         canvas.children.add(r)
-        makeDraggable(r)
+        //makeDraggable(r)
+        DragResize.makeResizable(r);
     }
 
     fun createCircle() {

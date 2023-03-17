@@ -5,9 +5,11 @@ import javafx.scene.Node
 import javafx.scene.Scene
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
+import javafx.scene.shape.Circle
 import javafx.scene.shape.LineTo
 import javafx.scene.shape.MoveTo
 import javafx.scene.shape.Path
+import javafx.scene.shape.Rectangle
 import javafx.scene.shape.Shape
 import javafx.scene.transform.Scale
 import kotlin.math.max
@@ -147,6 +149,49 @@ class PathTools(Canvas: Pane) {
     }
 
     private fun eraseShape(shape: Shape): Boolean{
+        println("start")
+        println(shape)
+        println("layout ${shape.layoutX} ${shape.layoutY}")
+        println("translate ${shape.translateX} ${shape.translateY}")
+        println("finish")
+
+        if(shape is Rectangle){
+            val smallerX = shape.x + shape.layoutX
+            val greaterX = smallerX + shape.width
+            val smallerY = shape.y + shape.layoutY
+            val greaterY = smallerY + shape.height
+
+            val lineList: MutableList<Line> = mutableListOf()
+            lineList.add(Line(Point(smallerX, smallerY), Point(smallerX, greaterY)))
+            lineList.add(Line(Point(smallerX, smallerY), Point(greaterX, smallerY)))
+            lineList.add(Line(Point(greaterX, greaterY), Point(greaterX, smallerY)))
+            lineList.add(Line(Point(greaterX, greaterY), Point(smallerX, greaterY)))
+
+            val pathLine = findLineList(path)
+            for(eacLine in lineList)
+                for(eacPathLine in pathLine)
+                    if(lineIntersect(eacLine, eacPathLine)) return true
+
+            return false
+        }
+        else if(shape is Circle){
+            val pathLine = findLineList(path)
+
+            val center = Point(shape.centerX + shape.layoutX, shape.centerY + shape.layoutY)
+            val radius = shape.radius
+
+            for(eacPathLine in pathLine){
+                if(insideCircle(eacPathLine.first, center, radius)) return true;
+                if(insideCircle(eacPathLine.second, center, radius)) return true;
+            }
+
+            return false
+        }
+
         return false
+    }
+
+    private fun insideCircle(point: Point, center: Point, radius: Double): Boolean {
+        return (point.x-center.x)*(point.x-center.x)+(point.y-center.y)*(point.y-center.y) <= radius*radius
     }
 }

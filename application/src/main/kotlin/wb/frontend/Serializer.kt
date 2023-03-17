@@ -2,10 +2,7 @@ package wb.frontend
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.core.JsonToken
 import com.fasterxml.jackson.databind.*
-import com.fasterxml.jackson.databind.node.JsonNodeFactory
-import javafx.geometry.Point2D
 import javafx.scene.paint.Color
 import javafx.scene.shape.*
 
@@ -140,8 +137,10 @@ class PathSerializer : JsonSerializer<Path>() {
         serializers: SerializerProvider?
     ) {
         gen?.writeStartObject()
-        //gen?.writeStringField("color", value?.stroke.toString())
-        //gen?.writeNumberField("width", value?.strokeWidth ?: 0.0)
+        val color = value?.stroke.toString()
+        val webColor = color.replace("0x", "#")
+        gen?.writeStringField("color", webColor)
+        gen?.writeNumberField("width", value?.strokeWidth ?: 0.0)
         gen?.writeFieldName("elements")
         gen?.writeStartArray()
 
@@ -170,10 +169,12 @@ class PathSerializer : JsonSerializer<Path>() {
 class PathDeserializer : JsonDeserializer<Path>() {
     override fun deserialize(parser: JsonParser?, ctxt: DeserializationContext?): Path {
         val path = Path()
-        path.strokeWidth = 2.0
         val root = parser?.codec?.readTree<JsonNode>(parser)
-        //val color : Color = Color.web(root?.get("color")?.toString() ?: "black")
-        //val width = root?.get("width").toString().toDouble()
+        val webColor = root?.get("color").toString()
+        val color = Color.web(webColor.substring(1, webColor.length - 1))
+        val width = root?.get("width").toString().toDouble()
+        path.strokeWidth = width
+        path.stroke = color
         val elements = root?.get("elements")
         elements?.forEach { elementNode ->
             when (val type = elementNode.get("type").asText()) {
@@ -190,7 +191,6 @@ class PathDeserializer : JsonDeserializer<Path>() {
                 }
             }
         }
-        //path.stroke = color
 
         println(path)
         return path

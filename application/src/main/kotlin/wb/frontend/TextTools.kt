@@ -39,6 +39,7 @@ class TextTools(resizableCanvas: Pane) {
         }
 
         makeDraggable(drag, group)
+        DragResizeMod.makeResizable(group, null);
         group.layoutX = 100.0
         group.layoutY = 100.0
         group.transforms.add(Scale(1.0 / scale.x, 1.0 / scale.y))

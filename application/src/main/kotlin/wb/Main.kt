@@ -24,8 +24,7 @@ import javafx.scene.shape.Circle
 import javafx.scene.shape.Path
 import javafx.scene.shape.Rectangle
 import javafx.stage.Stage
-import javafx.geometry.Pos
-import javafx.geometry.Insets
+import javafx.geometry.*
 import kotlinx.serialization.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
@@ -77,23 +76,23 @@ class Main : Application() {
         var login = VBox()
         val title = Text("User Login / Sign up")
         val registerButton = Button("Sign up")
-        login.alignment = javafx.geometry.Pos.CENTER
+        login.alignment = Pos.CENTER
         login.spacing = 20.0
         val username = HBox()
-        username.alignment = javafx.geometry.Pos.CENTER
+        username.alignment = Pos.CENTER
         username.spacing = 10.0
         val usernameLabel = Label("Username:")
         val usernameField = TextField()
         username.getChildren().addAll(usernameLabel, usernameField)
         val password = HBox()
         password.spacing = 12.0
-        password.alignment = javafx.geometry.Pos.CENTER
+        password.alignment = Pos.CENTER
         val passwordLabel = Label("Password:")
         val passwordField = PasswordField()
         password.getChildren().addAll(passwordLabel, passwordField)
         val buttons = HBox()
         buttons.spacing = 30.0
-        buttons.alignment = javafx.geometry.Pos.CENTER
+        buttons.alignment = Pos.CENTER
         buttons.getChildren().addAll(loginButton, registerButton)
         login.getChildren().addAll(title, username, password, buttons)
         stage.scene = Scene(login, 800.0, 600.0)

@@ -1,8 +1,8 @@
 package wb.frontend
 
 import javafx.scene.Node
-import javafx.scene.control.TextArea
 import javafx.scene.input.MouseEvent
+
 
 
 private var cursorAnchorX = 0.0
@@ -14,6 +14,7 @@ private fun onPressedEvent(node: Node, event: MouseEvent) {
 //    println("${event.x} ${event.y}")
 //    println("${node.layoutX} ${node.layoutY}")
     if (cursorType == CursorType.pen) return
+    if (event.isSecondaryButtonDown) return
     cursorAnchorX = event.sceneX
     cursorAnchorY = event.sceneY
     mouseOffsetX = event.sceneX-node.layoutX
@@ -24,6 +25,7 @@ private fun onDraggedEvent(node: Node, event: MouseEvent) {
 //    println("B ${event.sceneX} ${event.sceneY}")
 //    println("C ${node.layoutX} ${node.layoutY}")
     if (cursorType == CursorType.pen) return
+    if (event.isSecondaryButtonDown) return
     node.translateX = event.getSceneX()-cursorAnchorX
     node.translateY = event.getSceneY()-cursorAnchorY
 }
@@ -31,6 +33,7 @@ private fun onReleasedEvent(node: Node, event: MouseEvent) {
 //    println("${event.x} ${event.y}")
 //    println("${node.layoutX} ${node.layoutY}")
     if (cursorType == CursorType.pen) return
+    if (event.isSecondaryButtonDown) return
     node.layoutX = event.getSceneX() - mouseOffsetX
     node.layoutY = event.getSceneY() - mouseOffsetY
     node.translateX = 0.0
@@ -42,3 +45,4 @@ fun makeDraggable(handleObject: Node, moveObject : Node = handleObject) {
     handleObject.setOnMouseDragged { event -> onDraggedEvent(moveObject, event) }
     handleObject.setOnMouseReleased { event -> onReleasedEvent(moveObject, event) }
 }
+

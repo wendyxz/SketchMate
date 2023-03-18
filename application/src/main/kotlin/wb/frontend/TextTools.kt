@@ -2,10 +2,7 @@ package wb.frontend
 
 import javafx.geometry.Pos
 import javafx.scene.Scene
-import javafx.scene.control.ColorPicker
-import javafx.scene.control.ComboBox
-import javafx.scene.control.Label
-import javafx.scene.control.TextArea
+import javafx.scene.control.*
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
 import javafx.scene.layout.VBox
@@ -71,6 +68,9 @@ class TextTools(resizableCanvas: Pane) {
         controlsBox.spacing = 10.0
         controlsBox.children.addAll(fontComboBox, colorPicker, sizeComboBox)
 
+        var deleteButton = Button("x")
+        controlsBox.children.add(deleteButton)
+
         var group = VBox()
         group.alignment = Pos.TOP_CENTER
         var drag = Label("drag")
@@ -102,5 +102,7 @@ class TextTools(resizableCanvas: Pane) {
             oldsize = sizeComboBox.value
             setStyle(textBox)
         }
+
+        deleteButton.setOnAction { canvas.children.remove(group) }
     }
 }

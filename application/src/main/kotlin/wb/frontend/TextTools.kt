@@ -12,11 +12,15 @@ import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import javafx.scene.transform.Scale
+import java.util.*
 
 
 class TextTools(resizableCanvas: Pane) {
     var canvas = resizableCanvas
     private val scale = Scale()
+    private var oldfont = "System";
+    private var oldfill = colorToHex(Color.BLACK);
+    private var oldsize = 12.0;
 
     init {
         scale.pivotX = 0.0
@@ -26,6 +30,25 @@ class TextTools(resizableCanvas: Pane) {
     fun setScale(scene: Scene) {
         scale.xProperty().bind(scene.widthProperty())
         scale.yProperty().bind(scene.heightProperty())
+    }
+
+    private fun colorToHex(color: Color): String? {
+        val hex2: String
+        val hex1: String = Integer.toHexString(color.hashCode()).uppercase(Locale.getDefault())
+        hex2 = when (hex1.length) {
+            2 -> "000000"
+            3 -> String.format("00000%s", hex1.substring(0, 1))
+            4 -> String.format("0000%s", hex1.substring(0, 2))
+            5 -> String.format("000%s", hex1.substring(0, 3))
+            6 -> String.format("00%s", hex1.substring(0, 4))
+            7 -> String.format("0%s", hex1.substring(0, 5))
+            else -> hex1.substring(0, 6)
+        }
+        return hex2
+    }
+
+    private fun setStyle(textBox: TextArea) {
+        textBox.style = "-fx-font-family: ${oldfont}; -fx-text-fill: #${oldfill}; -fx-font-size: ${oldsize}px;"
     }
 
     fun createTextBox() {
@@ -68,13 +91,16 @@ class TextTools(resizableCanvas: Pane) {
 
         // Add event listeners to update the text area's font, color, and size
         fontComboBox.setOnAction {
-            textBox.style = "-fx-font-family: ${fontComboBox.value};"
+            oldfont = fontComboBox.value
+            setStyle(textBox)
         }
         colorPicker.setOnAction {
-            textBox.style = "-fx-text-fill: ${colorPicker.value};"
+            oldfill = colorToHex(colorPicker.value)
+            setStyle(textBox)
         }
         sizeComboBox.setOnAction {
-            textBox.style = "-fx-font-size: ${sizeComboBox.value}px;"
+            oldsize = sizeComboBox.value
+            setStyle(textBox)
         }
     }
 }

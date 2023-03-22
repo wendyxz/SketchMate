@@ -3,8 +3,14 @@ package wb.frontend
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.*
+import javafx.geometry.Pos
+import javafx.scene.control.*
+import javafx.scene.layout.HBox
+import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.shape.*
+import javafx.scene.text.Font
+import java.util.*
 
 
 class RectangleSerializer : JsonSerializer<Rectangle>() {
@@ -191,8 +197,133 @@ class PathDeserializer : JsonDeserializer<Path>() {
                 }
             }
         }
-
         println(path)
         return path
     }
 }
+
+class TextSerializer() : JsonSerializer<VBox>() {
+    override fun serialize(value: VBox, gen: JsonGenerator?, serializers: SerializerProvider?) {
+        gen?.writeStartObject()
+        gen?.writeNumberField("layoutX", value.layoutX)
+        gen?.writeNumberField("layoutY", value.layoutY)
+        for (control in value.children) {
+            if (control is HBox) {
+                for (child in control.children) {
+                    if (child is ColorPicker) {
+                        val color = child.value.toString()
+                        val webColor = color.replace("0x", "#")
+                        gen?.writeStringField("color", webColor)
+                    } else if (child is ComboBox<*>) {
+                        if (child.items.size == 9) {
+                            gen?.writeNumberField("size", child.value.toString().toDouble())
+                        } else {
+                            gen?.writeStringField("font", child.value.toString())
+                        }
+                    }
+                }
+            }
+            else if (control is TextArea) {
+                gen?.writeStringField("text", control.text)
+            }
+        }
+        gen?.writeEndObject()
+    }
+}
+
+
+
+class TextDeserializer() : JsonDeserializer<VBox>() {
+    private var color = Color.BLACK
+    private var font = "System"
+    private var size = 12.0
+    private fun colorToHex(color: Color): String? {
+        val hex2: String
+        val hex1: String = Integer.toHexString(color.hashCode()).uppercase(Locale.getDefault())
+        hex2 = when (hex1.length) {
+            2 -> "000000"
+            3 -> String.format("00000%s", hex1.substring(0, 1))
+            4 -> String.format("0000%s", hex1.substring(0, 2))
+            5 -> String.format("000%s", hex1.substring(0, 3))
+            6 -> String.format("00%s", hex1.substring(0, 4))
+            7 -> String.format("0%s", hex1.substring(0, 5))
+            else -> hex1.substring(0, 6)
+        }
+        return hex2
+    }
+
+    private fun setStyle(textBox: TextArea) {
+        textBox.style = "-fx-font-family: ${font}; -fx-text-fill: #${colorToHex(color)}; -fx-font-size: ${size}px;"
+    }
+
+    override fun deserialize(parser: JsonParser?, ctxt: DeserializationContext?): VBox? {
+        val root = parser?.codec?.readTree<JsonNode>(parser)
+        val webColor = root?.get("color").toString()
+        color = Color.web(webColor.substring(1, webColor.length - 1))
+        font = root?.get("font").toString()
+        font = font.substring(1, font.length - 1)
+        size = root?.get("size").toString().toDouble()
+        val layoutX = root?.get("layoutX").toString().toDouble()
+        val layoutY = root?.get("layoutY").toString().toDouble()
+        var text =  root?.get("text").toString()
+        text = text.substring(1, text.length - 1)
+
+        var textBox = TextArea()
+        textBox.isWrapText = true
+        textBox.prefRowCount = 5
+        textBox.prefColumnCount = 10
+        textBox.text = text
+        setStyle(textBox)
+
+        // Create font, color, and size controls
+        var fontComboBox = ComboBox<String>()
+        fontComboBox.items.addAll(Font.getFamilies())
+        fontComboBox.selectionModel.select(font)
+        var colorPicker = ColorPicker(color)
+        var sizeComboBox = ComboBox<Double>()
+        sizeComboBox.items.addAll(8.0, 10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0)
+        sizeComboBox.selectionModel.select(size)
+
+        // Create a horizontal box to hold the controls
+        var controlsBox = HBox()
+        controlsBox.spacing = 10.0
+        controlsBox.children.addAll(fontComboBox, colorPicker, sizeComboBox)
+
+        var deleteButton = Button("x")
+        controlsBox.children.add(deleteButton)
+
+        var group = VBox()
+        group.alignment = Pos.TOP_CENTER
+        var drag = Label("drag")
+        group.children.addAll(drag, controlsBox, textBox)
+
+        drag.isVisible = false
+        textBox.focusedProperty().addListener { obs, oldVal, newVal ->
+            drag.isVisible = newVal
+        }
+
+        makeDraggable(drag, group)
+        DragResizeMod.makeResizable(group, null);
+        group.layoutX = layoutX
+        group.layoutY = layoutY
+
+        fontComboBox.setOnAction {
+            font = fontComboBox.value
+            setStyle(textBox)
+        }
+        colorPicker.setOnAction {
+            color = colorPicker.value
+            setStyle(textBox)
+        }
+        sizeComboBox.setOnAction {
+            size = sizeComboBox.value
+            setStyle(textBox)
+        }
+
+        // can't access canvas from here, can't remove textbox
+//        deleteButton.setOnAction { canvas.children.remove(group) }
+        return group
+    }
+}
+
+

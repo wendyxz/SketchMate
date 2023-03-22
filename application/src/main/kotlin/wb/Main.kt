@@ -49,7 +49,9 @@ class Main : Application() {
         .addSerializer(Circle::class.java, CircleSerializer())
         .addDeserializer(Circle::class.java, CircleDeserializer())
         .addSerializer(Path::class.java, PathSerializer())
-        .addDeserializer(Path::class.java, PathDeserializer()))
+        .addDeserializer(Path::class.java, PathDeserializer())
+        .addSerializer(VBox::class.java, TextSerializer())
+        .addDeserializer(VBox::class.java, TextDeserializer()))
     
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
@@ -132,6 +134,7 @@ class Main : Application() {
         // val data = serializeCanvas(rootcanvas)
         val elements = mutableListOf<String>()
         for (element in rootcanvas.children) {
+            println(element)
             when (element) {
                 is Rectangle -> elements.add(Json.encodeToString(
                     TypeWrapper("Rectangle", objectMapper.writeValueAsString(element))))
@@ -139,6 +142,9 @@ class Main : Application() {
                         TypeWrapper("Circle", objectMapper.writeValueAsString(element))))
                 is Path -> elements.add(Json.encodeToString(
                     TypeWrapper("Path", objectMapper.writeValueAsString(element))))
+                is VBox ->
+                    elements.add(Json.encodeToString(
+                    TypeWrapper("VBox", objectMapper.writeValueAsString(element))))
                 else -> print("not defined")
             }
         }
@@ -168,6 +174,9 @@ class Main : Application() {
                     "Rectangle" -> rootcanvas.children.add(objectMapper.readValue(element.string, Rectangle::class.java))
                     "Circle" -> rootcanvas.children.add(objectMapper.readValue(element.string, Circle::class.java))
                     "Path" -> root.children.add(objectMapper.readValue(element.string, Path::class.java))
+                    "VBox" -> {
+                        rootcanvas.children.add(objectMapper.readValue(element.string, VBox::class.java))
+                    }
                     else -> print("otherwise")
                 }
             }

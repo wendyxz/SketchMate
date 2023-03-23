@@ -2,6 +2,7 @@
 rootProject.name = "multi-project"
 
 
-include( "server", "application", "shared")
+include( "web", "application", "shared")
 // For Testing server side:
 //include( "server")
+//include( "server", "application", "shared")

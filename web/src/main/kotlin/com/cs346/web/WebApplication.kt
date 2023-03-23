@@ -14,7 +14,18 @@ import org.springframework.stereotype.Repository
 
 
 @SpringBootApplication
-class WebApplication
+class WebApplication(@Autowired val jdbcTemplate: JdbcTemplate): CommandLineRunner{
+    companion object {
+        @Suppress("JAVA_CLASS_ON_COMPANION")
+        @JvmStatic
+        private val logger
+                = getLogger(ServerApplication::class.java)
+    }
+    override fun run(vararg args:String?) {
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS users (id String primary key AUTOINCREMENT，name VARCHAR(20), password VARCHAR(30);")
+        println("Yes")
+    }
+}
 
 fun main(args: Array<String>) {
     runApplication<WebApplication>(*args)

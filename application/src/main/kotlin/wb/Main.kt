@@ -85,9 +85,9 @@ fun load(filename: String) {
 
     counterForTextBox = (counterForTextBox+1)%10
     if(counterForTextBox == 0)
-        rootcanvas.children.removeAll(rootcanvas.children)
+        rootcanvas.children.removeAll(rootcanvas.children.filter { it !is Path })
     else
-        rootcanvas.children.removeAll(rootcanvas.children.filter { it !is VBox })
+        rootcanvas.children.removeAll(rootcanvas.children.filter { it !is VBox && it !is Path})
 
     var elements = Json.decodeFromString<List<String>?>(data)
     if (elements != null) {
@@ -96,7 +96,8 @@ fun load(filename: String) {
             when (element.type) {
                 "Rectangle" -> rootcanvas.children.add(objectMapper.readValue(element.string, Rectangle::class.java))
                 "Circle" -> rootcanvas.children.add(objectMapper.readValue(element.string, Circle::class.java))
-                "Path" -> root.children.add(objectMapper.readValue(element.string, Path::class.java))
+                "Path" -> println("leave for now")
+                    // root.children.add(objectMapper.readValue(element.string, Path::class.java))
                 "VBox" -> {
                     if(counterForTextBox == 0)
                         rootcanvas.children.add(objectMapper.readValue(element.string, VBox::class.java))

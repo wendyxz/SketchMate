@@ -12,8 +12,6 @@ import javafx.scene.shape.Path
 import javafx.scene.shape.Rectangle
 import javafx.scene.shape.Shape
 import javafx.scene.transform.Scale
-import wb.autoLoad
-import wb.save
 import kotlin.math.max
 import kotlin.math.min
 
@@ -56,7 +54,6 @@ class PathTools(Canvas: Pane) {
     }
 
     private val startPath = EventHandler<MouseEvent> { event ->
-        autoLoad = false
         path = Path()
         var moveTo = MoveTo()
         path.stroke = penTools.strokeColor
@@ -70,13 +67,11 @@ class PathTools(Canvas: Pane) {
         } else {
             path.strokeDashArray.clear()
         }
-        if(penTools.eraser) path.strokeDashArray.clear()
         moveTo.x = max(penTools.strokeWidth * 0.5, event.x)
         moveTo.y = max(penTools.strokeWidth * 0.5, event.y)
         path.elements.add(moveTo)
         rootcanvas.children.add(path)
-        // save("data.json")
-        // print(path)
+        print(path)
     }
 
     private val pathProcess = EventHandler<MouseEvent> { event ->
@@ -89,10 +84,8 @@ class PathTools(Canvas: Pane) {
     private val pathComplete = EventHandler<MouseEvent> {
         path.transforms.add(Scale(1.0 / scale.x, 1.0 / scale.y))
         path.transforms.add(scale)
-        // save("data.json")
 
         if(penTools.eraser) eraseFor()
-        save("sync.json")
     }
 
     private fun eraseFor() {

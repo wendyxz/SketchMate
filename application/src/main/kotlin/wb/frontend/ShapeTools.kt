@@ -8,6 +8,8 @@ import javafx.scene.shape.Circle
 import javafx.scene.shape.Rectangle
 import javafx.scene.shape.Shape
 import javafx.scene.transform.Scale
+import wb.autoLoad
+import wb.save
 import kotlin.math.max
 
 
@@ -36,7 +38,6 @@ class ShapeTools(resizableCanvas: Pane) {
             canvas.children.remove(shape)
             return
         }
-
         cursorAnchorX = event.sceneX
         cursorAnchorY = event.sceneY
         mouseOffsetX = event.sceneX - shape.layoutX
@@ -57,6 +58,7 @@ class ShapeTools(resizableCanvas: Pane) {
 
         shape.translateX = 0.0
         shape.translateY = 0.0
+        save("sync.json")
     }
 
     private fun makeDraggable(shape: Shape) {
@@ -74,6 +76,7 @@ class ShapeTools(resizableCanvas: Pane) {
 
 
         canvas.children.add(r)
+        save("sync.json")
 
         DragResize.makeResizable(r, canvas);
     }
@@ -83,6 +86,7 @@ class ShapeTools(resizableCanvas: Pane) {
         c.layoutX = 250.0
         c.layoutY = 200.0
         canvas.children.add(c)
+        save("sync.json")
         DragResize.makeResizable(c, canvas);
     }
 }

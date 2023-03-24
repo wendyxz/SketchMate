@@ -1,0 +1,14 @@
+Hostname: whiteboard.cqrw8xjhmymn.ca-central-1.rds.amazonaws.com
+Port: 5432
+DB instance ID: whiteboard
+DB Name: - （这个不让设 idk 可能最后要用的是上面那个instance ID)
+Username: cs346
+Password: 12345678
+
+Postgres jdbc driver download:
+https://jdbc.postgresql.org/download/
+
+AWS account:
+Email: y3447zha@uwaterloo.ca
+Password: wavAt=pcTL29an_
+(可以登上去看/改database)

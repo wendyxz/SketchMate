@@ -10,7 +10,9 @@ import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.shape.*
 import javafx.scene.text.Font
+import javafx.scene.transform.Scale
 import java.util.*
+import kotlin.math.max
 
 
 class RectangleSerializer : JsonSerializer<Rectangle>() {
@@ -138,14 +140,24 @@ class CircleDeserializer : JsonDeserializer<Circle>() {
 
 class PathSerializer : JsonSerializer<Path>() {
     override fun serialize(
-        value: Path?,
+        value: Path,
         gen: JsonGenerator?,
         serializers: SerializerProvider?
     ) {
         gen?.writeStartObject()
         val color = value?.stroke.toString()
+        var style = "solid"
+        if (!value?.strokeDashArray.isNullOrEmpty()) {
+            if (value.strokeDashArray[0] == 20.0) {
+                style = "dashed"
+            } else {
+                style = "dotted"
+            }
+        }
+        gen?.writeStringField("style", style)
         val webColor = color.replace("0x", "#")
         gen?.writeStringField("color", webColor)
+
         gen?.writeNumberField("width", value?.strokeWidth ?: 0.0)
         gen?.writeFieldName("elements")
         gen?.writeStartArray()
@@ -179,8 +191,17 @@ class PathDeserializer : JsonDeserializer<Path>() {
         val webColor = root?.get("color").toString()
         val color = Color.web(webColor.substring(1, webColor.length - 1))
         val width = root?.get("width").toString().toDouble()
+        var style = root?.get("style").toString()
+        style = style.substring(1, style.length - 1)
         path.strokeWidth = width
         path.stroke = color
+        print("style: ")
+        println(style)
+        if (style == "dotted") {
+            path.strokeDashArray.addAll(5.0, 15.0)
+        } else if (style == "dashed") {
+            path.strokeDashArray.addAll(20.0, 20.0)
+        }
         val elements = root?.get("elements")
         elements?.forEach { elementNode ->
             when (val type = elementNode.get("type").asText()) {

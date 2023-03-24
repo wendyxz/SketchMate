@@ -8,7 +8,7 @@ import java.net.http.HttpResponse
 val baseURL = "http://localhost:8080"
 var cookieValue = ""
 
-var userId = 0
+var userId = ""
 var username = ""
 var password = ""
 
@@ -67,6 +67,7 @@ fun login(username: String, password: String): String {
         .header("Content-Type", "application/json")
         .POST(HttpRequest.BodyPublishers.ofString(body))
         .build()
+    println("[LOGIN] $request")
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
     val setCookie = response.headers().map()["set-cookie"]
     cookieValue = setCookie?.get(0)?.substringBefore(';').toString()

@@ -4,13 +4,13 @@ interface UserService {
 
     fun getAllUsers(): List<User>?
 
-    fun findUser(id: Int): User?
+    fun findUser(id: String): User?
 
     fun login(name: String): User?
 
     fun createUser(User: User): Int?
 
-    fun updateUser(id: Int, user: User): Int?
+    fun updateUser(id: String, user: User): Int?
 
-    fun deleteUser(id: Int): Int?
+    fun deleteUser(id: String): Int?
 }

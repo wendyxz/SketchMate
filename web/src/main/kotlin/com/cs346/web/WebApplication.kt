@@ -11,6 +11,9 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.CommandLineRunner
+import org.slf4j.LoggerFactory.getLogger
 
 
 @SpringBootApplication
@@ -19,11 +22,10 @@ class WebApplication(@Autowired val jdbcTemplate: JdbcTemplate): CommandLineRunn
         @Suppress("JAVA_CLASS_ON_COMPANION")
         @JvmStatic
         private val logger
-                = getLogger(ServerApplication::class.java)
+                = getLogger(WebApplication::class.java)
     }
     override fun run(vararg args:String?) {
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER primary key AUTOINCREMENT，name VARCHAR(20), password VARCHAR(30);")
-        println("Yes")
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS users (id text PRIMARY KEY, name VARCHAR(20), password VARCHAR(30));")
     }
 }
 

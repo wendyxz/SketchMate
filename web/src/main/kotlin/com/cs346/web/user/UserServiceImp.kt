@@ -8,7 +8,7 @@ class UserServiceImpl(val UserDao: UserDAO) : UserService {
         return UserDao.getAllUsers()
     }
 
-    override fun findUser(id: Int): User? {
+    override fun findUser(id: String): User? {
         return UserDao.findUser(id)
     }
 
@@ -20,11 +20,11 @@ class UserServiceImpl(val UserDao: UserDAO) : UserService {
         return UserDao.createUser(user)
     }
 
-    override fun updateUser(id: Int, User: User): Int? {
+    override fun updateUser(id: String, User: User): Int? {
         return UserDao.updateUser(id, User)
     }
 
-    override fun deleteUser(id: Int): Int? {
+    override fun deleteUser(id: String): Int? {
         return UserDao.deleteUser(id)
     }
 }

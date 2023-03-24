@@ -6,6 +6,7 @@ import javafx.scene.paint.Color
 import javafx.util.Callback
 
 //this is from the register dialog box
+class Credential(val username: String, val password: String)
 class VerifyCredential(val username: String, val password: String, val verifyPassword: String)
 
 class TopMenu(setBackgroundColour: (color: Color) -> Unit,
@@ -108,7 +109,7 @@ class TopMenu(setBackgroundColour: (color: Color) -> Unit,
             }
 
             val result = dialog.showAndWait()
-            //println("${result.get().username} ${result.get().password}")
+            println("${result.get().username} ${result.get().password}")
 
             if (result.isPresent) {
                 // now we check if two password is the same
@@ -130,6 +131,173 @@ class TopMenu(setBackgroundColour: (color: Color) -> Unit,
                 }
             }
 
+        }
+
+        accountCreate.setOnAction {
+
+            val dialog: Dialog<VerifyCredential> = Dialog()
+            dialog.title = "Sign up for an account"
+            dialog.headerText = "Please enter your user credential to sign up for an account:"
+            dialog.isResizable = false
+
+            val label1 = Label("username: ")
+            val label2 = Label("password: ")
+            val label3 = Label("Verify password: ")
+            val username = TextField()
+            val password = PasswordField()
+            val passwordRepeat = PasswordField()
+
+            //val buttonTypeOk = Button("Sign Up")
+            val buttonTypeOk = ButtonType("Okay", ButtonBar.ButtonData.OK_DONE)
+
+            val grid = GridPane()
+            grid.add(label1, 1, 1)
+            grid.add(username, 2, 1)
+            grid.add(label2, 1, 2)
+            grid.add(password, 2, 2)
+            grid.add(label3, 1, 3)
+            grid.add(passwordRepeat, 2, 3)
+            dialog.dialogPane.content = grid
+
+            dialog.dialogPane.buttonTypes.add(buttonTypeOk)
+
+            // set dialog pos
+//            val X = this.viewModel.model.stage.x + this.viewModel.model.stage.width / 2
+//            val Y = this.viewModel.model.stage.y + this.viewModel.model.stage.height / 2
+//            dialog.x = X
+//            dialog.y = Y
+            dialog.x = 400.0
+            dialog.y = 400.0
+
+            dialog.resultConverter = Callback<ButtonType?, VerifyCredential?> {
+                if (it == buttonTypeOk) VerifyCredential(username.text, password.text, passwordRepeat.text) else null
+            }
+
+            // 'x' functionality.
+            dialog.setOnCloseRequest {
+                dialog.hide()
+            }
+
+            val result = dialog.showAndWait()
+            //println("${result.get().username} ${result.get().password} ${result.get().verifyPassword}")
+
+            if (result.isPresent) {
+                // now we check if two password is the same
+                if (result.get().password != result.get().verifyPassword) {
+                    showWarnDialog("Password incorrect!", "Password doesn't match, please try again!")
+                } else if (result.get().username == "") {
+                    showWarnDialog("Unspecified Username!", "Please enter username!")
+                } else if (result.get().password == "") {
+                    showWarnDialog("Unspecified Password!", "Please enter password!")
+                } else {
+                    try {
+                        // todo: add some output to this
+                        println(wb.backend.createUser(result.get().username, result.get().password))
+                    } catch (e: Exception) {
+                        showWarnDialog("Error", e.toString())
+                    }
+                }
+            }
+        }
+
+        accountLogIn.setOnAction {
+
+            val dialog: Dialog<Credential> = Dialog()
+            dialog.title = "Log In"
+            dialog.headerText = "Please enter your user credential to log in:"
+            dialog.isResizable = false
+
+            val label1 = Label("username: ")
+            val label2 = Label("password: ")
+            val username = TextField()
+            val password = PasswordField()
+
+            //val buttonTypeOk = Button("Sign Up")
+            val buttonTypeOk = ButtonType("Sign In", ButtonBar.ButtonData.OK_DONE)
+
+            val grid = GridPane()
+            grid.add(label1, 1, 1)
+            grid.add(username, 2, 1)
+            grid.add(label2, 1, 2)
+            grid.add(password, 2, 2)
+            dialog.dialogPane.content = grid
+
+            dialog.dialogPane.buttonTypes.add(buttonTypeOk)
+
+            // set dialog pos
+//            val X = this.viewModel.model.stage.x + this.viewModel.model.stage.width / 2
+//            val Y = this.viewModel.model.stage.y + this.viewModel.model.stage.height / 2
+//            dialog.x = X
+//            dialog.y = Y
+            dialog.x = 400.0
+            dialog.y = 400.0
+
+            dialog.resultConverter = Callback<ButtonType?, Credential?> {
+                if (it == buttonTypeOk) Credential(username.text, password.text) else null
+            }
+
+            // 'x' functionality.
+            dialog.setOnCloseRequest {
+                dialog.hide()
+            }
+
+            val result = dialog.showAndWait()
+            //println("${result.get().username} ${result.get().password}")
+
+            if (result.isPresent) {
+                if (result.get().username == "") {
+                    showWarnDialog("Unspecified Username!", "Please enter username!")
+                } else if (result.get().password == "") {
+                    showWarnDialog("Unspecified Password!", "Please enter password!")
+                }
+
+                try {
+                    // todo: add some output to this
+                    val str = wb.backend.login(result.get().username, result.get().password)
+                    when (str) {
+                        "Success" -> {
+//                            val userPrefs = Preferences.userNodeForPackage(javaClass)
+                            showWarnDialog("Success!", "Log in success!")
+//                            val oldUsername = userPrefs.get("username", "")
+//                            todo.common.username = result.get().username
+//                            todo.common.password = result.get().password
+//                            userPrefs.put("username", todo.common.username)
+//                            userPrefs.put("password", todo.common.password)
+//                            val res = todo.common.getUserEntries()
+//                            if (res != "") {
+//                                println("get entries success")
+//                                if (oldUsername != todo.common.username){
+//                                    viewModel.model.loadData(res)
+//                                }
+//                                else {
+//                                    viewModel.model.syncData(res)
+//                                }
+//                            }
+//                            updateView()
+                        }
+                        "Wrong password" -> {
+                            showWarnDialog("Wrong Password!", "Please check your password and try again!")
+                        }
+                        else -> {
+                            // this should be not finding such user case
+                            showWarnDialog("User not found!", "Please check your username and try again!")
+                        }
+                    }
+
+                } catch (e: Exception) {
+                    e.stackTrace.forEach { println(it) }
+                    showWarnDialog("Error", e.toString())
+                }
+            }
+        }
+
+        accountLogOut.setOnAction {
+
+            showWarnDialog("message", wb.backend.logout())
+            wb.backend.username = ""
+            wb.backend.userId = ""
+            wb.backend.password = ""
+            wb.backend.cookieValue = ""
         }
 
     }

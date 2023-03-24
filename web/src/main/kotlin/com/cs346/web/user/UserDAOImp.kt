@@ -1,4 +1,4 @@
-package com.cs346.user
+package com.cs346.web.user
 
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper

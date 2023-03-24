@@ -1,4 +1,4 @@
-package com.example.server.db.user
+package com.cs346.web.user
 
 import org.springframework.stereotype.Service
 

@@ -1,6 +1,5 @@
 package com.cs346.web.user
-
-data class CreateUserDTO(
+data class LoginDTO(
     val name: String,
     val password: String
 )

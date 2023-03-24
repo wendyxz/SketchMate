@@ -1,8 +1,12 @@
 package wb.frontend
 
 import javafx.scene.control.*
+import javafx.scene.layout.GridPane
 import javafx.scene.paint.Color
+import javafx.util.Callback
 
+//this is from the register dialog box
+class VerifyCredential(val username: String, val password: String, val verifyPassword: String)
 
 class TopMenu(setBackgroundColour: (color: Color) -> Unit,
     save: (filename: String) -> Unit, load: (filename: String) -> Unit) : MenuBar() {
@@ -52,10 +56,102 @@ class TopMenu(setBackgroundColour: (color: Color) -> Unit,
         darkTheme.setOnAction { setBackgroundColour(Color.BLACK) }
         lightTheme.setOnAction { setBackgroundColour(Color.WHITE) }
 
+        registerControllers()
+
         fileSave.setOnAction { save("data.json") }
         fileLoad.setOnAction { load("data.json") }
 
         menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
+    }
+
+    private fun registerControllers() {
+
+        accountChangeP.setOnAction {
+
+            val dialog: Dialog<VerifyCredential> = Dialog()
+            dialog.title = "Change Password"
+            dialog.headerText = "Please enter your new Password:"
+            dialog.isResizable = false
+
+            val label1 = Label("password: ")
+            val label2 = Label("repeat password: ")
+            val password = PasswordField()
+            val verifyPassword = PasswordField()
+
+            //val buttonTypeOk = Button("Sign Up")
+            val buttonTypeOk = ButtonType("Sign In", ButtonBar.ButtonData.OK_DONE)
+
+            val grid = GridPane()
+            grid.add(label1, 1, 1)
+            grid.add(password, 2, 1)
+            grid.add(label2, 1, 2)
+            grid.add(verifyPassword, 2, 2)
+            dialog.dialogPane.content = grid
+
+            dialog.dialogPane.buttonTypes.add(buttonTypeOk)
+
+            // set dialog pos
+//            val X = this.stage.x + this.viewModel.model.stage.width / 2
+//            val Y = this.viewModel.model.stage.y + this.viewModel.model.stage.height / 2
+//            dialog.x = X
+//            dialog.y = Y
+            dialog.x = 400.0
+            dialog.y = 400.0
+
+            dialog.resultConverter = Callback<ButtonType?, VerifyCredential?> {
+                if (it == buttonTypeOk) VerifyCredential("", password.text, verifyPassword.text) else null
+            }
+
+            // 'x' functionality.
+            dialog.setOnCloseRequest {
+                dialog.hide()
+            }
+
+            val result = dialog.showAndWait()
+            //println("${result.get().username} ${result.get().password}")
+
+            if (result.isPresent) {
+                // now we check if two password is the same
+                if (result.get().password != result.get().verifyPassword) {
+                    showWarnDialog("Password incorrect!", "Password doesn't match, please try again!")
+                } else if (result.get().password == "") {
+                    showWarnDialog("Unspecified Password!", "Please enter password!")
+                } else {
+                    try {
+                        // todo: add some output to this
+                        println(wb.backend.updateUser(wb.backend.username, result.get().password))
+
+                        wb.backend.password = result.get().password
+
+                        showWarnDialog("Success", "Password successfully changed!")
+                    } catch (e: Exception) {
+                        showWarnDialog("Error", e.toString())
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    // Create GENERAL FORM!!!! TODO!
+    fun showWarnDialog(title: String, content: String?) {
+        var displayContent = content
+        if (displayContent == null) {
+            displayContent = "Unspecified"
+        }
+        val alert = Alert(Alert.AlertType.INFORMATION)
+//        val X = this.stage.x + this.stage.width / 2
+//        val Y = this.stage.y + this.stage.height / 2
+//        alert.x = X
+//        alert.y = Y
+        alert.x = 400.0
+        alert.y = 400.0
+
+        alert.title = title
+        alert.contentText = displayContent
+
+        alert.showAndWait()
     }
 
 }

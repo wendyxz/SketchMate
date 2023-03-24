@@ -1,7 +1,11 @@
 package wb.frontend
 
+import javafx.application.Platform
 import javafx.scene.control.*
 import javafx.scene.paint.Color
+import wb.autoLoad
+import java.util.*
+import kotlin.concurrent.timerTask
 
 
 class TopMenu(setBackgroundColour: (color: Color) -> Unit,
@@ -56,6 +60,13 @@ class TopMenu(setBackgroundColour: (color: Color) -> Unit,
         fileLoad.setOnAction { load("data.json") }
 
         menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
+
+        val autoSave: Timer = Timer()
+        autoSave.scheduleAtFixedRate(timerTask() {
+            Platform.runLater{
+                if(autoLoad) load("sync.json")
+            }
+        }, 1000, 1000)
     }
 
 }

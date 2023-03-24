@@ -9,10 +9,6 @@ import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import javafx.scene.transform.Scale
-import wb.autoLoad
-import wb.counterForTextBox
-import wb.rootcanvas
-import wb.save
 import java.util.*
 
 
@@ -108,11 +104,5 @@ class TextTools(resizableCanvas: Pane) {
         }
 
         deleteButton.setOnAction { canvas.children.remove(group) }
-
-        rootcanvas.setOnMouseClicked {
-            autoLoad = false
-            counterForTextBox = -1
-            save("sync.json")
-        }
     }
 }

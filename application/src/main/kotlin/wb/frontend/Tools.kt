@@ -2,8 +2,7 @@ package wb.frontend
 
 import javafx.scene.Node
 import javafx.scene.input.MouseEvent
-import wb.autoLoad
-import wb.save
+
 
 
 private var cursorAnchorX = 0.0
@@ -11,7 +10,6 @@ private var cursorAnchorY = 0.0
 private var mouseOffsetX = 0.0
 private var mouseOffsetY = 0.0
 private fun onPressedEvent(node: Node, event: MouseEvent) {
-    autoLoad = false
     println("pressed")
 //    println("${event.x} ${event.y}")
 //    println("${node.layoutX} ${node.layoutY}")
@@ -40,9 +38,9 @@ private fun onReleasedEvent(node: Node, event: MouseEvent) {
     node.layoutY = event.getSceneY() - mouseOffsetY
     node.translateX = 0.0
     node.translateY = 0.0
-    save("sync.json")
 }
 fun makeDraggable(handleObject: Node, moveObject : Node = handleObject) {
+
     handleObject.setOnMousePressed { event -> onPressedEvent(moveObject, event) }
     handleObject.setOnMouseDragged { event -> onDraggedEvent(moveObject, event) }
     handleObject.setOnMouseReleased { event -> onReleasedEvent(moveObject, event) }

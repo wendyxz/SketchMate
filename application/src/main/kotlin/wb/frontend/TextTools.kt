@@ -69,7 +69,8 @@ class TextTools(resizableCanvas: Pane) {
         controlsBox.children.addAll(fontComboBox, colorPicker, sizeComboBox)
 
         var deleteButton = Button("x")
-        controlsBox.children.add(deleteButton)
+        var saveButton = Button("Save")
+        controlsBox.children.addAll(deleteButton, saveButton)
 
         var group = VBox()
         group.alignment = Pos.TOP_CENTER
@@ -104,5 +105,19 @@ class TextTools(resizableCanvas: Pane) {
         }
 
         deleteButton.setOnAction { canvas.children.remove(group) }
+
+        // Yuki Please Add to This
+        saveButton.setOnAction {
+            // Hide the controls box
+            controlsBox.isVisible = false
+            drag.isVisible = false
+
+            // Add an event listener to show the controls box if the text area is clicked
+            textBox.setOnMouseClicked {
+                controlsBox.isVisible = true
+                drag.isVisible = true
+                textBox.setOnMouseClicked(null)
+            }
+        }
     }
 }

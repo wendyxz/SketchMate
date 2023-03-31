@@ -1,33 +1,25 @@
 package wb
 
-import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import javafx.application.Application
-import javafx.scene.Node
+import javafx.geometry.Pos
 import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.PasswordField
 import javafx.scene.control.TextField
-import javafx.scene.text.Text
-import javafx.scene.text.Font
-import javafx.scene.text.FontWeight
-import javafx.scene.layout.Background
-import javafx.scene.layout.BackgroundFill
-import javafx.scene.layout.BorderPane
-import javafx.scene.layout.Pane
-import javafx.scene.layout.VBox
-import javafx.scene.layout.HBox
+import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Path
 import javafx.scene.shape.Rectangle
+import javafx.scene.text.Text
 import javafx.stage.Stage
-import javafx.geometry.*
-import kotlinx.serialization.*
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.*
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import wb.frontend.*
 import java.io.*
 
@@ -63,7 +55,7 @@ class Main : Application() {
         loginButton.setOnMouseClicked{
             pathTools = PathTools(rootcanvas)
             root.center = rootcanvas
-            root.top = TopMenu(::setBackgroundColour, ::save, ::load)
+            root.top = TopMenu(::setBackgroundColour, ::save, ::load, stage)
             root.left = ToolMenu(::setCursorType, pathTools.getPenTools())
             rootcanvas.background = background
             stage.scene = Scene(root, 800.0, 600.0)

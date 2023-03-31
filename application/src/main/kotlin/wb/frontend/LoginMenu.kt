@@ -10,6 +10,7 @@ import javafx.scene.layout.GridPane
 import javafx.scene.text.Text
 import javafx.stage.Stage
 import javafx.util.Callback
+import javafx.beans.property.SimpleStringProperty
 
 class LoginMenu(root: BorderPane, stage: Stage) { // pathTools: PathTools, textTools: TextTools, shapeTools: ShapeTools
     private val title = Text("User Login / Sign up")
@@ -54,6 +55,9 @@ class LoginMenu(root: BorderPane, stage: Stage) { // pathTools: PathTools, textT
                     "Success" -> {
                         showWarnDialog("Success!", "Log in success!")
                         stage.scene = Scene(root, 800.0, 600.0)
+                        wb.backend.username = username.text
+                        wb.backend.password = password.text
+                        updateTitle(stage)
                     }
 
                     "Wrong password" -> {
@@ -157,5 +161,20 @@ class LoginMenu(root: BorderPane, stage: Stage) { // pathTools: PathTools, textT
 
         alert.showAndWait()
     }
+
+    private fun updateTitle(stage: Stage) {
+        println(wb.backend.username)
+        stage.titleProperty().bind(
+            SimpleStringProperty(
+                "WhiteBoard     - ${
+                    if (wb.backend.username != "")
+                        "Logged In: ${wb.backend.username}"
+                    else
+                        "Not Logged In"
+                }"
+            )
+        )
+    }
+
 
 }

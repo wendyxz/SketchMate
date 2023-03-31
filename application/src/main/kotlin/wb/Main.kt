@@ -50,7 +50,7 @@ class Main : Application() {
         stage.minWidth = 480.0
         stage.minHeight = 320.0
         root.center = rootcanvas
-        root.top = TopMenu(::setBackgroundColour, ::save, ::load)
+        root.top = TopMenu(::setBackgroundColour, ::save, ::load, stage)
         root.left = ToolMenu(::setCursorType, pathTools.getPenTools())
         rootcanvas.background = background
         var loginMenu = LoginMenu(root, stage)

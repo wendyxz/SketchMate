@@ -1,8 +1,10 @@
 package wb.frontend
 
+import javafx.beans.property.SimpleStringProperty
 import javafx.scene.control.*
 import javafx.scene.layout.GridPane
 import javafx.scene.paint.Color
+import javafx.stage.Stage
 import javafx.util.Callback
 
 //this is from the register dialog box
@@ -10,7 +12,10 @@ class Credential(val username: String, val password: String)
 class VerifyCredential(val username: String, val password: String, val verifyPassword: String)
 
 class TopMenu(setBackgroundColour: (color: Color) -> Unit,
-    save: (filename: String) -> Unit, load: (filename: String) -> Unit) : MenuBar() {
+    save: (filename: String) -> Unit, load: (filename: String) -> Unit, stage: Stage) : MenuBar() {
+
+//    var rightLabel = Label("Logged in: ${wb.backend.username}")
+
     // Menu choices
     private val fileMenu = Menu("File")
     private val editMenu = Menu("Edit")
@@ -54,7 +59,7 @@ class TopMenu(setBackgroundColour: (color: Color) -> Unit,
         darkTheme.setOnAction { setBackgroundColour(Color.BLACK) }
         lightTheme.setOnAction { setBackgroundColour(Color.WHITE) }
 
-        registerControllers()
+        registerControllers(stage)
 
         fileSave.setOnAction { save("data.json") }
         fileLoad.setOnAction { load("data.json") }
@@ -62,7 +67,7 @@ class TopMenu(setBackgroundColour: (color: Color) -> Unit,
         menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
     }
 
-    private fun registerControllers() {
+    private fun registerControllers(stage: Stage) {
 
         accountChangeP.setOnAction {
 
@@ -137,6 +142,7 @@ class TopMenu(setBackgroundColour: (color: Color) -> Unit,
             wb.backend.userId = ""
             wb.backend.password = ""
             wb.backend.cookieValue = ""
+            updateTitle(stage)
         }
 
     }
@@ -161,4 +167,17 @@ class TopMenu(setBackgroundColour: (color: Color) -> Unit,
         alert.showAndWait()
     }
 
+    private fun updateTitle(stage: Stage) {
+        println(wb.backend.username)
+        stage.titleProperty().bind(
+            SimpleStringProperty(
+                "WhiteBoard     - ${
+                    if (wb.backend.username != "")
+                        "Logged In: ${wb.backend.username}"
+                    else
+                        "Not Logged In"
+                }"
+            )
+        )
+    }
 }

@@ -1,9 +1,10 @@
 package com.cs346.web
 
+//import com.cs346.web.*
+import com.cs346.web.user.CreateUserDTO
+import com.cs346.web.user.UserService
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.context.SpringBootTest
-import com.cs346.web.*
-import org.junit.jupiter.api.Test
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -15,7 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.transaction.annotation.Transactional
-import javax.servlet.http.Cookie
+import jakarta.servlet.http.Cookie
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -36,13 +37,8 @@ class BaseIntegrationTest{
     protected lateinit var objectMapper: ObjectMapper
 
     @Autowired
-    protected lateinit var groupService: GroupService
-
-    @Autowired
     protected lateinit var userService: UserService
 
-    @Autowired
-    protected lateinit var entryService: GroupService
 
 
     @Transactional

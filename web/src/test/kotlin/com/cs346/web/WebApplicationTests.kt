@@ -20,7 +20,7 @@ import javax.servlet.http.Cookie
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = [
-        "spring.datasource.url=jdbc:postgresql://grove-narwhal-6387.7tt.cockroachlabs.cloud:26257/integrationTest?sslmode=verify-full&password=WixY-RJ9dUBq1-ziln-hNg&user=kevin"
+        "spring.datasource.url=jdbc:postgresql://testdb.cqrw8xjhmymn.ca-central-1.rds.amazonaws.com:5432/whiteboard?user=cs346&password=12345678"
     ]
 )
 @AutoConfigureMockMvc
@@ -47,7 +47,7 @@ class BaseIntegrationTest{
 
     @Transactional
     protected fun initDB(){
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS users (id String PRIMARY KEY, name VARCHAR(20), password VARCHAR(30);")
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS users (id text PRIMARY KEY, name VARCHAR(20), password VARCHAR(30));")
         cleanDB()
     }
 

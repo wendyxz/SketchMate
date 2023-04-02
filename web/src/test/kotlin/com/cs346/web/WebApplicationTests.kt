@@ -47,31 +47,14 @@ class BaseIntegrationTest{
 
     @Transactional
     protected fun initDB(){
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS users (id String PRIMARY KEY, name VARCHAR(20), password VARCHAR(30), groups TEXT[]);")
-        jdbcTemplate.execute(
-            "CREATE TABLE IF NOT EXISTS entries (" +
-                    "id String PRIMARY KEY, " +
-                    "userId String, " +
-                    "created_at String, " +
-                    "updated_at String, " +
-                    "entryType String, " +
-                    "title String, " +
-                    "description String, " +
-                    "startDate String, " +
-                    "endDate String, " +
-                    "location String, " +
-                    "priority String, " +
-                    "grouping String, " +
-                    "isPublic Boolean, " +
-                    "timeZone String," +
-                    "completed Boolean);")
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS users (id String PRIMARY KEY, name VARCHAR(20), password VARCHAR(30);")
         cleanDB()
     }
 
 
     @Transactional
     protected fun cleanDB() {
-        val tablesToTruncate = listOf("users","entries").joinToString()
+        val tablesToTruncate = listOf("users").joinToString()
         val sql = """
             TRUNCATE TABLE $tablesToTruncate CASCADE
         """.trimIndent()

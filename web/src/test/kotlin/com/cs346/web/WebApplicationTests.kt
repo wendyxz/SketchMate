@@ -1,9 +1,7 @@
 package com.cs346.web
 
-//import com.cs346.web.*
 import com.cs346.web.user.CreateUserDTO
 import com.cs346.web.user.UserService
-import org.junit.jupiter.api.Test
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -40,7 +38,6 @@ class BaseIntegrationTest{
     protected lateinit var userService: UserService
 
 
-
     @Transactional
     protected fun initDB(){
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS users (id text PRIMARY KEY, name VARCHAR(20), password VARCHAR(30));")
@@ -70,7 +67,6 @@ class BaseIntegrationTest{
                 content {
                     contentType(MediaType.APPLICATION_JSON)
                     json(objectMapper.writeValueAsString(1))
-//                    cookie { exists("jwt") }
                 }
             }
 

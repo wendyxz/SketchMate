@@ -130,7 +130,7 @@ class CircleDeserializer : JsonDeserializer<Circle>() {
                 this.translateX = translateX
                 this.translateY = translateY
             }
-            makeDraggable(shape)
+//            makeDraggable(shape)
             return shape
         }
 

@@ -51,12 +51,68 @@ class Main : Application() {
         stage.minHeight = 320.0
         root.center = rootcanvas
         root.top = TopMenu(::setBackgroundColour, ::save, ::load, stage)
-        root.left = ToolMenu(::setCursorType, pathTools.getPenTools())
+        root.left = ToolMenu(::setCursorType, pathTools.getPenTools(), ::createShape)
         rootcanvas.background = background
         var loginMenu = LoginMenu(root, stage)
         pathTools.setScale(stage.scene)
         shapeTools.setScale(stage.scene)
         textTools.setScale(stage.scene)
+    }
+//<<<<<<< HEAD
+//
+//        val loginButton = Button("Log in")
+//
+//        loginPage(stage, loginButton)
+//        loginButton.setOnMouseClicked{
+//            pathTools = PathTools(rootcanvas)
+//            root.center = rootcanvas
+//            root.top = TopMenu(::setBackgroundColour, ::save, ::load)
+//            root.left = ToolMenu(::setCursorType, pathTools.getPenTools(), ::createShape)
+//            rootcanvas.background = background
+//            stage.scene = Scene(root, 800.0, 600.0)
+//            pathTools.setScale(stage.scene)
+//            shapeTools = ShapeTools(rootcanvas)
+//            shapeTools.setScale(stage.scene)
+//            textTools.setScale(stage.scene)
+//        }
+//    }
+//
+//=======
+//
+//>>>>>>> 29de0954bfedd318bff9208b5641817ddef222ac
+    private fun createShape(shape: String) {
+        if (shape==="r") {
+            shapeTools.createRectangle()
+        } else {
+            shapeTools.createCircle()
+        }
+
+    }
+    private fun loginPage(stage: Stage, loginButton: Button) {
+        var login = VBox()
+        val title = Text("User Login / Sign up")
+        val registerButton = Button("Sign up")
+        login.alignment = Pos.CENTER
+        login.spacing = 20.0
+        val username = HBox()
+        username.alignment = Pos.CENTER
+        username.spacing = 10.0
+        val usernameLabel = Label("Username:")
+        val usernameField = TextField()
+        username.getChildren().addAll(usernameLabel, usernameField)
+        val password = HBox()
+        password.spacing = 12.0
+        password.alignment = Pos.CENTER
+        val passwordLabel = Label("Password:")
+        val passwordField = PasswordField()
+        password.getChildren().addAll(passwordLabel, passwordField)
+        val buttons = HBox()
+        buttons.spacing = 30.0
+        buttons.alignment = Pos.CENTER
+        buttons.getChildren().addAll(loginButton, registerButton)
+        login.getChildren().addAll(title, username, password, buttons)
+        stage.scene = Scene(login, 800.0, 600.0)
+        stage.show()
     }
 
     private fun setCursorType(ctype: CursorType) {
@@ -129,8 +185,18 @@ class Main : Application() {
             for (wrapper in elements) {
                 var element = Json.decodeFromString<TypeWrapper>(wrapper)
                 when (element.type) {
-                    "Rectangle" -> rootcanvas.children.add(objectMapper.readValue(element.string, Rectangle::class.java))
-                    "Circle" -> rootcanvas.children.add(objectMapper.readValue(element.string, Circle::class.java))
+                    "Rectangle" -> {
+                        val r = objectMapper.readValue(element.string, Rectangle::class.java)
+                        addSubmenu(r)
+                        DragResize.makeResizable(r, rootcanvas);
+                        rootcanvas.children.add(r)
+                    }
+                    "Circle" -> {
+                        val c = objectMapper.readValue(element.string, Circle::class.java)
+                        addSubmenu(c)
+                        DragResize.makeResizable(c, rootcanvas);
+                        rootcanvas.children.add(c)
+                    }
                     "Path" -> root.children.add(objectMapper.readValue(element.string, Path::class.java))
                     "VBox" -> {
                         rootcanvas.children.add(objectMapper.readValue(element.string, VBox::class.java))

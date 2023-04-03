@@ -60,11 +60,42 @@ class TopMenu(setBackgroundColour: (color: Color) -> Unit,
         lightTheme.setOnAction { setBackgroundColour(Color.WHITE) }
 
         registerControllers(stage)
+        fileControllers()
 
         fileSave.setOnAction { save("data.json") }
         fileLoad.setOnAction { load("data.json") }
 
         menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
+    }
+
+    private fun fileControllers() {
+        fileNew.setOnAction {
+            val inputDialog = TextInputDialog()
+            inputDialog.headerText = "Enter file name:"
+            val result = inputDialog.showAndWait()
+            result.ifPresent { fileName ->
+                println("New file name: $fileName")
+            }
+        }
+
+        fileSave.setOnAction {
+            val choiceDialog = ChoiceDialog("local", "local", "remote")
+            choiceDialog.headerText = "Select save location:"
+            val result = choiceDialog.showAndWait()
+            result.ifPresent { location ->
+                println("Save location: $location")
+            }
+        }
+
+        fileLoad.setOnAction {
+            val choices = listOf("name1", "name2", "name3", "local")
+            val choiceDialog = ChoiceDialog(choices[0], choices)
+            choiceDialog.headerText = "Select file to load:"
+            val result = choiceDialog.showAndWait()
+            result.ifPresent { selection ->
+                println("Load selection: $selection")
+            }
+        }
     }
 
     private fun registerControllers(stage: Stage) {

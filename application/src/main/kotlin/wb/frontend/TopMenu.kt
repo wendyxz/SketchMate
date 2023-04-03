@@ -86,7 +86,7 @@ class TopMenu(
             val result = choiceDialog.showAndWait()
             result.ifPresent { location ->
                 if (location == "local") {
-                    fileSave.setOnAction { save("data.json") }
+                    save("data.json")
                 }
                 println("Save location: $location")
             }
@@ -99,7 +99,7 @@ class TopMenu(
             val result = choiceDialog.showAndWait()
             result.ifPresent { selection ->
                 if (selection == "local") {
-                    fileLoad.setOnAction { load("data.json") }
+                    load("data.json")
                 }
                 println("Load selection: $selection")
             }

@@ -15,6 +15,60 @@ import javafx.stage.Popup
 import java.util.*
 import kotlin.math.max
 
+private fun colorToHex(color: Color): String? {
+    val hex2: String
+    val hex1: String = Integer.toHexString(color.hashCode()).uppercase(Locale.getDefault())
+    hex2 = when (hex1.length) {
+        2 -> "000000"
+        3 -> String.format("00000%s", hex1.substring(0, 1))
+        4 -> String.format("0000%s", hex1.substring(0, 2))
+        5 -> String.format("000%s", hex1.substring(0, 3))
+        6 -> String.format("00%s", hex1.substring(0, 4))
+        7 -> String.format("0%s", hex1.substring(0, 5))
+        else -> hex1.substring(0, 6)
+    }
+    return hex2
+}
+fun addSubmenu(shape :Shape) {
+    // Create font, color, and size controls
+
+    var fillPicker = ColorPicker(shape.fill as Color?)
+    fillPicker.prefWidth = 50.0;
+    var borderPicker = ColorPicker(shape.stroke as Color?)
+    borderPicker.prefWidth = 50.0;
+    var sizeComboBox = ComboBox<Double>()
+    sizeComboBox.items.addAll(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0)
+    sizeComboBox.selectionModel.select(4.0)
+    sizeComboBox.prefWidth = 10.0
+
+    // Create a horizontal box to hold the controls
+    var controlsBox = HBox()
+    controlsBox.spacing =0.0
+    controlsBox.children.addAll(fillPicker, borderPicker, sizeComboBox)
+
+    fillPicker.setOnAction {
+        val hexcolor = colorToHex(fillPicker.value)
+        shape.fill = Color.web(hexcolor)
+    }
+    borderPicker.setOnAction {
+        val hexcolor= colorToHex(borderPicker.value)
+        shape.stroke = Color.web(hexcolor)
+    }
+    sizeComboBox.setOnAction {
+        val size = sizeComboBox.value
+        shape.strokeWidth = size
+    }
+    val popup = Popup()
+    popup.content.add(controlsBox)
+    popup.isAutoHide = true
+    shape.setOnMouseClicked { event ->
+        val x: Double = event.screenX - 30.0
+        val y: Double = event.screenY - shape.layoutBounds.height/2 - 10.0
+        popup.show(shape, x, y)
+    }
+//        canvas.children.add(controlsBox)
+
+}
 
 class ShapeTools(resizableCanvas: Pane) {
     var cursorAnchorX = 0.0
@@ -71,60 +125,8 @@ class ShapeTools(resizableCanvas: Pane) {
 //        shape.transforms.add(Scale(1.0 / scale.x, 1.0 / scale.y))
 //        shape.transforms.add(scale)
 //    }
-    private fun colorToHex(color: Color): String? {
-        val hex2: String
-        val hex1: String = Integer.toHexString(color.hashCode()).uppercase(Locale.getDefault())
-        hex2 = when (hex1.length) {
-            2 -> "000000"
-            3 -> String.format("00000%s", hex1.substring(0, 1))
-            4 -> String.format("0000%s", hex1.substring(0, 2))
-            5 -> String.format("000%s", hex1.substring(0, 3))
-            6 -> String.format("00%s", hex1.substring(0, 4))
-            7 -> String.format("0%s", hex1.substring(0, 5))
-            else -> hex1.substring(0, 6)
-        }
-        return hex2
-    }
-    private fun addSubmenu(shape :Shape) {
-        // Create font, color, and size controls
 
-        var fillPicker = ColorPicker(shape.fill as Color?)
-        fillPicker.prefWidth = 50.0;
-        var borderPicker = ColorPicker(shape.stroke as Color?)
-        borderPicker.prefWidth = 50.0;
-        var sizeComboBox = ComboBox<Double>()
-        sizeComboBox.items.addAll(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0)
-        sizeComboBox.selectionModel.select(4.0)
-        sizeComboBox.prefWidth = 10.0
 
-        // Create a horizontal box to hold the controls
-        var controlsBox = HBox()
-        controlsBox.spacing =0.0
-        controlsBox.children.addAll(fillPicker, borderPicker, sizeComboBox)
-
-        fillPicker.setOnAction {
-            val hexcolor = colorToHex(fillPicker.value)
-            shape.fill = Color.web(hexcolor)
-        }
-        borderPicker.setOnAction {
-            val hexcolor= colorToHex(borderPicker.value)
-            shape.stroke = Color.web(hexcolor)
-        }
-        sizeComboBox.setOnAction {
-            val size = sizeComboBox.value
-            shape.strokeWidth = size
-        }
-        val popup = Popup()
-        popup.content.add(controlsBox)
-        popup.isAutoHide = true
-        shape.setOnMouseClicked { event ->
-                val x: Double = event.screenX - shape.layoutBounds.width/2 - 10.0
-                val y: Double = event.screenY - shape.layoutBounds.height/2 - 10.0
-                popup.show(shape, x, y)
-        }
-//        canvas.children.add(controlsBox)
-
-    }
     // create shapes
     fun createRectangle() {
         val r = Rectangle(0.0, 0.0, 50.0, 50.0)

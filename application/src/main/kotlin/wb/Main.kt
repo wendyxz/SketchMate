@@ -178,8 +178,18 @@ class Main : Application() {
             for (wrapper in elements) {
                 var element = Json.decodeFromString<TypeWrapper>(wrapper)
                 when (element.type) {
-                    "Rectangle" -> rootcanvas.children.add(objectMapper.readValue(element.string, Rectangle::class.java))
-                    "Circle" -> rootcanvas.children.add(objectMapper.readValue(element.string, Circle::class.java))
+                    "Rectangle" -> {
+                        val r = objectMapper.readValue(element.string, Rectangle::class.java)
+                        addSubmenu(r)
+                        DragResize.makeResizable(r, rootcanvas);
+                        rootcanvas.children.add(r)
+                    }
+                    "Circle" -> {
+                        val c = objectMapper.readValue(element.string, Circle::class.java)
+                        addSubmenu(c)
+                        DragResize.makeResizable(c, rootcanvas);
+                        rootcanvas.children.add(c)
+                    }
                     "Path" -> root.children.add(objectMapper.readValue(element.string, Path::class.java))
                     "VBox" -> {
                         rootcanvas.children.add(objectMapper.readValue(element.string, VBox::class.java))

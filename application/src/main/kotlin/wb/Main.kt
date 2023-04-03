@@ -64,7 +64,7 @@ class Main : Application() {
             pathTools = PathTools(rootcanvas)
             root.center = rootcanvas
             root.top = TopMenu(::setBackgroundColour, ::save, ::load)
-            root.left = ToolMenu(::setCursorType, pathTools.getPenTools())
+            root.left = ToolMenu(::setCursorType, pathTools.getPenTools(), ::createShape)
             rootcanvas.background = background
             stage.scene = Scene(root, 800.0, 600.0)
             pathTools.setScale(stage.scene)
@@ -73,7 +73,14 @@ class Main : Application() {
             textTools.setScale(stage.scene)
         }
     }
+    private fun createShape(shape: String) {
+        if (shape==="r") {
+            shapeTools.createRectangle()
+        } else {
+            shapeTools.createCircle()
+        }
 
+    }
     private fun loginPage(stage: Stage, loginButton: Button) {
         var login = VBox()
         val title = Text("User Login / Sign up")

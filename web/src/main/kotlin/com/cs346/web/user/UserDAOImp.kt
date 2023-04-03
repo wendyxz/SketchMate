@@ -24,7 +24,6 @@ class UserDAOImpl(val jdbcTemplate: JdbcTemplate) : UserDAO {
         var rowMapper: RowMapper<User> = RowMapper<User> { resultSet: ResultSet, _: Int ->
             User(resultSet.getString("id"), resultSet.getString("name"), null)
         }
-        println("!!!!!!!!! $id")
         val sql = "SELECT id, name, password FROM users WHERE id=?"
         var result = jdbcTemplate?.queryForObject(sql, rowMapper, id)
         return result
@@ -34,7 +33,6 @@ class UserDAOImpl(val jdbcTemplate: JdbcTemplate) : UserDAO {
         var rowMapper: RowMapper<User> = RowMapper<User> { resultSet: ResultSet, _: Int ->
             User(resultSet.getString("id"), resultSet.getString("name"), resultSet.getString("password"))
         }
-        println("!!!!!!!!! $name")
         val sql = "SELECT id, name, password FROM users WHERE name=? limit 1"
         var result = jdbcTemplate?.queryForObject(sql, rowMapper, name)
         return result
@@ -46,8 +44,8 @@ class UserDAOImpl(val jdbcTemplate: JdbcTemplate) : UserDAO {
     }
 
     override fun updateUser(id: String, user: User): Int? {
-        val sql = "UPDATE users SET name=?, password=? WHERE id=?"
-        return jdbcTemplate?.update(sql, user.name, user.password, id)
+        val sql = "UPDATE users SET password=? WHERE id=?"
+        return jdbcTemplate?.update(sql, user.password, id)
     }
 
     override fun deleteUser(id: String): Int? {

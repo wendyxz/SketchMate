@@ -150,7 +150,7 @@ class Main : Application() {
                         DragResize.makeResizable(c, rootcanvas);
                         rootcanvas.children.add(c)
                     }
-                    "Path" -> root.children.add(objectMapper.readValue(element.string, Path::class.java))
+                    "Path" -> rootcanvas.children.add(objectMapper.readValue(element.string, Path::class.java))
                     "VBox" -> {
                         rootcanvas.children.add(objectMapper.readValue(element.string, VBox::class.java))
                     }

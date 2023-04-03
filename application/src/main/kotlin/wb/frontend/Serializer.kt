@@ -10,9 +10,7 @@ import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.shape.*
 import javafx.scene.text.Font
-import javafx.scene.transform.Scale
 import java.util.*
-import kotlin.math.max
 
 
 class RectangleSerializer : JsonSerializer<Rectangle>() {
@@ -225,33 +223,34 @@ class PathDeserializer : JsonDeserializer<Path>() {
 
 class TextSerializer() : JsonSerializer<VBox>() {
     override fun serialize(value: VBox, gen: JsonGenerator?, serializers: SerializerProvider?) {
-        gen?.writeStartObject()
-        gen?.writeNumberField("layoutX", value.layoutX)
-        gen?.writeNumberField("layoutY", value.layoutY)
-        for (control in value.children) {
-            if (control is HBox) {
-                for (child in control.children) {
-                    if (child is ColorPicker) {
-                        val color = child.value.toString()
-                        val webColor = color.replace("0x", "#")
-                        gen?.writeStringField("color", webColor)
-                    } else if (child is ComboBox<*>) {
-                        if (child.items.size == 9) {
-                            gen?.writeNumberField("size", child.value.toString().toDouble())
-                        } else {
-                            gen?.writeStringField("font", child.value.toString())
+        if (value.isVisible && !value.isDisable) {
+            gen?.writeStartObject()
+            gen?.writeNumberField("layoutX", value.layoutX)
+            gen?.writeNumberField("layoutY", value.layoutY)
+            for (control in value.children) {
+                if (control is HBox) {
+                    for (child in control.children) {
+                        if (child is ColorPicker) {
+                            val color = child.value.toString()
+                            val webColor = color.replace("0x", "#")
+                            gen?.writeStringField("color", webColor)
+                        } else if (child is ComboBox<*>) {
+                            if (child.items.size == 9) {
+                                gen?.writeNumberField("size", child.value.toString().toDouble())
+                            } else {
+                                gen?.writeStringField("font", child.value.toString())
+                            }
                         }
                     }
                 }
+                else if (control is TextArea) {
+                    gen?.writeStringField("text", control.text)
+                }
             }
-            else if (control is TextArea) {
-                gen?.writeStringField("text", control.text)
-            }
+            gen?.writeEndObject()
         }
-        gen?.writeEndObject()
     }
 }
-
 
 
 class TextDeserializer() : JsonDeserializer<VBox>() {
@@ -341,8 +340,15 @@ class TextDeserializer() : JsonDeserializer<VBox>() {
             setStyle(textBox)
         }
 
-        // can't access canvas from here, can't remove textbox
-//        deleteButton.setOnAction { canvas.children.remove(group) }
+        deleteButton.setOnAction {
+            group.isVisible = false
+            group.isDisable = true
+            for (child in group.children) {
+                child.isVisible = false
+                child.isDisable = true
+            }
+        }
+
         return group
     }
 }

@@ -12,7 +12,7 @@ import javafx.stage.Stage
 import javafx.util.Callback
 import javafx.beans.property.SimpleStringProperty
 
-class LoginMenu(root: BorderPane, stage: Stage) { // pathTools: PathTools, textTools: TextTools, shapeTools: ShapeTools
+class LoginMenu(root: BorderPane, stage: Stage, width: Double, height: Double) {
     private val title = Text("User Login / Sign up")
     private val loginButton = Button("Log in")
     private val signUpButton = Button("Sign up")
@@ -39,7 +39,7 @@ class LoginMenu(root: BorderPane, stage: Stage) { // pathTools: PathTools, textT
         grid.add(password, 1, 2)
         grid.add(loginButton, 0, 3)
         grid.add(signUpButton, 1, 3)
-        stage.scene = Scene(grid, 800.0, 600.0)
+        stage.scene = Scene(grid, width, height)
         stage.show()
 
         loginButton.setOnMouseClicked {
@@ -54,7 +54,7 @@ class LoginMenu(root: BorderPane, stage: Stage) { // pathTools: PathTools, textT
                 when (str) {
                     "Success" -> {
                         showWarnDialog("Success!", "Log in success!")
-                        stage.scene = Scene(root, 800.0, 600.0)
+                        stage.scene = Scene(root, width, height)
                         wb.backend.username = username.text
                         wb.backend.password = password.text
                         updateTitle(stage)

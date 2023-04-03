@@ -11,8 +11,10 @@ import javafx.util.Callback
 class Credential(val username: String, val password: String)
 class VerifyCredential(val username: String, val password: String, val verifyPassword: String)
 
-class TopMenu(setBackgroundColour: (color: Color) -> Unit,
-    save: (filename: String) -> Unit, load: (filename: String) -> Unit, stage: Stage) : MenuBar() {
+class TopMenu(
+    setBackgroundColour: (color: Color) -> Unit,
+    save: (filename: String) -> Unit, load: (filename: String) -> Unit, stage: Stage
+) : MenuBar() {
 
 //    var rightLabel = Label("Logged in: ${wb.backend.username}")
 
@@ -60,11 +62,48 @@ class TopMenu(setBackgroundColour: (color: Color) -> Unit,
         lightTheme.setOnAction { setBackgroundColour(Color.WHITE) }
 
         registerControllers(stage)
-
-        fileSave.setOnAction { save("data.json") }
-        fileLoad.setOnAction { load("data.json") }
+        fileControllers(save, load)
 
         menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
+    }
+
+    private fun fileControllers(
+        save: (filename: String) -> Unit,
+        load: (filename: String) -> Unit
+    ) {
+        fileNew.setOnAction {
+            val inputDialog = TextInputDialog()
+            inputDialog.headerText = "Enter file name:"
+            val result = inputDialog.showAndWait()
+            result.ifPresent { fileName ->
+                println("New file name: $fileName")
+            }
+        }
+
+        fileSave.setOnAction {
+            val choiceDialog = ChoiceDialog("local", "local", "remote")
+            choiceDialog.headerText = "Select save location:"
+            val result = choiceDialog.showAndWait()
+            result.ifPresent { location ->
+                if (location == "local") {
+                    save("data.json")
+                }
+                println("Save location: $location")
+            }
+        }
+
+        fileLoad.setOnAction {
+            val choices = listOf("local", "name1", "name2", "name3")
+            val choiceDialog = ChoiceDialog(choices[0], choices)
+            choiceDialog.headerText = "Select file to load:"
+            val result = choiceDialog.showAndWait()
+            result.ifPresent { selection ->
+                if (selection == "local") {
+                    load("data.json")
+                }
+                println("Load selection: $selection")
+            }
+        }
     }
 
     private fun registerControllers(stage: Stage) {

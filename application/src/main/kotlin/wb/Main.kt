@@ -26,6 +26,9 @@ import java.io.*
 @Serializable
 class TypeWrapper(val type: String, val string: String)
 
+@Serializable
+data class Window(val width: Double, val height: Double, val x: Double, val y: Double)
+
 class Main : Application() {
     private val rootcanvas = Pane()
     private var root = BorderPane()
@@ -47,16 +50,37 @@ class Main : Application() {
     
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
+        val file = File("window.json")
+        var sceneWidth = 800.0
+        var sceneHeight = 600.0
+        if (file.length() != 0L) {
+            val json = file.readText()
+            val window = Json.decodeFromString<Window>(json)
+            stage.x = window.x
+            stage.y = window.y
+            sceneWidth = window.width
+            sceneHeight = window.height
+        }
         stage.minWidth = 480.0
         stage.minHeight = 320.0
         root.center = rootcanvas
         root.top = TopMenu(::setBackgroundColour, ::save, ::load, stage)
         root.left = ToolMenu(::setCursorType, pathTools.getPenTools(), ::createShape)
         rootcanvas.background = background
-        var loginMenu = LoginMenu(root, stage)
+        var loginMenu = LoginMenu(root, stage, sceneWidth, sceneHeight)
         pathTools.setScale(stage.scene)
         shapeTools.setScale(stage.scene)
         textTools.setScale(stage.scene)
+        saveWindow(stage)
+    }
+
+    private fun saveWindow(stage: Stage) {
+        stage.setOnCloseRequest {
+            val file = File("window.json")
+            val window = Window(stage.scene.width, stage.scene.height, stage.x, stage.y)
+            val json = Json.encodeToString(window)
+            file.writeText(json)
+        }
     }
 
     private fun createShape(shape: String) {

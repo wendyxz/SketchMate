@@ -5,15 +5,9 @@ import javafx.scene.Node
 import javafx.scene.Scene
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
-import javafx.scene.shape.Circle
-import javafx.scene.shape.LineTo
-import javafx.scene.shape.MoveTo
-import javafx.scene.shape.Path
-import javafx.scene.shape.Rectangle
-import javafx.scene.shape.Shape
+import javafx.scene.shape.*
 import javafx.scene.transform.Scale
 import kotlin.math.max
-import kotlin.math.min
 
 class PathTools(Canvas: Pane) {
     private var path = Path()
@@ -71,6 +65,7 @@ class PathTools(Canvas: Pane) {
         moveTo.y = max(penTools.strokeWidth * 0.5, event.y)
         path.elements.add(moveTo)
         rootcanvas.children.add(path)
+        DragResize.makeResizable(path, rootcanvas)
         print(path)
     }
 

@@ -32,6 +32,20 @@ class TimeSerializer(val time: Long, val whiteboard: List<String>)
 
 @Serializable
 data class Window(val width: Double, val height: Double, val x: Double, val y: Double)
+fun setCursorType(ctype: CursorType) {
+    cursor = ctype
+    when (cursor) {
+        CursorType.cursor -> pathTools.cancelPath()
+        CursorType.textbox -> textTools.createTextBox()
+        CursorType.pen -> pathTools.initPath()
+
+        CursorType.eraser -> {
+            pathTools.initPath()
+            //pathTools.cancelPath()
+            // shapeTools.createRectangle()
+        };
+    }
+}
 
 
 var root = BorderPane()
@@ -181,29 +195,7 @@ class Main : Application() {
 
     }
 
-    private fun setCursorType(ctype: CursorType) {
-        cursorType = ctype
-        when (cursorType) {
-            CursorType.cursor -> pathTools.cancelPath()
-            CursorType.textbox -> textTools.createTextBox()
-            CursorType.pen -> pathTools.initPath()
-            CursorType.rectangle -> {
-                pathTools.cancelPath()
-                shapeTools.createRectangle()
-            }
 
-            CursorType.circle -> {
-                pathTools.cancelPath()
-                shapeTools.createCircle()
-            }
-
-            CursorType.eraser -> {
-                pathTools.initPath()
-                //pathTools.cancelPath()
-                // shapeTools.createRectangle()
-            };
-        }
-    }
 
     private fun setBackgroundColour(color: Color) {
         rootcanvas.background = Background(BackgroundFill(color, null, null))

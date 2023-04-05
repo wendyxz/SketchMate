@@ -1,0 +1,62 @@
+package com.cs346.web.board
+
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.RowMapper
+import org.springframework.stereotype.Repository
+import java.sql.ResultSet
+import java.sql.Array
+import java.sql.Connection
+import java.util.*
+
+@Repository
+class BoardDAOImpl(val jdbcTemplate: JdbcTemplate) : BoardDAO {
+
+    override fun getAllBoards(): List<Board>? {
+        var rowMapper: RowMapper<Board> = RowMapper<Board> { resultSet: ResultSet, _: Int ->
+            Board(
+                resultSet.getString("id"),
+                resultSet.getString("name"), resultSet.getString("json")
+            )
+        }
+        val sql = "SELECT * FROM boards"
+        var results = jdbcTemplate.query(sql, rowMapper)
+        return results
+    }
+
+    override fun findBoard(id: String): Board? {
+        var rowMapper: RowMapper<Board> = RowMapper<Board> { resultSet: ResultSet, _: Int ->
+            Board(
+                resultSet.getString("id"),
+                resultSet.getString("name"), resultSet.getString("json")
+            )
+        }
+        val sql = "SELECT id, name, json FROM boards WHERE id=?"
+        var result = jdbcTemplate?.queryForObject(sql, rowMapper, id)
+        return result
+    }
+
+    override fun login(name: String): Board? {
+        var rowMapper: RowMapper<Board> = RowMapper<Board> { resultSet: ResultSet, _: Int ->
+            Board(resultSet.getString("id"), resultSet.getString("name"),
+                resultSet.getString("json"))
+        }
+        val sql = "SELECT id, name, json FROM boards WHERE name=? limit 1"
+        var result = jdbcTemplate?.queryForObject(sql, rowMapper, name)
+        return result
+    }
+
+    override fun createBoard(board: Board): Int? {
+        val sql = "INSERT INTO boards(id, name, json) VALUES(?,?,?)"
+        return jdbcTemplate?.update(sql, UUID.randomUUID().toString(), board.name, board.json)
+    }
+
+    override fun updateBoard(id: String, board: Board): Int? {
+        val sql = "UPDATE boards SET json=? WHERE id=?"
+        return jdbcTemplate?.update(sql, board.json, id)
+    }
+
+    override fun deleteBoard(id: String): Int? {
+        val sql = "DELETE FROM boards WHERE id=?"
+        return jdbcTemplate?.update(sql, id)
+    }
+}

@@ -32,48 +32,117 @@ class TimeSerializer(val time: Long, val whiteboard: List<String>)
 
 @Serializable
 data class Window(val width: Double, val height: Double, val x: Double, val y: Double)
+
+var root = BorderPane()
+val rootcanvas = Pane()
+val shapeTools = ShapeTools(rootcanvas)
+val textTools = TextTools(rootcanvas)
+val pathTools = PathTools(rootcanvas)
+var autoSyncTimeStamp = -1L
 fun setCursorType(ctype: CursorType) {
     cursor = ctype
     when (cursor) {
         CursorType.cursor -> pathTools.cancelPath()
         CursorType.textbox -> textTools.createTextBox()
         CursorType.pen -> pathTools.initPath()
-
         CursorType.eraser -> {
             pathTools.initPath()
-            //pathTools.cancelPath()
-            // shapeTools.createRectangle()
-        };
+        }
     }
 }
+// Serializer/Deserializer
+val objectMapper = jacksonObjectMapper().registerModule(SimpleModule()
+    .addSerializer(Rectangle::class.java, RectangleSerializer())
+    .addDeserializer(Rectangle::class.java, RectangleDeserializer())
+    .addSerializer(Circle::class.java, CircleSerializer())
+    .addDeserializer(Circle::class.java, CircleDeserializer())
+    .addSerializer(Path::class.java, PathSerializer())
+    .addDeserializer(Path::class.java, PathDeserializer())
+    .addSerializer(VBox::class.java, TextSerializer())
+    .addDeserializer(VBox::class.java, TextDeserializer()))
+fun save(filename: String) {
+    // we need to write smth like:
+    // val data = serializeCanvas(rootcanvas)
+    val elements = mutableListOf<String>()
+    for (element in rootcanvas.children) {
+        println(element)
+        when (element) {
+            is Rectangle -> elements.add(Json.encodeToString(
+                TypeWrapper("Rectangle", objectMapper.writeValueAsString(element))))
+            is Circle -> elements.add(Json.encodeToString(
+                TypeWrapper("Circle", objectMapper.writeValueAsString(element))))
+            is Path -> elements.add(Json.encodeToString(
+                TypeWrapper("Path", objectMapper.writeValueAsString(element))))
+            is VBox ->
+                elements.add(Json.encodeToString(
+                    TypeWrapper("VBox", objectMapper.writeValueAsString(element))))
+            else -> print("not defined")
+        }
+    }
+    val currentTime = System.currentTimeMillis()
+    autoSyncTimeStamp = currentTime
 
-val rootcanvas = Pane()
-val shapeTools = ShapeTools(rootcanvas)
-val textTools = TextTools(rootcanvas)
-val pathTools = PathTools(rootcanvas)
+    val timestampedFile = TimeSerializer(currentTime, elements)
+    val file = File(filename)
+    val writer = BufferedWriter(FileWriter(file))
+//        writer.write(objectMapper.writeValueAsString(elements))
+    writer.write(Json.encodeToString(timestampedFile))
+    writer.close()
+    print("done")
+}
+fun load(filename: String) {
+    val file = File(filename)
+    val reader = BufferedReader(FileReader(file))
+    val data = reader.readText()
+    reader.close()
+    // print("reader closed")
+    // we need smth like:
+    // unserializeCanvas(data, rootcanvas)
+    // to replace the bottom section
+    val timeFile = Json.decodeFromString<TimeSerializer>(data)
+
+    val fileTime = timeFile.time
+    if(fileTime == autoSyncTimeStamp) return
+
+    autoSyncTimeStamp = fileTime
+
+    // timeFile.time to see the timestamp
+    rootcanvas.children.removeAll(rootcanvas.children)
+    var elements = timeFile.whiteboard
+    if (elements != null) {
+        for (wrapper in elements) {
+            var element = Json.decodeFromString<TypeWrapper>(wrapper)
+            when (element.type) {
+                "Rectangle" -> {
+                    val r = objectMapper.readValue(element.string, Rectangle::class.java)
+                    addSubmenu(r)
+                    DragResize.makeResizable(r, rootcanvas);
+                    rootcanvas.children.add(r)
+                }
+                "Circle" -> {
+                    val c = objectMapper.readValue(element.string, Circle::class.java)
+                    addSubmenu(c)
+                    DragResize.makeResizable(c, rootcanvas);
+                    rootcanvas.children.add(c)
+                }
+                "Path" -> rootcanvas.children.add(objectMapper.readValue(element.string, Path::class.java))
+                "VBox" -> {
+                    rootcanvas.children.add(objectMapper.readValue(element.string, VBox::class.java))
+                }
+                else -> error("LOAD ERROR !!! ")
+            }
+        }
+    }
+
+
+    // println("decoded")
+}
+
+
+
 class Main : Application() {
-//    private val rootcanvas = Pane()
-
-    //    private var shapeTools = ShapeTools(rootcanvas)
-//    private var textTools = TextTools(rootcanvas)
-//    private var pathTools = PathTools(rootcanvas)
-    private var root = BorderPane()
-
     private var backgroundFill = BackgroundFill(Color.WHITE, null, null)
     private var background = Background(backgroundFill)
-//    private var shapeTools = ShapeTools(rootcanvas)
-//    private var textTools = TextTools(rootcanvas)
-//    private var pathTools = PathTools(rootcanvas)
-    // Serializer/Deserializer
-    private val objectMapper = jacksonObjectMapper().registerModule(SimpleModule()
-        .addSerializer(Rectangle::class.java, RectangleSerializer())
-        .addDeserializer(Rectangle::class.java, RectangleDeserializer())
-        .addSerializer(Circle::class.java, CircleSerializer())
-        .addDeserializer(Circle::class.java, CircleDeserializer())
-        .addSerializer(Path::class.java, PathSerializer())
-        .addDeserializer(Path::class.java, PathDeserializer())
-        .addSerializer(VBox::class.java, TextSerializer())
-        .addDeserializer(VBox::class.java, TextDeserializer()))
     
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
@@ -116,82 +185,11 @@ class Main : Application() {
         } else {
             shapeTools.createCircle()
         }
-
     }
-
 
 
     private fun setBackgroundColour(color: Color) {
         rootcanvas.background = Background(BackgroundFill(color, null, null))
-    }
-
-    private fun save(filename: String) {
-        // we need to write smth like:
-        // val data = serializeCanvas(rootcanvas)
-        val elements = mutableListOf<String>()
-        for (element in rootcanvas.children) {
-            println(element)
-            when (element) {
-                is Rectangle -> elements.add(Json.encodeToString(
-                    TypeWrapper("Rectangle", objectMapper.writeValueAsString(element))))
-                is Circle -> elements.add(Json.encodeToString(
-                        TypeWrapper("Circle", objectMapper.writeValueAsString(element))))
-                is Path -> elements.add(Json.encodeToString(
-                    TypeWrapper("Path", objectMapper.writeValueAsString(element))))
-                is VBox ->
-                    elements.add(Json.encodeToString(
-                    TypeWrapper("VBox", objectMapper.writeValueAsString(element))))
-                else -> print("not defined")
-            }
-        }
-        val timestampedFile = TimeSerializer(System.currentTimeMillis(), elements)
-        val file = File(filename)
-        val writer = BufferedWriter(FileWriter(file))
-//        writer.write(objectMapper.writeValueAsString(elements))
-        writer.write(Json.encodeToString(timestampedFile))
-        writer.close()
-        print("done")
-    }
-    private fun load(filename: String) {
-        val file = File(filename)
-        val reader = BufferedReader(FileReader(file))
-        val data = reader.readText()
-        reader.close()
-        print("reader closed")
-        // we need smth like:
-        // unserializeCanvas(data, rootcanvas)
-        // to replace the bottom section
-        val timeFile = Json.decodeFromString<TimeSerializer>(data)
-        // timeFile.time to see the timestamp
-        rootcanvas.children.removeAll(rootcanvas.children)
-        var elements = timeFile.whiteboard
-        if (elements != null) {
-            for (wrapper in elements) {
-                var element = Json.decodeFromString<TypeWrapper>(wrapper)
-                when (element.type) {
-                    "Rectangle" -> {
-                        val r = objectMapper.readValue(element.string, Rectangle::class.java)
-                        addSubmenu(r)
-                        DragResize.makeResizable(r, rootcanvas);
-                        rootcanvas.children.add(r)
-                    }
-                    "Circle" -> {
-                        val c = objectMapper.readValue(element.string, Circle::class.java)
-                        addSubmenu(c)
-                        DragResize.makeResizable(c, rootcanvas);
-                        rootcanvas.children.add(c)
-                    }
-                    "Path" -> rootcanvas.children.add(objectMapper.readValue(element.string, Path::class.java))
-                    "VBox" -> {
-                        rootcanvas.children.add(objectMapper.readValue(element.string, VBox::class.java))
-                    }
-                    else -> print("otherwise")
-                }
-            }
-        }
-
-
-        println("decoded")
     }
 }
 

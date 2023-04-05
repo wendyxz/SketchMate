@@ -7,7 +7,6 @@ import java.sql.ResultSet
 import java.sql.Array
 import java.sql.Connection
 import java.util.*
-import javax.swing.tree.RowMapper
 
 @Repository
 class BoardDAOImpl(val jdbcTemplate: JdbcTemplate) : BoardDAO {
@@ -16,7 +15,7 @@ class BoardDAOImpl(val jdbcTemplate: JdbcTemplate) : BoardDAO {
         var rowMapper: RowMapper<Board> = RowMapper<Board> { resultSet: ResultSet, _: Int ->
             Board(
                 resultSet.getString("id"),
-                resultSet.getString("name"), resultSet.getString("json"), null
+                resultSet.getString("name"), resultSet.getString("json")
             )
         }
         val sql = "SELECT * FROM boards"
@@ -28,7 +27,7 @@ class BoardDAOImpl(val jdbcTemplate: JdbcTemplate) : BoardDAO {
         var rowMapper: RowMapper<Board> = RowMapper<Board> { resultSet: ResultSet, _: Int ->
             Board(
                 resultSet.getString("id"),
-                resultSet.getString("name"), resultSet.getString("json"), null
+                resultSet.getString("name"), resultSet.getString("json")
             )
         }
         val sql = "SELECT id, name, json FROM boards WHERE id=?"

@@ -26,7 +26,7 @@ class RectangleSerializer : JsonSerializer<Rectangle>() {
         gen?.writeNumberField("height", value?.height ?: 0.0)
         gen?.writeFieldName("fill")
         gen?.writeStartObject()
-        val color: Color? = value?.fill as? Color
+        var color: Color? = value?.fill as? Color
         if (color != null) {
             gen?.writeBooleanField("opaque", color.isOpaque)
             gen?.writeNumberField("hue", color.hue)
@@ -34,8 +34,29 @@ class RectangleSerializer : JsonSerializer<Rectangle>() {
             gen?.writeNumberField("brightness", color.brightness)
         }
         gen?.writeEndObject()
+        gen?.writeFieldName("stroke")
+        gen?.writeStartObject()
+        color = value?.stroke as? Color
+        if (color != null) {
+            gen?.writeBooleanField("opaque", color.isOpaque)
+            gen?.writeNumberField("hue", color.hue)
+            gen?.writeNumberField("saturation", color.saturation)
+            gen?.writeNumberField("brightness", color.brightness)
+        }
+        gen?.writeEndObject()
+        gen?.writeNumberField("strokeWidth", value?.strokeWidth ?: 0.0)
         gen?.writeEndObject()
     }
+}
+
+
+private fun getColor(colorNode: JsonNode) : Color  {
+    val opaque = colorNode.get("opaque").asBoolean()
+    val hue = colorNode.get("hue").asDouble()
+    val saturation = colorNode.get("saturation").asDouble()
+    val brightness = colorNode.get("brightness").asDouble()
+    val color = Color.hsb(hue, saturation, brightness, if (opaque) 1.0 else 0.0)
+    return color
 }
 
 class RectangleDeserializer : JsonDeserializer<Rectangle>() {
@@ -53,15 +74,13 @@ class RectangleDeserializer : JsonDeserializer<Rectangle>() {
             val width = node.get("width").asDouble()
             val height = node.get("height").asDouble()
 
-            val fillNode = node.get("fill")
-            val opaque = fillNode.get("opaque").asBoolean()
-            val hue = fillNode.get("hue").asDouble()
-            val saturation = fillNode.get("saturation").asDouble()
-            val brightness = fillNode.get("brightness").asDouble()
-
-            val fill = Color.hsb(hue, saturation, brightness, if (opaque) 1.0 else 0.0)
+            val fill = getColor(node.get("fill"))
+            val stroke = getColor(node.get("stroke"))
+            val strokeWidth = node.get("strokeWidth").asDouble()
             var rectangle = Rectangle(x, y, width, height).apply {
                 this.fill = fill
+                this.stroke = stroke
+                this.strokeWidth = strokeWidth
                 this.layoutX = layoutX
                 this.layoutY = layoutY
                 this.translateX = translateX
@@ -88,7 +107,7 @@ class CircleSerializer : JsonSerializer<Circle>() {
         gen?.writeNumberField("radius", value?.radius ?: 0.0)
         gen?.writeFieldName("fill")
         gen?.writeStartObject()
-        val color: Color? = value?.fill as? Color
+        var color: Color? = value?.fill as? Color
         if (color != null) {
             gen?.writeBooleanField("opaque", color.isOpaque)
             gen?.writeNumberField("hue", color.hue)
@@ -96,6 +115,18 @@ class CircleSerializer : JsonSerializer<Circle>() {
             gen?.writeNumberField("brightness", color.brightness)
         }
         gen?.writeEndObject()
+        gen?.writeFieldName("stroke")
+        gen?.writeStartObject()
+        color = value?.stroke as? Color
+        if (color != null) {
+            gen?.writeBooleanField("opaque", color.isOpaque)
+            gen?.writeNumberField("hue", color.hue)
+            gen?.writeNumberField("saturation", color.saturation)
+            gen?.writeNumberField("brightness", color.brightness)
+        }
+        gen?.writeEndObject()
+        gen?.writeNumberField("strokeWidth", value?.strokeWidth ?: 0.0)
+
         gen?.writeEndObject()
     }
 }
@@ -114,15 +145,13 @@ class CircleDeserializer : JsonDeserializer<Circle>() {
             val translateY = node.get("translateY").asDouble()
             val radius = node.get("radius").asDouble()
 
-            val fillNode = node.get("fill")
-            val opaque = fillNode.get("opaque").asBoolean()
-            val hue = fillNode.get("hue").asDouble()
-            val saturation = fillNode.get("saturation").asDouble()
-            val brightness = fillNode.get("brightness").asDouble()
-
-            val fill = Color.hsb(hue, saturation, brightness, if (opaque) 1.0 else 0.0)
+            val fill = getColor(node.get("fill"))
+            val stroke = getColor(node.get("stroke"))
+            val strokeWidth = node.get("strokeWidth").asDouble()
             var shape = Circle(centerX, centerY, radius).apply {
                 this.fill = fill
+                this.stroke = stroke
+                this.strokeWidth = strokeWidth
                 this.layoutX = layoutX
                 this.layoutY = layoutY
                 this.translateX = translateX

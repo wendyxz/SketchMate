@@ -8,62 +8,62 @@ import java.net.http.HttpResponse
 private val baseURL = "http://localhost:8080"
 private var cookieValue = ""
 
-var userId = ""
-var username = ""
-var password = ""
+var boardId = ""
+var boardname = ""
+var json = ""
 
-/*User*/
+/*Board*/
 
-fun createUser(username: String, password: String): String {
-    val body = "{\"name\": \"$username\", \"password\": \"$password\"}"
+fun createBoard(boardname: String, json: String): String {
+    val body = "{\"name\": \"$boardname\", \"json\": \"$json\"}"
     val client = HttpClient.newBuilder().build()
     val request = HttpRequest.newBuilder()
-        .uri(URI.create("$baseURL/login/create"))
+        .uri(URI.create("$baseURL/draw/create"))
         .header("Content-Type", "application/json")
         .POST(HttpRequest.BodyPublishers.ofString(body))
         .build()
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
-    println("[CREATEUSER] <$response> ${response.body()}")
+    println("[CREATEBOARD] <$response> ${response.body()}")
     return if (response.statusCode() == 200) response.body() else ""
 }
 
-fun updateUser(username: String, password: String): String {
-    val body = "{\"name\": \"$username\", \"password\": \"$password\"}"
+fun updateBoard(boardname: String, json: String): String {
+    val body = "{\"name\": \"$boardname\", \"json\": \"$json\"}"
     val client = HttpClient.newBuilder().build()
     val request = HttpRequest.newBuilder()
-        .uri(URI.create("$baseURL/login/update"))
+        .uri(URI.create("$baseURL/draw/update"))
         .header("Content-Type", "application/json")
         .header("Cookie", cookieValue)
         .method("PATCH", HttpRequest.BodyPublishers.ofString(body))
         .build()
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
-    println("[UPDATEUSER] <$response> ${response.body()}")
+    println("[UPDATEBOARD] <$response> ${response.body()}")
     return if (response.statusCode() == 200) response.body() else ""
 }
 
-fun deleteUser(): String {
+fun deleteBoard(): String {
     val client = HttpClient.newBuilder().build()
     val request = HttpRequest.newBuilder()
-        .uri(URI.create("$baseURL/login/delete"))
+        .uri(URI.create("$baseURL/draw/delete"))
         .header("Content-Type", "application/json")
         .header("Cookie", cookieValue)
         .DELETE()
         .build()
 
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-    println("[DELETEUSER] <$response> ${response.body()}")
+    println("[DELETEBOARD] <$response> ${response.body()}")
     return if (response.statusCode() == 200) response.body() else ""
 }
 
 /*Account*/
 
-fun login(username: String, password: String): String {
-    val body = "{\"name\": \"$username\", \"password\": \"$password\"}"
+fun Blogin(boardname: String, json: String): String {
+    val body = "{\"name\": \"$boardname\", \"json\": \"$json\"}"
     val client = HttpClient.newBuilder().build()
     val request = HttpRequest.newBuilder()
-        .uri(URI.create("$baseURL/login"))
+        .uri(URI.create("$baseURL/draw/login"))
         .header("Content-Type", "application/json")
         .POST(HttpRequest.BodyPublishers.ofString(body))
         .build()
@@ -76,10 +76,10 @@ fun login(username: String, password: String): String {
     return if (response.statusCode() == 200) response.body() else ""
 }
 
-fun logout(): String {
+fun Blogout(): String {
     val client = HttpClient.newBuilder().build()
     val request = HttpRequest.newBuilder()
-        .uri(URI.create("$baseURL/login/logout"))
+        .uri(URI.create("$baseURL/draw/logout"))
         .header("Content-Type", "application/json")
         .POST(HttpRequest.BodyPublishers.ofString(""))
         .build()
@@ -90,29 +90,29 @@ fun logout(): String {
 }
 
 
-fun getUsers(): String {
+fun getBoards(): String {
     val client = HttpClient.newBuilder().build()
     val request = HttpRequest.newBuilder()
-        .uri(URI.create("$baseURL/login/users"))
+        .uri(URI.create("$baseURL/draw/boards"))
         .header("Content-Type", "application/json")
         .GET()
         .build()
 
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-    println("[GETUSERS] <$response> ${response.body()}")
+    println("[GETBOARDS] <$response> ${response.body()}")
     return if (response.statusCode() == 200) response.body() else ""
 
 }
 
-fun getSingleUser(): String {
+fun getSingleBoard(): String {
     val client = HttpClient.newBuilder().build()
     val request = HttpRequest.newBuilder()
-        .uri(URI.create("$baseURL/login/user"))
+        .uri(URI.create("$baseURL/draw/board"))
         .header("Content-Type", "application/json")
         .GET()
         .build()
 
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-    println("[GETSINGLEUSER] <$response> ${response.body()}")
+    println("[GETSINGLEBOARD] <$response> ${response.body()}")
     return if (response.statusCode() == 200) response.body() else ""
 }

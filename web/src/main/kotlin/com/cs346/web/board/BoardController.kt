@@ -38,7 +38,7 @@ class BoardController(var boardService: BoardService) {
         return boardService.createBoard(board)
     }
 
-    @PostMapping()
+    @PostMapping(value = ["/login"])
     fun login(@RequestBody req: LoginDTO, response: HttpServletResponse): ResponseEntity<Any> {
         var brd: Board? = boardService.login(req.name) ?: return ResponseEntity.badRequest().body("Board not found")
 

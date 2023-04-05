@@ -22,9 +22,13 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import wb.frontend.*
 import java.io.*
+import java.security.Timestamp
 
 @Serializable
 class TypeWrapper(val type: String, val string: String)
+
+@Serializable
+class TimeSerializer(val time: Long, val whiteboard: List<String>)
 
 @Serializable
 data class Window(val width: Double, val height: Double, val x: Double, val y: Double)
@@ -139,10 +143,11 @@ class Main : Application() {
                 else -> print("not defined")
             }
         }
-
+        val timestampedFile = TimeSerializer(System.currentTimeMillis(), elements)
         val file = File(filename)
         val writer = BufferedWriter(FileWriter(file))
-        writer.write(objectMapper.writeValueAsString(elements))
+//        writer.write(objectMapper.writeValueAsString(elements))
+        writer.write(Json.encodeToString(timestampedFile))
         writer.close()
         print("done")
     }
@@ -155,9 +160,10 @@ class Main : Application() {
         // we need smth like:
         // unserializeCanvas(data, rootcanvas)
         // to replace the bottom section
-
+        val timeFile = Json.decodeFromString<TimeSerializer>(data)
+        // timeFile.time to see the timestamp
         rootcanvas.children.removeAll(rootcanvas.children)
-        var elements = Json.decodeFromString<List<String>?>(data)
+        var elements = timeFile.whiteboard
         if (elements != null) {
             for (wrapper in elements) {
                 var element = Json.decodeFromString<TypeWrapper>(wrapper)

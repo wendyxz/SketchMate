@@ -26,6 +26,7 @@ class WebApplication(@Autowired val jdbcTemplate: JdbcTemplate): CommandLineRunn
     }
     override fun run(vararg args:String?) {
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS users (id text PRIMARY KEY, name VARCHAR(20), password VARCHAR(30));")
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS boards (id text PRIMARY KEY, name VARCHAR(20), json TEXT);")
     }
 }
 

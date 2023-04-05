@@ -67,10 +67,12 @@ class ToolMenu(
         // Shapes: Rectangle, Circle
         shapeOption.items.addAll(rectangle, circle)
         rectangle.setOnAction {
-//            setCursorType(CursorType.rectangle)
             createShape("r")
         }
-        circle.setOnAction { createShape("c")}
+        circle.setOnAction {
+            createShape("c")
+        }
+        shapeOption.setOnMouseClicked { setCursorType(CursorType.cursor) }
 
         // Tool Menu
         items.addAll(cursorOption, textOption, penOption, shapeOption, eraserOption)

@@ -62,6 +62,10 @@ class PathTools(Canvas: Pane) {
         } else {
             path.strokeDashArray.clear()
         }
+
+        if(penTools.eraser)
+            path.strokeDashArray.clear()
+
         moveTo.x = max(penTools.strokeWidth * 0.5, event.x)
         moveTo.y = max(penTools.strokeWidth * 0.5, event.y)
         path.elements.add(moveTo)

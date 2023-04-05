@@ -37,7 +37,7 @@ fun addSubmenu(shape :Shape) {
     var borderPicker = ColorPicker(shape.stroke as Color?)
     borderPicker.prefWidth = 50.0;
     var sizeComboBox = ComboBox<Double>()
-    sizeComboBox.items.addAll(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0)
+    sizeComboBox.items.addAll(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0)
     sizeComboBox.selectionModel.select(4.0)
     sizeComboBox.prefWidth = 10.0
 
@@ -90,8 +90,8 @@ class ShapeTools(resizableCanvas: Pane) {
     }
 
     private fun onPressedEvent(shape: Shape, event: MouseEvent) {
-        if (cursorType == CursorType.pen) return
-        if (cursorType == CursorType.eraser){
+        if (cursor == CursorType.pen) return
+        if (cursor == CursorType.eraser){
             canvas.children.remove(shape)
             return
         }
@@ -103,13 +103,13 @@ class ShapeTools(resizableCanvas: Pane) {
     }
 
     private fun onDraggedEvent(shape: Shape, event: MouseEvent) {
-        if (cursorType == CursorType.pen) return
+        if (cursor == CursorType.pen) return
         shape.translateX = max(-shape.layoutBounds.minX, event.sceneX - cursorAnchorX)
         shape.translateY = max(-shape.layoutBounds.minY,event.sceneY - cursorAnchorY)
     }
 
     private fun onReleasedEvent(shape: Shape, event: MouseEvent) {
-        if (cursorType == CursorType.pen) return
+        if (cursor == CursorType.pen) return
 
         shape.layoutX = max(-shape.layoutBounds.minX, event.sceneX - mouseOffsetX)
         shape.layoutY = max(-shape.layoutBounds.minY, event.sceneY - mouseOffsetY)

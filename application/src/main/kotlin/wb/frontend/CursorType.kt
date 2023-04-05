@@ -9,5 +9,5 @@ enum class CursorType {
     eraser
 }
 
-var cursorType = CursorType.cursor
+var cursor = CursorType.cursor
 

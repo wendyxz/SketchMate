@@ -33,13 +33,25 @@ class TimeSerializer(val time: Long, val whiteboard: List<String>)
 @Serializable
 data class Window(val width: Double, val height: Double, val x: Double, val y: Double)
 
-
 var root = BorderPane()
 val rootcanvas = Pane()
+val shapeTools = ShapeTools(rootcanvas)
+val textTools = TextTools(rootcanvas)
+val pathTools = PathTools(rootcanvas)
 var autoSyncTimeStamp = -1L
-
+fun setCursorType(ctype: CursorType) {
+    cursor = ctype
+    when (cursor) {
+        CursorType.cursor -> pathTools.cancelPath()
+        CursorType.textbox -> textTools.createTextBox()
+        CursorType.pen -> pathTools.initPath()
+        CursorType.eraser -> {
+            pathTools.initPath()
+        }
+    }
+}
 // Serializer/Deserializer
-private val objectMapper = jacksonObjectMapper().registerModule(SimpleModule()
+val objectMapper = jacksonObjectMapper().registerModule(SimpleModule()
     .addSerializer(Rectangle::class.java, RectangleSerializer())
     .addDeserializer(Rectangle::class.java, RectangleDeserializer())
     .addSerializer(Circle::class.java, CircleSerializer())
@@ -117,13 +129,13 @@ fun load(filename: String) {
                 "VBox" -> {
                     rootcanvas.children.add(objectMapper.readValue(element.string, VBox::class.java))
                 }
-                else -> print("otherwise")
+                else -> error("LOAD ERROR !!! ")
             }
         }
     }
 
 
-    println("decoded")
+    // println("decoded")
 }
 
 
@@ -131,11 +143,6 @@ fun load(filename: String) {
 class Main : Application() {
     private var backgroundFill = BackgroundFill(Color.WHITE, null, null)
     private var background = Background(backgroundFill)
-    private var shapeTools = ShapeTools(rootcanvas)
-    private var textTools = TextTools(rootcanvas)
-    private var pathTools = PathTools(rootcanvas)
-
-
     
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
@@ -178,32 +185,8 @@ class Main : Application() {
         } else {
             shapeTools.createCircle()
         }
-
     }
 
-    private fun setCursorType(ctype: CursorType) {
-        cursorType = ctype
-        when (cursorType) {
-            CursorType.cursor -> pathTools.cancelPath()
-            CursorType.textbox -> textTools.createTextBox()
-            CursorType.pen -> pathTools.initPath()
-            CursorType.rectangle -> {
-                pathTools.cancelPath()
-                shapeTools.createRectangle()
-            }
-
-            CursorType.circle -> {
-                pathTools.cancelPath()
-                shapeTools.createCircle()
-            }
-
-            CursorType.eraser -> {
-                pathTools.initPath()
-                //pathTools.cancelPath()
-                // shapeTools.createRectangle()
-            };
-        }
-    }
 
     private fun setBackgroundColour(color: Color) {
         rootcanvas.background = Background(BackgroundFill(color, null, null))

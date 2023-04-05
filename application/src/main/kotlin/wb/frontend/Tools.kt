@@ -13,7 +13,7 @@ private fun onPressedEvent(node: Node, event: MouseEvent) {
     println("pressed")
 //    println("${event.x} ${event.y}")
 //    println("${node.layoutX} ${node.layoutY}")
-    if (cursorType == CursorType.pen) return
+    if (cursor == CursorType.pen) return
     if (event.isSecondaryButtonDown) return
     cursorAnchorX = event.sceneX
     cursorAnchorY = event.sceneY
@@ -24,7 +24,7 @@ private fun onDraggedEvent(node: Node, event: MouseEvent) {
 //    println("A ${event.x} ${event.y}")
 //    println("B ${event.sceneX} ${event.sceneY}")
 //    println("C ${node.layoutX} ${node.layoutY}")
-    if (cursorType == CursorType.pen) return
+    if (cursor == CursorType.pen) return
     if (event.isSecondaryButtonDown) return
     node.translateX = event.getSceneX()-cursorAnchorX
     node.translateY = event.getSceneY()-cursorAnchorY
@@ -32,7 +32,7 @@ private fun onDraggedEvent(node: Node, event: MouseEvent) {
 private fun onReleasedEvent(node: Node, event: MouseEvent) {
 //    println("${event.x} ${event.y}")
 //    println("${node.layoutX} ${node.layoutY}")
-    if (cursorType == CursorType.pen) return
+    if (cursor == CursorType.pen) return
     if (event.isSecondaryButtonDown) return
     node.layoutX = event.getSceneX() - mouseOffsetX
     node.layoutY = event.getSceneY() - mouseOffsetY

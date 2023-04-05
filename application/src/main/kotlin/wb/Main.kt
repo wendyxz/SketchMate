@@ -32,15 +32,38 @@ class TimeSerializer(val time: Long, val whiteboard: List<String>)
 
 @Serializable
 data class Window(val width: Double, val height: Double, val x: Double, val y: Double)
+fun setCursorType(ctype: CursorType) {
+    cursor = ctype
+    when (cursor) {
+        CursorType.cursor -> pathTools.cancelPath()
+        CursorType.textbox -> textTools.createTextBox()
+        CursorType.pen -> pathTools.initPath()
 
+        CursorType.eraser -> {
+            pathTools.initPath()
+            //pathTools.cancelPath()
+            // shapeTools.createRectangle()
+        };
+    }
+}
+
+val rootcanvas = Pane()
+val shapeTools = ShapeTools(rootcanvas)
+val textTools = TextTools(rootcanvas)
+val pathTools = PathTools(rootcanvas)
 class Main : Application() {
-    private val rootcanvas = Pane()
+//    private val rootcanvas = Pane()
+
+    //    private var shapeTools = ShapeTools(rootcanvas)
+//    private var textTools = TextTools(rootcanvas)
+//    private var pathTools = PathTools(rootcanvas)
     private var root = BorderPane()
+
     private var backgroundFill = BackgroundFill(Color.WHITE, null, null)
     private var background = Background(backgroundFill)
-    private var shapeTools = ShapeTools(rootcanvas)
-    private var textTools = TextTools(rootcanvas)
-    private var pathTools = PathTools(rootcanvas)
+//    private var shapeTools = ShapeTools(rootcanvas)
+//    private var textTools = TextTools(rootcanvas)
+//    private var pathTools = PathTools(rootcanvas)
     // Serializer/Deserializer
     private val objectMapper = jacksonObjectMapper().registerModule(SimpleModule()
         .addSerializer(Rectangle::class.java, RectangleSerializer())
@@ -96,29 +119,7 @@ class Main : Application() {
 
     }
 
-    private fun setCursorType(ctype: CursorType) {
-        cursorType = ctype
-        when (cursorType) {
-            CursorType.cursor -> pathTools.cancelPath()
-            CursorType.textbox -> textTools.createTextBox()
-            CursorType.pen -> pathTools.initPath()
-            CursorType.rectangle -> {
-                pathTools.cancelPath()
-                shapeTools.createRectangle()
-            }
 
-            CursorType.circle -> {
-                pathTools.cancelPath()
-                shapeTools.createCircle()
-            }
-
-            CursorType.eraser -> {
-                pathTools.initPath()
-                //pathTools.cancelPath()
-                // shapeTools.createRectangle()
-            };
-        }
-    }
 
     private fun setBackgroundColour(color: Color) {
         rootcanvas.background = Background(BackgroundFill(color, null, null))

@@ -8,6 +8,7 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Rectangle
+import wb.setCursorType
 import kotlin.math.max
 
 /**
@@ -38,26 +39,12 @@ interface OnDragResizeEventListener {
 }
 class OnDragResizeEL: OnDragResizeEventListener {
     override fun onDrag(node: Node, x: Double, y: Double, h: Double, w: Double) {
-        /*
-    // TODO find generic way to get parent width and height of any node
-    // can perform out of bounds check here if you know your parent size
-    if (x > width - w ) x = width - w;
-    if (y > height - h) y = height - h;
-    if (x < 0) x = 0;
-    if (y < 0) y = 0;
-    */
+
         setNodeSize(node, x, y, h, w)
     }
 
     override fun onResize(node: Node, x: Double, y: Double, h: Double, w: Double) {
-        /*
-    // TODO find generic way to get parent width and height of any node
-    // can perform out of bounds check here if you know your parent size
-    if (w > width - x) w = width - x;
-    if (h > height - y) h = height - y;
-    if (x < 0) x = 0;
-    if (y < 0) y = 0;
-    */
+
         setNodeSize(node, x, y, h, w)
     }
 
@@ -106,6 +93,7 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
     }
 
     protected fun mouseReleased(event: MouseEvent) {
+
         if (state == S.DRAG) {
             node.layoutX = max(-node.layoutBounds.minX, event.sceneX - offsetX)
             node.layoutY = max(-node.layoutBounds.minY, event.sceneY - offsetY)
@@ -137,7 +125,7 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
     }
 
     protected fun mouseDragged(event: MouseEvent) {
-        if (cursorType == CursorType.eraser){
+        if (cursor == CursorType.eraser){
             canvas?.children?.remove(node)
             return
         }
@@ -195,15 +183,12 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
     }
 
     protected fun mousePressed(event: MouseEvent) {
+        cursor = CursorType.cursor
 //        print(event.x)
         nodeX = nodeX()
         nodeY = nodeY()
         nodeH = nodeH()
         nodeW = nodeW()
-//        print(nodeX)
-//        print(nodeY)
-//        print(nodeH)
-//        print(nodeW)
         state = if (isInResizeZone(event)) {
             //setNewInitialEventCoordinates(event)
             clickX = event.sceneX
@@ -227,14 +212,6 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
         }
     }
 
-    private fun setNewInitialEventCoordinates(event: MouseEvent) {
-        nodeX = nodeX()
-        nodeY = nodeY()
-        nodeH = nodeH()
-        nodeW = nodeW()
-        clickX = event.x
-        clickY = event.y
-    }
 
     private fun isInResizeZone(event: MouseEvent): Boolean {
         return (isLeftResizeZone(event) || isRightResizeZone(event)
@@ -312,13 +289,17 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
         fun makeResizable(node: Node, canva: Pane) {
             canvas = canva
             val resizer = DragResize(node, null)
-            node.onMousePressed = EventHandler { event -> resizer.mousePressed(event) }
-            node.onMouseDragged = EventHandler { event -> resizer.mouseDragged(event) }
-            node.onMouseMoved = EventHandler { event -> resizer.mouseOver(event) }
-            node.onMouseReleased = EventHandler { event -> resizer.mouseReleased(event) }
+            node.onMousePressed = EventHandler { event ->
+                if (cursor != CursorType.pen) {
+                resizer.mousePressed(event)}}
+            node.onMouseDragged = EventHandler { event -> if (cursor != CursorType.pen) resizer.mouseDragged(event) }
+            node.onMouseDragged = EventHandler { event -> if (cursor != CursorType.pen) resizer.mouseDragged(event) }
+            node.onMouseMoved = EventHandler { event -> if (cursor != CursorType.pen) resizer.mouseOver(event) }
+            node.onMouseReleased = EventHandler { event -> if (cursor != CursorType.pen) resizer.mouseReleased(event) }
         }
 
         private fun getCursorForState(state: S): Cursor {
+            if (cursor == CursorType.pen) {return Cursor.DEFAULT}
             return when (state) {
                 S.NW_RESIZE -> Cursor.NW_RESIZE
                 S.SW_RESIZE -> Cursor.SW_RESIZE

@@ -4,7 +4,7 @@ interface BoardDAO {
 
     fun getAllBoards(): List<Board>?
 
-    fun findBoard(id: String): Board?
+    fun findBoard(id: String): String?
 
     fun login(name: String): Board?
 

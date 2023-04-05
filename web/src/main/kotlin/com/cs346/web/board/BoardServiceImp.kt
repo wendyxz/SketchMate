@@ -8,7 +8,7 @@ class BoardServiceImpl(val BoardDao: BoardDAO) : BoardService {
         return BoardDao.getAllBoards()
     }
 
-    override fun findBoard(id: String): Board? {
+    override fun findBoard(id: String): String? {
         return BoardDao.findBoard(id)
     }
 

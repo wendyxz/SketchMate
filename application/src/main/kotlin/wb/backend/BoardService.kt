@@ -6,7 +6,7 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
 private val baseURL = "http://localhost:8080"
-private var cookieValue = ""
+var cookieValueB = ""
 
 var boardId = ""
 var boardname = ""
@@ -34,7 +34,7 @@ fun updateBoard(boardname: String, json: String): String {
     val request = HttpRequest.newBuilder()
         .uri(URI.create("$baseURL/draw/update"))
         .header("Content-Type", "application/json")
-        .header("Cookie", cookieValue)
+        .header("Cookie", cookieValueB)
         .method("PATCH", HttpRequest.BodyPublishers.ofString(body))
         .build()
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
@@ -48,7 +48,7 @@ fun deleteBoard(): String {
     val request = HttpRequest.newBuilder()
         .uri(URI.create("$baseURL/draw/delete"))
         .header("Content-Type", "application/json")
-        .header("Cookie", cookieValue)
+        .header("Cookie", cookieValueB)
         .DELETE()
         .build()
 
@@ -70,7 +70,7 @@ fun Blogin(boardname: String, json: String): String {
     println("[LOGIN] $request")
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
     val setCookie = response.headers().map()["set-cookie"]
-    cookieValue = setCookie?.get(0)?.substringBefore(';').toString()
+    cookieValueB = setCookie?.get(0)?.substringBefore(';').toString()
 
     println("[LOGIN] <$response> ${response.body()}")
     return if (response.statusCode() == 200) response.body() else ""
@@ -109,6 +109,7 @@ fun getSingleBoard(): String {
     val request = HttpRequest.newBuilder()
         .uri(URI.create("$baseURL/draw/board"))
         .header("Content-Type", "application/json")
+        .header("Cookie", cookieValueB)
         .GET()
         .build()
 

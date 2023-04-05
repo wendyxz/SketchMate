@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.*
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
+
 //import jakarta.xml.bind.DatatypeConverter as DatatypeConverter
 
 @RestController
@@ -32,7 +33,7 @@ class BoardController(var boardService: BoardService) {
     }
 
     // POST
-    // http://localhost:8080/draw/create?id={id}&name={name}&password={password}
+    // http://localhost:8080/draw/create?id={id}&name={name}&json={json}
     @PostMapping(value = ["/create"])
     fun createBoard(@RequestBody board: Board): Int? {
         return boardService.createBoard(board)

@@ -4,8 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
-import java.sql.Array
-import java.sql.Connection
 import java.util.*
 
 @Repository
@@ -23,16 +21,12 @@ class BoardDAOImpl(val jdbcTemplate: JdbcTemplate) : BoardDAO {
         return results
     }
 
-    override fun findBoard(id: String): Board? {
-        var rowMapper: RowMapper<Board> = RowMapper<Board> { resultSet: ResultSet, _: Int ->
-            Board(
-                resultSet.getString("id"),
-                resultSet.getString("name"), resultSet.getString("json")
-            )
-        }
-        val sql = "SELECT id, name, json FROM boards WHERE id=?"
-        var result = jdbcTemplate?.queryForObject(sql, rowMapper, id)
-        return result
+    override fun findBoard(id: String): String? {
+//        var rowMapper: RowMapper<String> = RowMapper<String> { resultSet: ResultSet, _: Int ->
+//            String
+//        }
+        val sql = "SELECT json FROM boards WHERE id=?"
+        return jdbcTemplate?.queryForObject(sql, String::class.java, id)
     }
 
     override fun login(name: String): Board? {

@@ -6,6 +6,9 @@ import javafx.scene.layout.GridPane
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.util.Callback
+import java.util.*
+import kotlin.concurrent.timerTask
+import javafx.application.Platform
 
 //this is from the register dialog box
 class Credential(val username: String, val password: String)
@@ -65,6 +68,13 @@ class TopMenu(
         fileControllers(save, load)
 
         menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
+
+        val autoSync: Timer = Timer()
+        autoSync.scheduleAtFixedRate(timerTask() {
+            Platform.runLater{
+                load("data.json")
+            }
+        }, 100, 100)
     }
 
     private fun fileControllers(

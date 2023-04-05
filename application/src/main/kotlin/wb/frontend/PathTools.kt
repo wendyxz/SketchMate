@@ -7,6 +7,7 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
 import javafx.scene.shape.*
 import javafx.scene.transform.Scale
+import wb.save
 import kotlin.math.max
 
 class PathTools(Canvas: Pane) {
@@ -81,6 +82,8 @@ class PathTools(Canvas: Pane) {
         path.transforms.add(scale)
 
         if(penTools.eraser) eraseFor()
+
+        save("data.json")
     }
 
     private fun eraseFor() {
@@ -144,11 +147,11 @@ class PathTools(Canvas: Pane) {
     }
 
     private fun eraseShape(shape: Shape): Boolean{
-        println("start")
-        println(shape)
-        println("layout ${shape.layoutX} ${shape.layoutY}")
-        println("translate ${shape.translateX} ${shape.translateY}")
-        println("finish")
+//        println("start")
+//        println(shape)
+//        println("layout ${shape.layoutX} ${shape.layoutY}")
+//        println("translate ${shape.translateX} ${shape.translateY}")
+//        println("finish")
 
         if(shape is Rectangle){
             val smallerX = shape.x + shape.layoutX

@@ -7,6 +7,7 @@ import javafx.scene.canvas.Canvas
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.VBox
 import javafx.scene.shape.Rectangle
+import wb.save
 
 class DragResizeMod private constructor(node: Node, listener: OnDragResizeEventListener?) {
     interface OnDragResizeEventListener {

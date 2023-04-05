@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import javafx.scene.transform.Scale
+import wb.save
 import java.util.*
 
 
@@ -106,11 +107,12 @@ class TextTools(resizableCanvas: Pane) {
 
         deleteButton.setOnAction { canvas.children.remove(group) }
 
-        // Yuki Please Add to This
         saveButton.setOnAction {
             // Hide the controls box
             controlsBox.isVisible = false
             drag.isVisible = false
+
+            save("data.json")
 
             // Add an event listener to show the controls box if the text area is clicked
             textBox.setOnMouseClicked {

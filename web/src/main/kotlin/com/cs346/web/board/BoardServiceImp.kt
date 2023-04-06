@@ -20,7 +20,7 @@ class BoardServiceImpl(val BoardDao: BoardDAO) : BoardService {
         return BoardDao.createBoard(board)
     }
 
-    override fun updateBoard(id: String, board: Board): Int? {
+    override fun updateBoard(id: String, board: LoginDTO): Int? {
         return BoardDao.updateBoard(id, board)
     }
 

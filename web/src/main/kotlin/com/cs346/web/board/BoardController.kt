@@ -80,7 +80,8 @@ class BoardController(var boardService: BoardService) {
     // http://localhost:8080/draw/update/{id}
     @PatchMapping(value = ["/update"])
     fun updateBoard(
-        @RequestBody board: Board,
+        @RequestBody req: LoginDTO,
+//        @RequestBody board: Board,
         @CookieValue("jwt") jwt: String
     ): ResponseEntity<Any>? {
         try {
@@ -89,7 +90,7 @@ class BoardController(var boardService: BoardService) {
             }
 //            val body = Jwts.parser().setSigningKey("secret").parseClaimsJws(jwt).body
 //            var suc = boardService.updateBoard(body.issuer, board)
-            var suc = boardService.updateBoard(jwt, board)
+            var suc = boardService.updateBoard(jwt, req)
             return ResponseEntity.ok(suc)
         } catch (e: Exception) {
             return ResponseEntity.status(401).body("Unauthorized")
@@ -97,8 +98,8 @@ class BoardController(var boardService: BoardService) {
     }
 
     @PatchMapping(value = ["/update/{id}"])
-    fun updateBoard(@PathVariable id: String, @RequestBody board: Board): ResponseEntity<Any>? {
-        return ResponseEntity.ok(boardService.updateBoard(id, board))
+    fun updateBoard(@PathVariable id: String, req: LoginDTO): ResponseEntity<Any>? {
+        return ResponseEntity.ok(boardService.updateBoard(id, req))
 
     }
 

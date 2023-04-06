@@ -44,7 +44,7 @@ class BoardDAOImpl(val jdbcTemplate: JdbcTemplate) : BoardDAO {
         return jdbcTemplate?.update(sql, UUID.randomUUID().toString(), board.name, board.json)
     }
 
-    override fun updateBoard(id: String, board: Board): Int? {
+    override fun updateBoard(id: String, board: LoginDTO): Int? {
         val sql = "UPDATE boards SET json=? WHERE id=?"
         return jdbcTemplate?.update(sql, board.json, id)
     }

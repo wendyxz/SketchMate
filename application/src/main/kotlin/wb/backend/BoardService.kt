@@ -29,7 +29,11 @@ fun createBoard(boardname: String, json: String): String {
 }
 
 fun updateBoard(boardname: String, json: String): String {
-    val body = "{\"name\": \"$boardname\", \"json\": \"$json\"}"
+//fun updateBoard(json: String): String {
+//    val body = "{\"name\": \"$boardname\", \"json\": \"$json\"}"
+    val body = "{\"name\": \"$boardname\", \"json\": $json}"
+    println("!!!!!!!!!!!")
+    println(body)
     val client = HttpClient.newBuilder().build()
     val request = HttpRequest.newBuilder()
         .uri(URI.create("$baseURL/draw/update"))
@@ -40,7 +44,7 @@ fun updateBoard(boardname: String, json: String): String {
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
     println("[UPDATEBOARD] <$response> ${response.body()}")
-    return if (response.statusCode() == 200) response.body() else ""
+    return if (response.statusCode() == 200) "Success" else ""
 }
 
 fun deleteBoard(): String {
@@ -67,12 +71,12 @@ fun Blogin(boardname: String, json: String): String {
         .header("Content-Type", "application/json")
         .POST(HttpRequest.BodyPublishers.ofString(body))
         .build()
-    println("[LOGIN] $request")
+    println("[BLOGIN] $request")
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
     val setCookie = response.headers().map()["set-cookie"]
     cookieValueB = setCookie?.get(0)?.substringBefore(';').toString()
 
-    println("[LOGIN] <$response> ${response.body()}")
+    println("[BLOGIN] <$response> ${response.body()}")
     return if (response.statusCode() == 200) response.body() else ""
 }
 

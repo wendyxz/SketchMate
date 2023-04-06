@@ -90,6 +90,7 @@ class TopMenu(
                 println("New file name: $fileName")
                 try {
                     println(wb.backend.createBoard(fileName, ""))
+                    println(wb.backend.Blogin(fileName, ""))
                     wb.backend.boardname = fileName
                     updateTitle(stage)
                     wb.rootcanvas.children.clear()
@@ -120,6 +121,8 @@ class TopMenu(
             result.ifPresent { selection ->
                 if (selection == "local") {
                     load("data.json")
+                } else {
+                    load("remote")
                 }
                 println("Load selection: $selection")
             }

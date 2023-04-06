@@ -25,6 +25,10 @@ class TimeSerializer(val time: Long, val whiteboard: List<String>)
 @Serializable
 data class Window(val width: Double, val height: Double, val x: Double, val y: Double)
 
+@Serializable
+class UpdateBoardRequestBody(val name: String, val json: TypeWrapper)
+
+
 var root = BorderPane()
 val rootcanvas = Pane()
 val shapeTools = ShapeTools(rootcanvas)
@@ -61,7 +65,7 @@ fun save(filename: String) {
     // val data = serializeCanvas(rootcanvas)
     val elements = mutableListOf<String>()
     for (element in rootcanvas.children) {
-        println(element)
+//        println(element)
         when (element) {
             is Rectangle -> elements.add(
                 Json.encodeToString(
@@ -105,8 +109,10 @@ fun save(filename: String) {
     } else {
         try {
             // todo: add some output to this
-            val str = wb.backend.updateBoard(wb.backend.boardname, Json.encodeToString(timestampedFile))
-            println(str)
+            val escapedJsonString = Json.encodeToString(timestampedFile).replace("\\", "")
+            val escapedJson = Json.encodeToString(escapedJsonString).replace("\"\"", "\"\\\"")
+
+            val str = wb.backend.updateBoard(wb.backend.boardname, escapedJson)
             when (str) {
                 "Success" -> {}
                 else -> {

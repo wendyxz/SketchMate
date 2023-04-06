@@ -10,7 +10,7 @@ interface BoardService {
 
     fun createBoard(board: Board): Int?
 
-    fun updateBoard(id: String, board: Board): Int?
+    fun updateBoard(id: String, board: LoginDTO): Int?
 
     fun deleteBoard(id: String): Int?
 }

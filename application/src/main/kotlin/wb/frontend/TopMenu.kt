@@ -101,7 +101,7 @@ class TopMenu(
         }
 
         fileSave.setOnAction {
-            val choiceDialog = ChoiceDialog("local", "local", "remote")
+            val choiceDialog = ChoiceDialog("local", "local", "remote ${wb.backend.boardname}")
             choiceDialog.headerText = "Select save location:"
             val result = choiceDialog.showAndWait()
             result.ifPresent { location ->
@@ -114,7 +114,7 @@ class TopMenu(
         }
 
         fileLoad.setOnAction {
-            val choices = listOf("local", "name1", "name2", "name3")
+            val choices = listOf("local", "remote ${wb.backend.boardname}")
             val choiceDialog = ChoiceDialog(choices[0], choices)
             choiceDialog.headerText = "Select file to load:"
             val result = choiceDialog.showAndWait()

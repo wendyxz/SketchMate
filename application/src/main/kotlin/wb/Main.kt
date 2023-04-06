@@ -114,7 +114,9 @@ fun save(filename: String) {
 
             val str = wb.backend.updateBoard(wb.backend.boardname, escapedJson)
             when (str) {
-                "Success" -> {}
+                "Success" -> {
+                    showWarnDialog("Success!", "Successful Save to ${wb.backend.boardname}!")
+                }
                 else -> {
                     // this should be not finding such user case
                     showWarnDialog("Board not found!", "Please check and try again!")
@@ -140,20 +142,22 @@ fun load(filename: String) {
     } else {
         try {
             // todo: add some output to this
-            println("Remote Loading!")
-            val str = wb.backend.getSingleBoard()
-            println(str)
-            when (str) {
-                "Success" -> {}
-                else -> {
+            data = wb.backend.getSingleBoard()
+            data = wb.helper.processJsonString(data)
+            println("!!!!!!!!!!!!!!!!!")
+            println("!!!!!!!!!!!!!!!!!")
+            println(data)
+            when (data) {
+                "" -> {
                     // this should be not finding such user case
                     showWarnDialog("Board not found!", "Please check and try again!")
+                    return
                 }
             }
-
         } catch (e: Exception) {
             e.stackTrace.forEach { println(it) }
             showWarnDialog("Error", e.toString())
+            return
         }
     }
     // print("reader closed")

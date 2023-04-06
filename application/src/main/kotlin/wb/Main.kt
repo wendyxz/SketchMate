@@ -3,18 +3,11 @@ package wb
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import javafx.application.Application
-import javafx.geometry.Pos
-import javafx.scene.Scene
-import javafx.scene.control.Button
-import javafx.scene.control.Label
-import javafx.scene.control.PasswordField
-import javafx.scene.control.TextField
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Path
 import javafx.scene.shape.Rectangle
-import javafx.scene.text.Text
 import javafx.stage.Stage
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -22,7 +15,6 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import wb.frontend.*
 import java.io.*
-import java.security.Timestamp
 
 @Serializable
 class TypeWrapper(val type: String, val string: String)
@@ -32,6 +24,10 @@ class TimeSerializer(val time: Long, val whiteboard: List<String>)
 
 @Serializable
 data class Window(val width: Double, val height: Double, val x: Double, val y: Double)
+
+@Serializable
+class UpdateBoardRequestBody(val name: String, val json: TypeWrapper)
+
 
 var root = BorderPane()
 val rootcanvas = Pane()
@@ -50,32 +46,52 @@ fun setCursorType(ctype: CursorType) {
         }
     }
 }
+
 // Serializer/Deserializer
-val objectMapper = jacksonObjectMapper().registerModule(SimpleModule()
-    .addSerializer(Rectangle::class.java, RectangleSerializer())
-    .addDeserializer(Rectangle::class.java, RectangleDeserializer())
-    .addSerializer(Circle::class.java, CircleSerializer())
-    .addDeserializer(Circle::class.java, CircleDeserializer())
-    .addSerializer(Path::class.java, PathSerializer())
-    .addDeserializer(Path::class.java, PathDeserializer())
-    .addSerializer(VBox::class.java, TextSerializer())
-    .addDeserializer(VBox::class.java, TextDeserializer()))
+val objectMapper = jacksonObjectMapper().registerModule(
+    SimpleModule()
+        .addSerializer(Rectangle::class.java, RectangleSerializer())
+        .addDeserializer(Rectangle::class.java, RectangleDeserializer())
+        .addSerializer(Circle::class.java, CircleSerializer())
+        .addDeserializer(Circle::class.java, CircleDeserializer())
+        .addSerializer(Path::class.java, PathSerializer())
+        .addDeserializer(Path::class.java, PathDeserializer())
+        .addSerializer(VBox::class.java, TextSerializer())
+        .addDeserializer(VBox::class.java, TextDeserializer())
+)
+
 fun save(filename: String) {
     // we need to write smth like:
     // val data = serializeCanvas(rootcanvas)
     val elements = mutableListOf<String>()
     for (element in rootcanvas.children) {
-        println(element)
+//        println(element)
         when (element) {
-            is Rectangle -> elements.add(Json.encodeToString(
-                TypeWrapper("Rectangle", objectMapper.writeValueAsString(element))))
-            is Circle -> elements.add(Json.encodeToString(
-                TypeWrapper("Circle", objectMapper.writeValueAsString(element))))
-            is Path -> elements.add(Json.encodeToString(
-                TypeWrapper("Path", objectMapper.writeValueAsString(element))))
+            is Rectangle -> elements.add(
+                Json.encodeToString(
+                    TypeWrapper("Rectangle", objectMapper.writeValueAsString(element))
+                )
+            )
+
+            is Circle -> elements.add(
+                Json.encodeToString(
+                    TypeWrapper("Circle", objectMapper.writeValueAsString(element))
+                )
+            )
+
+            is Path -> elements.add(
+                Json.encodeToString(
+                    TypeWrapper("Path", objectMapper.writeValueAsString(element))
+                )
+            )
+
             is VBox ->
-                elements.add(Json.encodeToString(
-                    TypeWrapper("VBox", objectMapper.writeValueAsString(element))))
+                elements.add(
+                    Json.encodeToString(
+                        TypeWrapper("VBox", objectMapper.writeValueAsString(element))
+                    )
+                )
+
             else -> print("not defined")
         }
     }
@@ -83,18 +99,67 @@ fun save(filename: String) {
     autoSyncTimeStamp = currentTime
 
     val timestampedFile = TimeSerializer(currentTime, elements)
-    val file = File(filename)
-    val writer = BufferedWriter(FileWriter(file))
+
+    if (filename != "remote") {
+        val file = File(filename)
+        val writer = BufferedWriter(FileWriter(file))
 //        writer.write(objectMapper.writeValueAsString(elements))
-    writer.write(Json.encodeToString(timestampedFile))
-    writer.close()
+        writer.write(Json.encodeToString(timestampedFile))
+        writer.close()
+    } else {
+        try {
+            // todo: add some output to this
+            val escapedJsonString = Json.encodeToString(timestampedFile).replace("\\", "")
+            val escapedJson = Json.encodeToString(escapedJsonString).replace("\"\"", "\"\\\"")
+
+            val str = wb.backend.updateBoard(wb.backend.boardname, escapedJson)
+            when (str) {
+                "Success" -> {
+                    showWarnDialog("Success!", "Successful Save to ${wb.backend.boardname}!")
+                }
+                else -> {
+                    // this should be not finding such user case
+                    showWarnDialog("Board not found!", "Please check and try again!")
+                }
+            }
+
+        } catch (e: Exception) {
+            e.stackTrace.forEach { println(it) }
+            showWarnDialog("Error", e.toString())
+        }
+    }
+
     print("done")
 }
+
 fun load(filename: String) {
-    val file = File(filename)
-    val reader = BufferedReader(FileReader(file))
-    val data = reader.readText()
-    reader.close()
+    var data = ""
+    if (filename != "remote") {
+        val file = File(filename)
+        val reader = BufferedReader(FileReader(file))
+        data = reader.readText()
+        reader.close()
+    } else {
+        try {
+            // todo: add some output to this
+            data = wb.backend.getSingleBoard()
+            data = wb.helper.processJsonString(data)
+            println("!!!!!!!!!!!!!!!!!")
+            println("!!!!!!!!!!!!!!!!!")
+            println(data)
+            when (data) {
+                "" -> {
+                    // this should be not finding such user case
+                    showWarnDialog("Board not found!", "Please check and try again!")
+                    return
+                }
+            }
+        } catch (e: Exception) {
+            e.stackTrace.forEach { println(it) }
+            showWarnDialog("Error", e.toString())
+            return
+        }
+    }
     // print("reader closed")
     // we need smth like:
     // unserializeCanvas(data, rootcanvas)
@@ -102,7 +167,7 @@ fun load(filename: String) {
     val timeFile = Json.decodeFromString<TimeSerializer>(data)
 
     val fileTime = timeFile.time
-    if(fileTime == autoSyncTimeStamp) return
+    if (fileTime == autoSyncTimeStamp) return
 
     autoSyncTimeStamp = fileTime
 
@@ -119,16 +184,19 @@ fun load(filename: String) {
                     DragResize.makeResizable(r, rootcanvas);
                     rootcanvas.children.add(r)
                 }
+
                 "Circle" -> {
                     val c = objectMapper.readValue(element.string, Circle::class.java)
                     addSubmenu(c)
                     DragResize.makeResizable(c, rootcanvas);
                     rootcanvas.children.add(c)
                 }
+
                 "Path" -> rootcanvas.children.add(objectMapper.readValue(element.string, Path::class.java))
                 "VBox" -> {
                     rootcanvas.children.add(objectMapper.readValue(element.string, VBox::class.java))
                 }
+
                 else -> error("LOAD ERROR !!! ")
             }
         }
@@ -139,11 +207,10 @@ fun load(filename: String) {
 }
 
 
-
 class Main : Application() {
     private var backgroundFill = BackgroundFill(Color.WHITE, null, null)
     private var background = Background(backgroundFill)
-    
+
     override fun start(stage: Stage) {
         stage.title = "WhiteBoard"
         val file = File("window.json")
@@ -180,7 +247,7 @@ class Main : Application() {
     }
 
     private fun createShape(shape: String) {
-        if (shape==="r") {
+        if (shape === "r") {
             shapeTools.createRectangle()
         } else {
             shapeTools.createCircle()

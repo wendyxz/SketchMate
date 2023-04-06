@@ -1,5 +1,6 @@
 package com.cs346.web.board
 
 data class LoginDTO(
-    val name: String
+    val name: String,
+    val json: String
 )

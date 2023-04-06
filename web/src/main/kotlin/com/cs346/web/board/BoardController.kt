@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.*
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
+
 //import jakarta.xml.bind.DatatypeConverter as DatatypeConverter
 
 @RestController
@@ -32,13 +33,13 @@ class BoardController(var boardService: BoardService) {
     }
 
     // POST
-    // http://localhost:8080/draw/create?id={id}&name={name}&password={password}
+    // http://localhost:8080/draw/create?id={id}&name={name}&json={json}
     @PostMapping(value = ["/create"])
     fun createBoard(@RequestBody board: Board): Int? {
         return boardService.createBoard(board)
     }
 
-    @PostMapping()
+    @PostMapping(value = ["/login"])
     fun login(@RequestBody req: LoginDTO, response: HttpServletResponse): ResponseEntity<Any> {
         var brd: Board? = boardService.login(req.name) ?: return ResponseEntity.badRequest().body("Board not found")
 
@@ -79,7 +80,8 @@ class BoardController(var boardService: BoardService) {
     // http://localhost:8080/draw/update/{id}
     @PatchMapping(value = ["/update"])
     fun updateBoard(
-        @RequestBody board: Board,
+        @RequestBody req: LoginDTO,
+//        @RequestBody board: Board,
         @CookieValue("jwt") jwt: String
     ): ResponseEntity<Any>? {
         try {
@@ -88,7 +90,7 @@ class BoardController(var boardService: BoardService) {
             }
 //            val body = Jwts.parser().setSigningKey("secret").parseClaimsJws(jwt).body
 //            var suc = boardService.updateBoard(body.issuer, board)
-            var suc = boardService.updateBoard(jwt, board)
+            var suc = boardService.updateBoard(jwt, req)
             return ResponseEntity.ok(suc)
         } catch (e: Exception) {
             return ResponseEntity.status(401).body("Unauthorized")
@@ -96,8 +98,8 @@ class BoardController(var boardService: BoardService) {
     }
 
     @PatchMapping(value = ["/update/{id}"])
-    fun updateBoard(@PathVariable id: String, @RequestBody board: Board): ResponseEntity<Any>? {
-        return ResponseEntity.ok(boardService.updateBoard(id, board))
+    fun updateBoard(@PathVariable id: String, req: LoginDTO): ResponseEntity<Any>? {
+        return ResponseEntity.ok(boardService.updateBoard(id, req))
 
     }
 

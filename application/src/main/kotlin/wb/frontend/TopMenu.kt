@@ -34,8 +34,8 @@ class TopMenu(
     private val themeMenu = Menu("Theme")
 
     // File sub-menu
-    private val fileNew = MenuItem("New File")
-    private val fileOpen = MenuItem("Open File")
+    private val fileNew = MenuItem("New Board")
+    private val fileOpen = MenuItem("Open Board")
     private val fileSave = MenuItem("Save")
     private val fileLoad = MenuItem("Load")
     private val fileExport = MenuItem("Export as PNG")
@@ -70,14 +70,14 @@ class TopMenu(
         lightTheme.setOnAction { setBackgroundColour(Color.WHITE) }
 
         registerControllers(stage)
-        fileControllers(save, load)
+        fileControllers(save, load, stage)
         export(stage)
 
         menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
 
         val autoSync: Timer = Timer()
         autoSync.scheduleAtFixedRate(timerTask() {
-            Platform.runLater{
+            Platform.runLater {
                 load("data.json")
             }
         }, 100, 100)
@@ -117,37 +117,50 @@ class TopMenu(
 
     private fun fileControllers(
         save: (filename: String) -> Unit,
-        load: (filename: String) -> Unit
+        load: (filename: String) -> Unit,
+        stage: Stage
     ) {
         fileNew.setOnAction {
             val inputDialog = TextInputDialog()
-            inputDialog.headerText = "Enter file name:"
+            inputDialog.headerText = "Enter New Board name:"
             val result = inputDialog.showAndWait()
             result.ifPresent { fileName ->
                 println("New file name: $fileName")
+                try {
+                    println(wb.backend.createBoard(fileName, ""))
+                    println(wb.backend.Blogin(fileName, ""))
+                    wb.backend.boardname = fileName
+                    updateTitle(stage)
+                    wb.rootcanvas.children.clear()
+                } catch (e: Exception) {
+                    showWarnDialog("Error", e.toString())
+                }
             }
         }
 
         fileSave.setOnAction {
-            val choiceDialog = ChoiceDialog("local", "local", "remote")
+            val choiceDialog = ChoiceDialog("local", "local", "remote ${wb.backend.boardname}")
             choiceDialog.headerText = "Select save location:"
             val result = choiceDialog.showAndWait()
             result.ifPresent { location ->
                 if (location == "local") {
                     save("data.json")
+                } else {
+                    save("remote")
                 }
-                println("Save location: $location")
             }
         }
 
         fileLoad.setOnAction {
-            val choices = listOf("local", "name1", "name2", "name3")
+            val choices = listOf("local", "remote ${wb.backend.boardname}")
             val choiceDialog = ChoiceDialog(choices[0], choices)
             choiceDialog.headerText = "Select file to load:"
             val result = choiceDialog.showAndWait()
             result.ifPresent { selection ->
                 if (selection == "local") {
                     load("data.json")
+                } else {
+                    load("remote")
                 }
                 println("Load selection: $selection")
             }
@@ -234,31 +247,15 @@ class TopMenu(
 
     }
 
-    // Create GENERAL FORM!!!! TODO!
-    fun showWarnDialog(title: String, content: String?) {
-        var displayContent = content
-        if (displayContent == null) {
-            displayContent = "Unspecified"
-        }
-        val alert = Alert(Alert.AlertType.INFORMATION)
-//        val X = this.stage.x + this.stage.width / 2
-//        val Y = this.stage.y + this.stage.height / 2
-//        alert.x = X
-//        alert.y = Y
-        alert.x = 400.0
-        alert.y = 400.0
-
-        alert.title = title
-        alert.contentText = displayContent
-
-        alert.showAndWait()
-    }
-
     private fun updateTitle(stage: Stage) {
-        println(wb.backend.username)
         stage.titleProperty().bind(
             SimpleStringProperty(
-                "WhiteBoard     - ${
+                "WhiteBoard    - ${
+                    if (wb.backend.boardname != "")
+                        "Remote Board: ${wb.backend.boardname}"
+                    else
+                        "Local Board"
+                }     - ${
                     if (wb.backend.username != "")
                         "Logged In: ${wb.backend.username}"
                     else

@@ -8,5 +8,7 @@ module application {
     requires com.fasterxml.jackson.kotlin;
     requires com.fasterxml.jackson.databind;
     requires java.net.http;
+    requires java.desktop;
+    requires javafx.swing;
     exports wb;
 }

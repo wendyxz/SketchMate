@@ -32,6 +32,9 @@ dependencies {
     // Jackson module for Kotlin support
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
 
+    // Swing for png export
+    implementation("org.openjfx:javafx-swing:16")
+
     testImplementation(kotlin("test"))
 }
 
@@ -56,7 +59,7 @@ application {
 javafx {
     // version is determined by the plugin above
     version = "18.0.2"
-    modules = listOf("javafx.controls", "javafx.graphics")
+    modules = listOf("javafx.controls", "javafx.graphics", "javafx.fxml", "javafx.swing")
 }
 
 // https://stackoverflow.com/questions/74453018/jlink-package-kotlin-in-both-merged-module-and-kotlin-stdlib

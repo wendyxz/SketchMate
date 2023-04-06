@@ -2,12 +2,17 @@ package wb.frontend
 
 import javafx.application.Platform
 import javafx.beans.property.SimpleStringProperty
+import javafx.embed.swing.SwingFXUtils
 import javafx.scene.control.*
 import javafx.scene.layout.GridPane
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.util.Callback
+import java.awt.RenderingHints
+import java.awt.image.BufferedImage
+import java.io.File
 import java.util.*
+import javax.imageio.ImageIO
 import kotlin.concurrent.timerTask
 
 //this is from the register dialog box
@@ -66,6 +71,7 @@ class TopMenu(
 
         registerControllers(stage)
         fileControllers(save, load, stage)
+        export(stage)
 
         menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
 
@@ -75,6 +81,38 @@ class TopMenu(
                 load("data.json")
             }
         }, 100, 100)
+    }
+
+    private fun export(stage: Stage) {
+        fileExport.setOnAction {
+//            val snapshotParams = SnapshotParameters()
+//            val dpi = 300.0
+//            val width = dpi * scene.width / 72
+//            val height = dpi * scene.height / 72
+            val image = stage.scene.snapshot(null)
+//            val image = WritableImage(width.toInt(), height.toInt())
+//            stage.scene.snapshot(image)
+            val bufferedImage = SwingFXUtils.fromFXImage(image, null)
+//            val finalImage = scaleImage(bufferedImage, scene.width, scene.height)
+//            val newBufferedImage = BufferedImage(bufferedImage.width, bufferedImage.height, BufferedImage.TYPE_INT_ARGB)
+//            val graphics = bufferedImage.createGraphics()
+//            graphics.setRenderingHint(
+//                RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON
+//            )
+//            graphics.drawImage(bufferedImage, 0, 0, null)
+//            graphics.dispose()
+            val file = File("whiteboard.png")
+            ImageIO.write(bufferedImage, "png", file)
+        }
+    }
+
+    private fun scaleImage(image: BufferedImage, width: Double, height: Double): BufferedImage {
+        val scaledImage = BufferedImage(width.toInt(), height.toInt(), BufferedImage.TYPE_INT_ARGB)
+        val g = scaledImage.createGraphics()
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC)
+        g.drawImage(image, 0, 0, width.toInt(), height.toInt(), null)
+        g.dispose()
+        return scaledImage
     }
 
     private fun fileControllers(

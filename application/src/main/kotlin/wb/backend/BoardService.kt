@@ -4,6 +4,7 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import org.json.*
 
 private val baseURL = "http://localhost:8080"
 var cookieValueB = ""
@@ -94,7 +95,20 @@ fun Blogout(): String {
 }
 
 
-fun getBoards(): String {
+//fun getBoards(): String {
+//    val client = HttpClient.newBuilder().build()
+//    val request = HttpRequest.newBuilder()
+//        .uri(URI.create("$baseURL/draw/boards"))
+//        .header("Content-Type", "application/json")
+//        .GET()
+//        .build()
+//
+//    val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+//    println("[GETALLBOARDS] <$response> ${response.body()}")
+//    return if (response.statusCode() == 200) response.body() else ""
+//}
+
+fun getBoards(): List<Pair<String, String>> {
     val client = HttpClient.newBuilder().build()
     val request = HttpRequest.newBuilder()
         .uri(URI.create("$baseURL/draw/boards"))
@@ -103,10 +117,25 @@ fun getBoards(): String {
         .build()
 
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-    println("[GETBOARDS] <$response> ${response.body()}")
-    return if (response.statusCode() == 200) response.body() else ""
+    println("[GETALLBOARDS] <$response> ${response.body()}")
 
+    if (response.statusCode() == 200) {
+        val jsonString = response.body()
+        val jsonArr = JSONArray(jsonString)
+        val boardList = mutableListOf<Pair<String, String>>()
+        for (i in 0 until jsonArr.length()) {
+            val jsonObj = jsonArr.getJSONObject(i)
+            val boardId = jsonObj.getString("first")
+            val boardName = jsonObj.getString("second")
+            val boardPair = Pair(boardId, boardName)
+            boardList.add(boardPair)
+        }
+        return boardList
+    } else {
+        return emptyList()
+    }
 }
+
 
 fun getSingleBoard(): String {
     val client = HttpClient.newBuilder().build()

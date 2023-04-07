@@ -34,7 +34,7 @@ dependencies {
 
     // Swing for png export
     implementation("org.openjfx:javafx-swing:16")
-    
+
     // https://mvnrepository.com/artifact/org.json/json
     implementation("org.json:json:20210307")
 

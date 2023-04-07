@@ -87,7 +87,7 @@ class PathTools(Canvas: Pane) {
 
         if(penTools.eraser) eraseFor()
 
-        save("data.json")
+        save()
     }
 
     private fun eraseFor() {

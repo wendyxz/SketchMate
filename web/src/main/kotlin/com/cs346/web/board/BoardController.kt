@@ -14,7 +14,7 @@ class BoardController(var boardService: BoardService) {
 
     // http://localhost:8080/draw/boards
     @GetMapping(value = ["/boards"])
-    fun getAllBoards(): List<Board>? {
+    fun getAllBoards(): List<Pair<String, String>>? {
         return boardService.getAllBoards()
     }
 

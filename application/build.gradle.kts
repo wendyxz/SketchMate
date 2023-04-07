@@ -35,6 +35,10 @@ dependencies {
     // Swing for png export
     implementation("org.openjfx:javafx-swing:16")
 
+//    implementation ("com.google.code.gson:gson:2.8.9")
+    // https://mvnrepository.com/artifact/org.json/json
+    implementation("org.json:json:20210307")
+
     testImplementation(kotlin("test"))
 }
 

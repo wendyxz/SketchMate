@@ -165,6 +165,30 @@ class TopMenu(
                 println("Load selection: $selection")
             }
         }
+
+        fileOpen.setOnAction {
+            var listOfBoards = wb.backend.getBoards()
+            val optionsList = if (listOfBoards.isNullOrEmpty()) {
+                listOf("N/A")
+            } else {
+                listOfBoards.map { it.second }
+            }
+            val choiceDialog = ChoiceDialog<String>(optionsList.firstOrNull(), optionsList)
+            choiceDialog.headerText = "Select which remote board:"
+            choiceDialog.contentText = "Board options:"
+            val result = choiceDialog.showAndWait()
+            result.ifPresent { location ->
+                val selectedPair = listOfBoards.find { it.second == location }
+                if (selectedPair != null) {
+                    wb.backend.boardname = location
+                    wb.backend.boardId = selectedPair.first
+                    println(wb.backend.Blogin(location, ""))
+                    wb.rootcanvas.children.clear()
+                    load("remote")
+                    updateTitle(stage)
+                }
+            }
+        }
     }
 
     private fun registerControllers(stage: Stage) {

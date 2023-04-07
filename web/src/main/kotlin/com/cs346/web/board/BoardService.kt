@@ -2,7 +2,7 @@ package com.cs346.web.board
 
 interface BoardService {
 
-    fun getAllBoards(): List<Board>?
+    fun getAllBoards(): List<Pair<String, String>>?
 
     fun findBoard(id: String): String?
 

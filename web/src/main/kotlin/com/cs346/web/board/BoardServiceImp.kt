@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class BoardServiceImpl(val BoardDao: BoardDAO) : BoardService {
-    override fun getAllBoards(): List<Board>? {
+    override fun getAllBoards(): List<Pair<String, String>>? {
         return BoardDao.getAllBoards()
     }
 

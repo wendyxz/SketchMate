@@ -1,5 +1,8 @@
 package wb.frontend
 
+import com.itextpdf.text.Document
+import com.itextpdf.text.Rectangle
+import com.itextpdf.text.pdf.PdfWriter
 import javafx.application.Platform
 import javafx.beans.property.SimpleStringProperty
 import javafx.embed.swing.SwingFXUtils
@@ -8,9 +11,8 @@ import javafx.scene.layout.GridPane
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.util.Callback
-import java.awt.RenderingHints
-import java.awt.image.BufferedImage
 import java.io.File
+import java.io.FileOutputStream
 import java.util.*
 import javax.imageio.ImageIO
 import kotlin.concurrent.timerTask
@@ -38,7 +40,7 @@ class TopMenu(
     private val fileOpen = MenuItem("Open Board")
     private val fileSave = MenuItem("Save")
     private val fileLoad = MenuItem("Load")
-    private val fileExport = MenuItem("Export as PNG")
+    private val fileExPNG = MenuItem("Export as PNG")
     private val fileExPDF = MenuItem("Export as PDF")
     private val fileQuit = MenuItem("Quit")
 
@@ -61,7 +63,7 @@ class TopMenu(
     private val darkTheme = MenuItem("dark")
 
     init {
-        fileMenu.items.addAll(fileNew, fileOpen, fileSave, fileLoad, fileExport, fileExPDF, fileQuit)
+        fileMenu.items.addAll(fileNew, fileOpen, fileSave, fileLoad, fileExPNG, fileExPDF, fileQuit)
         editMenu.items.addAll(editUndo, editRedo, editCut, editCopy, editPaste)
         helpMenu.items.addAll((helpAbout))
         accountMenu.items.addAll(accountLogOut, accountChangeP)
@@ -71,7 +73,8 @@ class TopMenu(
 
         registerControllers(stage)
         fileControllers(save, load, stage)
-        export(stage)
+        exportPNG(stage)
+        exportPDF(stage)
 
         menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
 
@@ -83,36 +86,35 @@ class TopMenu(
         }, 100, 100)
     }
 
-    private fun export(stage: Stage) {
-        fileExport.setOnAction {
-//            val snapshotParams = SnapshotParameters()
-//            val dpi = 300.0
-//            val width = dpi * scene.width / 72
-//            val height = dpi * scene.height / 72
+    private fun exportPNG(stage: Stage) {
+        fileExPNG.setOnAction {
             val image = stage.scene.snapshot(null)
-//            val image = WritableImage(width.toInt(), height.toInt())
-//            stage.scene.snapshot(image)
             val bufferedImage = SwingFXUtils.fromFXImage(image, null)
-//            val finalImage = scaleImage(bufferedImage, scene.width, scene.height)
-//            val newBufferedImage = BufferedImage(bufferedImage.width, bufferedImage.height, BufferedImage.TYPE_INT_ARGB)
-//            val graphics = bufferedImage.createGraphics()
-//            graphics.setRenderingHint(
-//                RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON
-//            )
-//            graphics.drawImage(bufferedImage, 0, 0, null)
-//            graphics.dispose()
             val file = File("whiteboard.png")
             ImageIO.write(bufferedImage, "png", file)
         }
     }
 
-    private fun scaleImage(image: BufferedImage, width: Double, height: Double): BufferedImage {
-        val scaledImage = BufferedImage(width.toInt(), height.toInt(), BufferedImage.TYPE_INT_ARGB)
-        val g = scaledImage.createGraphics()
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC)
-        g.drawImage(image, 0, 0, width.toInt(), height.toInt(), null)
-        g.dispose()
-        return scaledImage
+    private fun exportPDF(stage: Stage) {
+        fileExPDF.setOnAction {
+            val file = File("whiteboard.pdf")
+            val pageSize = Rectangle(scene.width.toFloat(), scene.height.toFloat())
+            val document = Document(pageSize)
+            val writer = PdfWriter.getInstance(document, FileOutputStream(file))
+            document.open()
+            document.newPage()
+            val cb = writer.directContent
+            val template = cb.createTemplate(stage.scene.width.toFloat(), stage.scene.height.toFloat())
+            val graphics = template.createGraphics(scene.width.toDouble().toFloat(), scene.height.toDouble().toFloat())
+            graphics.background = java.awt.Color.WHITE
+            scene.root.snapshot(null, null)?.let {
+                val image = SwingFXUtils.fromFXImage(it, null)
+                graphics.drawImage(image, 0, 0, null)
+            }
+            graphics.dispose()
+            cb.addTemplate(template, 0f, 0f)
+            document.close()
+        }
     }
 
     private fun fileControllers(

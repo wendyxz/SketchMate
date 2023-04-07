@@ -34,10 +34,12 @@ dependencies {
 
     // Swing for png export
     implementation("org.openjfx:javafx-swing:16")
-
-//    implementation ("com.google.code.gson:gson:2.8.9")
+    
     // https://mvnrepository.com/artifact/org.json/json
     implementation("org.json:json:20210307")
+
+    // iText for pdf export
+    implementation("com.itextpdf:itextpdf:5.5.13.2")
 
     testImplementation(kotlin("test"))
 }

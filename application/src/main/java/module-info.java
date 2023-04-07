@@ -10,5 +10,6 @@ module application {
     requires java.net.http;
     requires java.desktop;
     requires javafx.swing;
+    requires itextpdf;
     exports wb;
 }

@@ -2,10 +2,8 @@ package wb.frontend
 
 import javafx.scene.Scene
 import javafx.scene.control.*
-import javafx.scene.input.MouseEvent
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
-import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Rectangle
@@ -14,20 +12,20 @@ import javafx.scene.transform.Scale
 import javafx.stage.Popup
 import wb.rootcanvas
 import java.util.*
-import kotlin.math.max
-
+import kotlin.random.Random
+private fun randomColor() : Color {
+    return Color.rgb(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
+}
 fun createRectangle() {
     val r = Rectangle(0.0, 0.0, 50.0, 50.0)
-    r.fill = Color.RED
-
-
+    r.fill = randomColor()
     rootcanvas.children.add(r)
     addSubmenu(r)
     DragResize.makeResizable(r, rootcanvas);
 }
 
 fun createCircle() {
-    val c = Circle(0.0, 0.0, 25.0, Color.BLUE)
+    val c = Circle(0.0, 0.0, 25.0, randomColor())
     c.layoutX = 250.0
     c.layoutY = 200.0
     rootcanvas.children.add(c)

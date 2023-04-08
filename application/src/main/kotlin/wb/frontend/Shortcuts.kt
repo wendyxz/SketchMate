@@ -4,7 +4,9 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.stage.Stage
 import wb.backend.createBoard
+import wb.load
 import wb.pathTools
+import wb.save
 
 
 fun addKeyListener(stage: Stage) {

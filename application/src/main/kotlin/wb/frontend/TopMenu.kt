@@ -17,6 +17,8 @@ import javafx.util.Callback
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import wb.backend.createBoard
+import wb.load
+import wb.save
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileOutputStream
@@ -109,8 +111,6 @@ class TopMenu(stage: Stage) : MenuBar() {
         fileControllers(stage)
         fileExPNG.setOnAction { exportPNG(stage) }
         fileExPDF.setOnAction { exportPDF(stage) }
-//        exportPNG(stage)
-//        exportPDF(stage)
 
         menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
 
@@ -120,6 +120,10 @@ class TopMenu(stage: Stage) : MenuBar() {
                 load()
             }
         }, 100, 100)
+    }
+
+    private fun setBackgroundColour(black: Color?) {
+
     }
 
 

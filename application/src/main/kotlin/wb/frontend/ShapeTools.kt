@@ -12,8 +12,28 @@ import javafx.scene.shape.Rectangle
 import javafx.scene.shape.Shape
 import javafx.scene.transform.Scale
 import javafx.stage.Popup
+import wb.rootcanvas
 import java.util.*
 import kotlin.math.max
+
+fun createRectangle() {
+    val r = Rectangle(0.0, 0.0, 50.0, 50.0)
+    r.fill = Color.RED
+
+
+    rootcanvas.children.add(r)
+    addSubmenu(r)
+    DragResize.makeResizable(r, rootcanvas);
+}
+
+fun createCircle() {
+    val c = Circle(0.0, 0.0, 25.0, Color.BLUE)
+    c.layoutX = 250.0
+    c.layoutY = 200.0
+    rootcanvas.children.add(c)
+    addSubmenu(c)
+    DragResize.makeResizable(c, rootcanvas);
+}
 
 private fun colorToHex(color: Color): String? {
     val hex2: String
@@ -89,61 +109,6 @@ class ShapeTools(resizableCanvas: Pane) {
         scale.yProperty().bind(scene.heightProperty())
     }
 
-    private fun onPressedEvent(shape: Shape, event: MouseEvent) {
-        if (cursor == CursorType.pen) return
-        if (cursor == CursorType.eraser){
-            canvas.children.remove(shape)
-            return
-        }
-
-        cursorAnchorX = event.sceneX
-        cursorAnchorY = event.sceneY
-        mouseOffsetX = event.sceneX - shape.layoutX
-        mouseOffsetY = event.sceneY - shape.layoutY
-    }
-
-    private fun onDraggedEvent(shape: Shape, event: MouseEvent) {
-        if (cursor == CursorType.pen) return
-        shape.translateX = max(-shape.layoutBounds.minX, event.sceneX - cursorAnchorX)
-        shape.translateY = max(-shape.layoutBounds.minY,event.sceneY - cursorAnchorY)
-    }
-
-    private fun onReleasedEvent(shape: Shape, event: MouseEvent) {
-        if (cursor == CursorType.pen) return
-
-        shape.layoutX = max(-shape.layoutBounds.minX, event.sceneX - mouseOffsetX)
-        shape.layoutY = max(-shape.layoutBounds.minY, event.sceneY - mouseOffsetY)
-
-        shape.translateX = 0.0
-        shape.translateY = 0.0
-    }
-
-//    private fun makeDraggable(shape: Shape) {
-//        shape.setOnMousePressed { event -> onPressedEvent(shape, event) }
-//        shape.setOnMouseDragged { event -> onDraggedEvent(shape, event) }
-//        shape.setOnMouseReleased { event -> onReleasedEvent(shape, event) }
-//        shape.transforms.add(Scale(1.0 / scale.x, 1.0 / scale.y))
-//        shape.transforms.add(scale)
-//    }
-
-
     // create shapes
-    fun createRectangle() {
-        val r = Rectangle(0.0, 0.0, 50.0, 50.0)
-        r.fill = Color.RED
 
-
-        canvas.children.add(r)
-        addSubmenu(r)
-        DragResize.makeResizable(r, canvas);
-    }
-
-    fun createCircle() {
-        val c = Circle(0.0, 0.0, 25.0, Color.BLUE)
-        c.layoutX = 250.0
-        c.layoutY = 200.0
-        canvas.children.add(c)
-        addSubmenu(c)
-        DragResize.makeResizable(c, canvas);
-    }
 }

@@ -3,6 +3,9 @@ package wb
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import javafx.application.Application
+import javafx.scene.Scene
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
@@ -13,6 +16,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import wb.backend.createBoard
 import wb.frontend.*
 import java.io.*
 
@@ -35,181 +39,8 @@ val shapeTools = ShapeTools(rootcanvas)
 val textTools = TextTools(rootcanvas)
 val pathTools = PathTools(rootcanvas)
 var autoSyncTimeStamp = -1L
-fun setCursorType(ctype: CursorType) {
-    cursor = ctype
-    when (cursor) {
-        CursorType.cursor -> pathTools.cancelPath()
-        CursorType.textbox -> textTools.createTextBox()
-        CursorType.pen -> pathTools.initPath()
-        CursorType.eraser -> {
-            pathTools.initPath()
-        }
-    }
-}
-
-// Serializer/Deserializer
-val objectMapper = jacksonObjectMapper().registerModule(
-    SimpleModule()
-        .addSerializer(Rectangle::class.java, RectangleSerializer())
-        .addDeserializer(Rectangle::class.java, RectangleDeserializer())
-        .addSerializer(Circle::class.java, CircleSerializer())
-        .addDeserializer(Circle::class.java, CircleDeserializer())
-        .addSerializer(Path::class.java, PathSerializer())
-        .addDeserializer(Path::class.java, PathDeserializer())
-        .addSerializer(VBox::class.java, TextSerializer())
-        .addDeserializer(VBox::class.java, TextDeserializer())
-)
-
-fun save() {
-    // we need to write smth like:
-    // val data = serializeCanvas(rootcanvas)
-    val elements = mutableListOf<String>()
-    for (element in rootcanvas.children) {
-//        println(element)
-        when (element) {
-            is Rectangle -> elements.add(
-                Json.encodeToString(
-                    TypeWrapper("Rectangle", objectMapper.writeValueAsString(element))
-                )
-            )
-
-            is Circle -> elements.add(
-                Json.encodeToString(
-                    TypeWrapper("Circle", objectMapper.writeValueAsString(element))
-                )
-            )
-
-            is Path -> elements.add(
-                Json.encodeToString(
-                    TypeWrapper("Path", objectMapper.writeValueAsString(element))
-                )
-            )
-
-            is VBox ->
-                elements.add(
-                    Json.encodeToString(
-                        TypeWrapper("VBox", objectMapper.writeValueAsString(element))
-                    )
-                )
-
-            else -> print("not defined")
-        }
-    }
-    val currentTime = System.currentTimeMillis()
-    autoSyncTimeStamp = currentTime
-
-    val timestampedFile = TimeSerializer(currentTime, elements)
-
-    if (wb.backend.boardname == "") {
-        var filename = "${wb.backend.username}_${wb.backend.boardname}_data.json"
-        val file = File(filename)
-        if (!file.exists()) {
-            file.createNewFile()
-        }
-        val writer = BufferedWriter(FileWriter(file))
-//        writer.write(objectMapper.writeValueAsString(elements))
-        writer.write(Json.encodeToString(timestampedFile))
-        writer.close()
-    } else {
-        try {
-            val escapedJsonString = Json.encodeToString(timestampedFile).replace("\\", "")
-            val escapedJson = Json.encodeToString(escapedJsonString).replace("\"\"", "\"\\\"")
-
-            val str = wb.backend.updateBoard(wb.backend.boardname, escapedJson)
-            when (str) {
-                "Success" -> {
-                    showWarnDialog("Success!", "Successful Save to ${wb.backend.boardname}!")
-                }
-                else -> {
-                    // this should be not finding such user case
-                    showWarnDialog("2Board not found!", "Please check and try again!")
-                }
-            }
-
-        } catch (e: Exception) {
-            e.stackTrace.forEach { println(it) }
-            showWarnDialog("Error", e.toString())
-        }
-    }
-
-    print("done")
-}
-
-fun load() {
-    var data = ""
-    if (wb.backend.boardname == "") {
-        var filename = "${wb.backend.username}_${wb.backend.boardname}_data.json"
-        val file = File(filename)
-        if (!file.exists()) {
-            return
-        }
-        val reader = BufferedReader(FileReader(file))
-        data = reader.readText()
-        reader.close()
-    } else {
-        try {
-            // todo: add some output to this
-            data = wb.backend.getSingleBoard()
-            data = wb.helper.processJsonString(data)
-            data = wb.helper.removeDoubleQuotes(data)
-            when (data) {
-                "" -> {
-                    // this should be not finding such user case
-                    showWarnDialog("3Board not found!", "Please check and try again!")
-                    return
-                }
-            }
-        } catch (e: Exception) {
-            e.stackTrace.forEach { println(it) }
-            showWarnDialog("Error", e.toString())
-            return
-        }
-    }
-    // print("reader closed")
-    // we need smth like:
-    // unserializeCanvas(data, rootcanvas)
-    // to replace the bottom section
-    val timeFile = Json.decodeFromString<TimeSerializer>(data)
-
-    val fileTime = timeFile.time
-    if (fileTime == autoSyncTimeStamp) return
-
-    autoSyncTimeStamp = fileTime
-
-    // timeFile.time to see the timestamp
-    rootcanvas.children.removeAll(rootcanvas.children)
-    var elements = timeFile.whiteboard
-    if (elements != null) {
-        for (wrapper in elements) {
-            var element = Json.decodeFromString<TypeWrapper>(wrapper)
-            when (element.type) {
-                "Rectangle" -> {
-                    val r = objectMapper.readValue(element.string, Rectangle::class.java)
-                    addSubmenu(r)
-                    DragResize.makeResizable(r, rootcanvas);
-                    rootcanvas.children.add(r)
-                }
-
-                "Circle" -> {
-                    val c = objectMapper.readValue(element.string, Circle::class.java)
-                    addSubmenu(c)
-                    DragResize.makeResizable(c, rootcanvas);
-                    rootcanvas.children.add(c)
-                }
-
-                "Path" -> rootcanvas.children.add(objectMapper.readValue(element.string, Path::class.java))
-                "VBox" -> {
-                    rootcanvas.children.add(objectMapper.readValue(element.string, VBox::class.java))
-                }
-
-                else -> error("LOAD ERROR !!! ")
-            }
-        }
-    }
 
 
-    // println("decoded")
-}
 
 
 class Main : Application() {
@@ -217,6 +48,7 @@ class Main : Application() {
     private var background = Background(backgroundFill)
 
     override fun start(stage: Stage) {
+        val topMenu = TopMenu(stage)
         stage.title = "WhiteBoard"
         val file = File("window.json")
         var sceneWidth = 800.0
@@ -231,11 +63,13 @@ class Main : Application() {
         }
         stage.minWidth = 480.0
         stage.minHeight = 320.0
+
+        var loginMenu = LoginMenu(root, stage, sceneWidth, sceneHeight)
         root.center = rootcanvas
-        root.top = TopMenu(::setBackgroundColour, ::save, ::load, stage)
+        root.top = topMenu
         root.left = ToolMenu(::setCursorType, pathTools.getPenTools(), ::createShape)
         rootcanvas.background = background
-        var loginMenu = LoginMenu(root, stage, sceneWidth, sceneHeight)
+
         pathTools.setScale(stage.scene)
         shapeTools.setScale(stage.scene)
         textTools.setScale(stage.scene)
@@ -250,18 +84,33 @@ class Main : Application() {
             file.writeText(json)
         }
     }
-
+//    fun wb.frontend.addKeyListener(stage: Stage) {
+//        stage.scene.addEventFilter(KeyEvent.KEY_PRESSED) { event -> wb.frontend.keyPressHandler(event, stage) }
+//    }
+//
+//    private fun wb.frontend.keyPressHandler(event: KeyEvent, stage: Stage) {
+//        println("keyhandler")
+//        println(event.isShortcutDown)
+//        println(event.code)
+//        if (event.isShortcutDown or event.isControlDown) {
+//            when (event.code) {
+//                KeyCode.S -> { save();}     // save
+//                KeyCode.O -> { load();}     // load
+//                KeyCode.N -> { createBoard("newboard", "") } // new board
+//                KeyCode.P -> { topMenu.exportPDF(stage) } // print png/pdf
+//                KeyCode.E -> { topMenu.exportPNG(stage) }
+//
+//            }
+//        }
+//    }
     private fun createShape(shape: String) {
         if (shape === "r") {
-            shapeTools.createRectangle()
+            createRectangle()
         } else {
-            shapeTools.createCircle()
+            createCircle()
         }
     }
 
 
-    private fun setBackgroundColour(color: Color) {
-        rootcanvas.background = Background(BackgroundFill(color, null, null))
-    }
 }
 

@@ -1,5 +1,6 @@
 package wb.backend
 
+import kotlinx.serialization.json.Json
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -16,7 +17,7 @@ var json = ""
 /*Board*/
 
 fun createBoard(boardname: String, json: String): String {
-    val body = "{\"name\": \"$boardname\", \"json\": \"$json\"}"
+    var body = "{\"name\": \"$boardname\", \"json\": \"$json\"}"
     val client = HttpClient.newBuilder().build()
     val request = HttpRequest.newBuilder()
         .uri(URI.create("$baseURL/draw/create"))

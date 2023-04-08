@@ -11,8 +11,12 @@ import javafx.scene.layout.GridPane
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.util.Callback
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.io.BufferedReader
 import java.io.File
 import java.io.FileOutputStream
+import java.io.FileReader
 import java.util.*
 import javax.imageio.ImageIO
 import kotlin.concurrent.timerTask
@@ -23,7 +27,7 @@ class VerifyCredential(val username: String, val password: String, val verifyPas
 
 class TopMenu(
     setBackgroundColour: (color: Color) -> Unit,
-    save: (filename: String) -> Unit, load: (filename: String) -> Unit, stage: Stage
+    save: () -> Unit, load: () -> Unit, stage: Stage
 ) : MenuBar() {
 
 //    var rightLabel = Label("Logged in: ${wb.backend.username}")
@@ -36,8 +40,9 @@ class TopMenu(
     private val themeMenu = Menu("Theme")
 
     // File sub-menu
-    private val fileNew = MenuItem("New Board")
-    private val fileOpen = MenuItem("Open Board")
+    private val fileNew = MenuItem("New Remote Board")
+    private val fileOpen = MenuItem("Open Remote Board")
+    private val fileLocal = MenuItem("Return to Local Board")
     private val fileSave = MenuItem("Save")
     private val fileLoad = MenuItem("Load")
     private val fileExPNG = MenuItem("Export as PNG")
@@ -63,7 +68,7 @@ class TopMenu(
     private val darkTheme = MenuItem("dark")
 
     init {
-        fileMenu.items.addAll(fileNew, fileOpen, fileSave, fileLoad, fileExPNG, fileExPDF, fileQuit)
+        fileMenu.items.addAll(fileNew, fileOpen, fileSave, fileLoad, fileExPNG, fileExPDF, fileQuit, fileLocal)
         editMenu.items.addAll(editUndo, editRedo, editCut, editCopy, editPaste)
         helpMenu.items.addAll((helpAbout))
         accountMenu.items.addAll(accountLogOut, accountChangeP)
@@ -81,7 +86,7 @@ class TopMenu(
         val autoSync: Timer = Timer()
         autoSync.scheduleAtFixedRate(timerTask() {
             Platform.runLater {
-                load("data.json")
+                load()
             }
         }, 100, 100)
     }
@@ -118,8 +123,8 @@ class TopMenu(
     }
 
     private fun fileControllers(
-        save: (filename: String) -> Unit,
-        load: (filename: String) -> Unit,
+        save: () -> Unit,
+        load: () -> Unit,
         stage: Stage
     ) {
         fileNew.setOnAction {
@@ -127,17 +132,38 @@ class TopMenu(
             inputDialog.headerText = "Enter New Board name:"
             val result = inputDialog.showAndWait()
             result.ifPresent { fileName ->
-                println("New file name: $fileName")
+                println("New board name: $fileName")
                 try {
-                    println(wb.backend.createBoard(fileName, ""))
+                    wb.rootcanvas.children.clear()
+                    save()
+                    var jsonname = "${wb.backend.username}_${wb.backend.boardname}_data.json"
+                    val file = File(jsonname)
+                    val reader = BufferedReader(FileReader(file))
+                    var data = reader.readText()
+//                    data = Json.encodeToString(data).replace("\\", "")
+//                    data = Json.encodeToString(data).replace("\"", "\\\"")
+                    data = Json.encodeToString(data).replace("\\", "").replace("\"", "\\\"")
+                    println("!!!!!!!!!!!!!!!!!!!!!!!!!")
+                    println("!!!!!!!!!!!!!!!!!!!!!!!!!")
+                    println(data)
+                    reader.close()
+                    println(wb.backend.createBoard(fileName, data))
                     println(wb.backend.Blogin(fileName, ""))
                     wb.backend.boardname = fileName
                     updateTitle(stage)
-                    wb.rootcanvas.children.clear()
                 } catch (e: Exception) {
                     showWarnDialog("Error", e.toString())
                 }
             }
+        }
+
+        fileLocal.setOnAction {
+            showWarnDialog("message", wb.backend.Blogout())
+            wb.backend.boardname = ""
+            wb.backend.boardname = ""
+            wb.backend.json = ""
+            wb.backend.cookieValueB = ""
+            updateTitle(stage)
         }
 
         fileSave.setOnAction {
@@ -146,9 +172,9 @@ class TopMenu(
             val result = choiceDialog.showAndWait()
             result.ifPresent { location ->
                 if (location == "local") {
-                    save("data.json")
+                    save()
                 } else {
-                    save("remote")
+                    save()
                 }
             }
         }
@@ -160,9 +186,9 @@ class TopMenu(
             val result = choiceDialog.showAndWait()
             result.ifPresent { selection ->
                 if (selection == "local") {
-                    load("data.json")
+                    load()
                 } else {
-                    load("remote")
+                    load()
                 }
                 println("Load selection: $selection")
             }
@@ -186,7 +212,7 @@ class TopMenu(
                     wb.backend.boardId = selectedPair.first
                     println(wb.backend.Blogin(location, ""))
                     wb.rootcanvas.children.clear()
-                    load("remote")
+                    load()
                     updateTitle(stage)
                 }
             }

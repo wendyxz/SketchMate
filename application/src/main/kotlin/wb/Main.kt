@@ -60,7 +60,7 @@ val objectMapper = jacksonObjectMapper().registerModule(
         .addDeserializer(VBox::class.java, TextDeserializer())
 )
 
-fun save(filename: String) {
+fun save() {
     // we need to write smth like:
     // val data = serializeCanvas(rootcanvas)
     val elements = mutableListOf<String>()
@@ -100,15 +100,18 @@ fun save(filename: String) {
 
     val timestampedFile = TimeSerializer(currentTime, elements)
 
-    if (filename != "remote") {
+    if (wb.backend.boardname == "") {
+        var filename = "${wb.backend.username}_${wb.backend.boardname}_data.json"
         val file = File(filename)
+        if (!file.exists()) {
+            file.createNewFile()
+        }
         val writer = BufferedWriter(FileWriter(file))
 //        writer.write(objectMapper.writeValueAsString(elements))
         writer.write(Json.encodeToString(timestampedFile))
         writer.close()
     } else {
         try {
-            // todo: add some output to this
             val escapedJsonString = Json.encodeToString(timestampedFile).replace("\\", "")
             val escapedJson = Json.encodeToString(escapedJsonString).replace("\"\"", "\"\\\"")
 
@@ -119,7 +122,7 @@ fun save(filename: String) {
                 }
                 else -> {
                     // this should be not finding such user case
-                    showWarnDialog("Board not found!", "Please check and try again!")
+                    showWarnDialog("2Board not found!", "Please check and try again!")
                 }
             }
 
@@ -132,10 +135,14 @@ fun save(filename: String) {
     print("done")
 }
 
-fun load(filename: String) {
+fun load() {
     var data = ""
-    if (filename != "remote") {
+    if (wb.backend.boardname == "") {
+        var filename = "${wb.backend.username}_${wb.backend.boardname}_data.json"
         val file = File(filename)
+        if (!file.exists()) {
+            return
+        }
         val reader = BufferedReader(FileReader(file))
         data = reader.readText()
         reader.close()
@@ -144,13 +151,11 @@ fun load(filename: String) {
             // todo: add some output to this
             data = wb.backend.getSingleBoard()
             data = wb.helper.processJsonString(data)
-            println("!!!!!!!!!!!!!!!!!")
-            println("!!!!!!!!!!!!!!!!!")
-            println(data)
+            data = wb.helper.removeDoubleQuotes(data)
             when (data) {
                 "" -> {
                     // this should be not finding such user case
-                    showWarnDialog("Board not found!", "Please check and try again!")
+                    showWarnDialog("3Board not found!", "Please check and try again!")
                     return
                 }
             }

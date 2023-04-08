@@ -112,7 +112,7 @@ class TextTools(resizableCanvas: Pane) {
             controlsBox.isVisible = false
             drag.isVisible = false
 
-            save("data.json")
+            save()
 
             // Add an event listener to show the controls box if the text area is clicked
             textBox.setOnMouseClicked {

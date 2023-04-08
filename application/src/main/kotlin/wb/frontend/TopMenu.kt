@@ -11,8 +11,12 @@ import javafx.scene.layout.GridPane
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.util.Callback
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.io.BufferedReader
 import java.io.File
 import java.io.FileOutputStream
+import java.io.FileReader
 import java.util.*
 import javax.imageio.ImageIO
 import kotlin.concurrent.timerTask
@@ -130,11 +134,23 @@ class TopMenu(
             result.ifPresent { fileName ->
                 println("New board name: $fileName")
                 try {
-                    println(wb.backend.createBoard(fileName, ""))
+                    wb.rootcanvas.children.clear()
+                    save()
+                    var jsonname = "${wb.backend.username}_${wb.backend.boardname}_data.json"
+                    val file = File(jsonname)
+                    val reader = BufferedReader(FileReader(file))
+                    var data = reader.readText()
+//                    data = Json.encodeToString(data).replace("\\", "")
+//                    data = Json.encodeToString(data).replace("\"", "\\\"")
+                    data = Json.encodeToString(data).replace("\\", "").replace("\"", "\\\"")
+                    println("!!!!!!!!!!!!!!!!!!!!!!!!!")
+                    println("!!!!!!!!!!!!!!!!!!!!!!!!!")
+                    println(data)
+                    reader.close()
+                    println(wb.backend.createBoard(fileName, data))
                     println(wb.backend.Blogin(fileName, ""))
                     wb.backend.boardname = fileName
                     updateTitle(stage)
-                    wb.rootcanvas.children.clear()
                 } catch (e: Exception) {
                     showWarnDialog("Error", e.toString())
                 }

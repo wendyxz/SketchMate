@@ -103,6 +103,9 @@ fun save() {
     if (wb.backend.boardname == "") {
         var filename = "${wb.backend.username}_${wb.backend.boardname}_data.json"
         val file = File(filename)
+        if (!file.exists()) {
+            file.createNewFile()
+        }
         val writer = BufferedWriter(FileWriter(file))
 //        writer.write(objectMapper.writeValueAsString(elements))
         writer.write(Json.encodeToString(timestampedFile))
@@ -119,7 +122,7 @@ fun save() {
                 }
                 else -> {
                     // this should be not finding such user case
-                    showWarnDialog("Board not found!", "Please check and try again!")
+                    showWarnDialog("2Board not found!", "Please check and try again!")
                 }
             }
 
@@ -137,6 +140,9 @@ fun load() {
     if (wb.backend.boardname == "") {
         var filename = "${wb.backend.username}_${wb.backend.boardname}_data.json"
         val file = File(filename)
+        if (!file.exists()) {
+            return
+        }
         val reader = BufferedReader(FileReader(file))
         data = reader.readText()
         reader.close()
@@ -145,13 +151,11 @@ fun load() {
             // todo: add some output to this
             data = wb.backend.getSingleBoard()
             data = wb.helper.processJsonString(data)
-            println("!!!!!!!!!!!!!!!!!")
-            println("!!!!!!!!!!!!!!!!!")
-            println(data)
+            data = wb.helper.removeDoubleQuotes(data)
             when (data) {
                 "" -> {
                     // this should be not finding such user case
-                    showWarnDialog("Board not found!", "Please check and try again!")
+                    showWarnDialog("3Board not found!", "Please check and try again!")
                     return
                 }
             }

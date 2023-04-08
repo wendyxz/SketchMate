@@ -30,3 +30,10 @@ fun processJsonString(jsonString: String): String {
     }
     return result
 }
+
+fun removeDoubleQuotes(str: String): String {
+    if (str.startsWith("\"") && str.endsWith("\"")) {
+        return str.substring(1, str.length - 1)
+    }
+    return str
+}

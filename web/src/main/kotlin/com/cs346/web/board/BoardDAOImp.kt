@@ -38,8 +38,10 @@ class BoardDAOImpl(val jdbcTemplate: JdbcTemplate) : BoardDAO {
 
     override fun login(name: String): Board? {
         var rowMapper: RowMapper<Board> = RowMapper<Board> { resultSet: ResultSet, _: Int ->
-            Board(resultSet.getString("id"), resultSet.getString("name"),
-                resultSet.getString("json"))
+            Board(
+                resultSet.getString("id"), resultSet.getString("name"),
+                resultSet.getString("json")
+            )
         }
         val sql = "SELECT id, name, json FROM boards WHERE name=? limit 1"
         var result = jdbcTemplate?.queryForObject(sql, rowMapper, name)

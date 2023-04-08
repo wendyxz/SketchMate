@@ -21,6 +21,7 @@ class LoginMenu(root: BorderPane, stage: Stage, width: Double, height: Double) {
     private val passwordLabel = Label("Password:")
     private val password = PasswordField()
     private val grid = GridPane()
+
     init {
         val co1 = ColumnConstraints()
         val co2 = ColumnConstraints()

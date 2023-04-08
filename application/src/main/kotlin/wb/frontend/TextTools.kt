@@ -105,7 +105,10 @@ class TextTools(resizableCanvas: Pane) {
             setStyle(textBox)
         }
 
-        deleteButton.setOnAction { canvas.children.remove(group) }
+        deleteButton.setOnAction {
+            canvas.children.remove(group)
+            save()
+        }
 
         saveButton.setOnAction {
             // Hide the controls box

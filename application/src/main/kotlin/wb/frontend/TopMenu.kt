@@ -6,17 +6,13 @@ import com.itextpdf.text.pdf.PdfWriter
 import javafx.application.Platform
 import javafx.beans.property.SimpleStringProperty
 import javafx.embed.swing.SwingFXUtils
-import javafx.scene.Scene
 import javafx.scene.control.*
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyEvent
 import javafx.scene.layout.GridPane
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.util.Callback
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import wb.backend.createBoard
 import wb.load
 import wb.save
 import java.io.BufferedReader
@@ -36,23 +32,24 @@ fun exportPNG(stage: Stage) {
 }
 
 fun exportPDF(stage: Stage) {
-        val file = File("whiteboard.pdf")
-        val pageSize = Rectangle(stage.scene.width.toFloat(), stage.scene.height.toFloat())
-        val document = Document(pageSize)
-        val writer = PdfWriter.getInstance(document, FileOutputStream(file))
-        document.open()
-        document.newPage()
-        val cb = writer.directContent
-        val template = cb.createTemplate(stage.scene.width.toFloat(), stage.scene.height.toFloat())
-        val graphics = template.createGraphics(stage.scene.width.toDouble().toFloat(), stage.scene.height.toDouble().toFloat())
-        graphics.background = java.awt.Color.WHITE
-        stage.scene.root.snapshot(null, null)?.let {
-            val image = SwingFXUtils.fromFXImage(it, null)
-            graphics.drawImage(image, 0, 0, null)
-        }
-        graphics.dispose()
-        cb.addTemplate(template, 0f, 0f)
-        document.close()
+    val file = File("whiteboard.pdf")
+    val pageSize = Rectangle(stage.scene.width.toFloat(), stage.scene.height.toFloat())
+    val document = Document(pageSize)
+    val writer = PdfWriter.getInstance(document, FileOutputStream(file))
+    document.open()
+    document.newPage()
+    val cb = writer.directContent
+    val template = cb.createTemplate(stage.scene.width.toFloat(), stage.scene.height.toFloat())
+    val graphics =
+        template.createGraphics(stage.scene.width.toDouble().toFloat(), stage.scene.height.toDouble().toFloat())
+    graphics.background = java.awt.Color.WHITE
+    stage.scene.root.snapshot(null, null)?.let {
+        val image = SwingFXUtils.fromFXImage(it, null)
+        graphics.drawImage(image, 0, 0, null)
+    }
+    graphics.dispose()
+    cb.addTemplate(template, 0f, 0f)
+    document.close()
 }
 
 //this is from the register dialog box

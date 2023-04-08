@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.shape.*
 import javafx.scene.text.Font
+import wb.save
 import java.util.*
 
 
@@ -50,7 +51,7 @@ class RectangleSerializer : JsonSerializer<Rectangle>() {
 }
 
 
-private fun getColor(colorNode: JsonNode) : Color  {
+private fun getColor(colorNode: JsonNode): Color {
     val opaque = colorNode.get("opaque").asBoolean()
     val hue = colorNode.get("hue").asDouble()
     val saturation = colorNode.get("saturation").asDouble()
@@ -198,6 +199,7 @@ class PathSerializer : JsonSerializer<Path>() {
                     gen?.writeNumberField("x", element.x)
                     gen?.writeNumberField("y", element.y)
                 }
+
                 is LineTo -> {
                     gen?.writeNumberField("x", element.x)
                     gen?.writeNumberField("y", element.y)
@@ -271,8 +273,7 @@ class TextSerializer() : JsonSerializer<VBox>() {
                             }
                         }
                     }
-                }
-                else if (control is TextArea) {
+                } else if (control is TextArea) {
                     gen?.writeStringField("text", control.text)
                 }
             }
@@ -314,7 +315,7 @@ class TextDeserializer() : JsonDeserializer<VBox>() {
         size = root?.get("size").toString().toDouble()
         val layoutX = root?.get("layoutX").toString().toDouble()
         val layoutY = root?.get("layoutY").toString().toDouble()
-        var text =  root?.get("text").toString()
+        var text = root?.get("text").toString()
         text = text.substring(1, text.length - 1)
 
         var textBox = TextArea()
@@ -370,12 +371,8 @@ class TextDeserializer() : JsonDeserializer<VBox>() {
         }
 
         deleteButton.setOnAction {
-            group.isVisible = false
-            group.isDisable = true
-            for (child in group.children) {
-                child.isVisible = false
-                child.isDisable = true
-            }
+            wb.rootcanvas.children.remove(group)
+            save()
         }
 
         return group

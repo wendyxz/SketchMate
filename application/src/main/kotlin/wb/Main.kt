@@ -108,7 +108,7 @@ fun save() {
             val str = wb.backend.updateBoard(wb.backend.boardname, escapedJson)
             when (str) {
                 "Success" -> {
-                    showWarnDialog("Success!", "Successful Save to ${wb.backend.boardname}!")
+//                    showWarnDialog("Success!", "Successful Save to ${wb.backend.boardname}!")
                 }
                 else -> {
                     // this should be not finding such user case

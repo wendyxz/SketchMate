@@ -9,10 +9,12 @@ fun processJsonString(jsonString: String): String {
                 depth++
                 result += char
             }
+
             '}' -> {
                 depth--
                 result += char
             }
+
             '"' -> {
                 var tmp = ""
                 if (depth == 1) {
@@ -23,6 +25,7 @@ fun processJsonString(jsonString: String): String {
                 val quoteReplacement = tmp + char
                 result += quoteReplacement
             }
+
             else -> {
                 result += char
             }

@@ -55,6 +55,7 @@ class LoginMenu(root: BorderPane, stage: Stage, width: Double, height: Double) {
                     "Success" -> {
                         showWarnDialog("Success!", "Log in success!")
                         stage.scene = Scene(root, width, height)
+                        addKeyListener(stage)
                         wb.backend.username = username.text
                         wb.backend.password = password.text
                         updateTitle(stage)
@@ -175,6 +176,5 @@ class LoginMenu(root: BorderPane, stage: Stage, width: Double, height: Double) {
             )
         )
     }
-
 
 }

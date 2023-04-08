@@ -35,17 +35,7 @@ val shapeTools = ShapeTools(rootcanvas)
 val textTools = TextTools(rootcanvas)
 val pathTools = PathTools(rootcanvas)
 var autoSyncTimeStamp = -1L
-fun setCursorType(ctype: CursorType) {
-    cursor = ctype
-    when (cursor) {
-        CursorType.cursor -> pathTools.cancelPath()
-        CursorType.textbox -> textTools.createTextBox()
-        CursorType.pen -> pathTools.initPath()
-        CursorType.eraser -> {
-            pathTools.initPath()
-        }
-    }
-}
+
 
 // Serializer/Deserializer
 val objectMapper = jacksonObjectMapper().registerModule(
@@ -210,7 +200,9 @@ fun load() {
 
     // println("decoded")
 }
-
+private fun setBackgroundColour(color: Color) {
+    rootcanvas.background = Background(BackgroundFill(color, null, null))
+}
 
 class Main : Application() {
     private var backgroundFill = BackgroundFill(Color.WHITE, null, null)
@@ -232,8 +224,8 @@ class Main : Application() {
         stage.minWidth = 480.0
         stage.minHeight = 320.0
         root.center = rootcanvas
-        root.top = TopMenu(::setBackgroundColour, ::save, ::load, stage)
-        root.left = ToolMenu(::setCursorType, pathTools.getPenTools(), ::createShape)
+        root.top = TopMenu(stage)
+        root.left = ToolMenu(::setCursorType, pathTools.getPenTools())
         rootcanvas.background = background
         var loginMenu = LoginMenu(root, stage, sceneWidth, sceneHeight)
         pathTools.setScale(stage.scene)
@@ -253,15 +245,10 @@ class Main : Application() {
 
     private fun createShape(shape: String) {
         if (shape === "r") {
-            shapeTools.createRectangle()
+            createRectangle()
         } else {
-            shapeTools.createCircle()
+            createCircle()
         }
-    }
-
-
-    private fun setBackgroundColour(color: Color) {
-        rootcanvas.background = Background(BackgroundFill(color, null, null))
     }
 }
 

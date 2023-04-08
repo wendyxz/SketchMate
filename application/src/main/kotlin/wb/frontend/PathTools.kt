@@ -8,6 +8,7 @@ import javafx.scene.layout.Pane
 import javafx.scene.shape.*
 import javafx.scene.transform.Scale
 import wb.save
+
 import kotlin.math.max
 
 class PathTools(Canvas: Pane) {

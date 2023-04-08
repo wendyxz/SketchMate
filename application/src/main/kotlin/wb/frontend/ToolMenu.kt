@@ -9,8 +9,7 @@ import javafx.scene.paint.Color
 
 class ToolMenu(
     setCursorType: (ct: CursorType) -> Unit,
-    penTools: PenTools,
-    createShape: (shape: String) -> Unit,
+    penTools: PenTools
 ) : ToolBar() {
     private val cursorOption = Button("Cursor")
     private val textOption = Button("Text")
@@ -67,10 +66,12 @@ class ToolMenu(
         // Shapes: Rectangle, Circle
         shapeOption.items.addAll(rectangle, circle)
         rectangle.setOnAction {
-            createShape("r")
+            println("\nrect\n")
+            setCursorType(CursorType.rectangle)
+            println("\nsetdone")
         }
         circle.setOnAction {
-            createShape("c")
+            setCursorType(CursorType.circle)
         }
         shapeOption.setOnMouseClicked { setCursorType(CursorType.cursor) }
 

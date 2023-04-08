@@ -6,13 +6,19 @@ import com.itextpdf.text.pdf.PdfWriter
 import javafx.application.Platform
 import javafx.beans.property.SimpleStringProperty
 import javafx.embed.swing.SwingFXUtils
+import javafx.scene.Scene
 import javafx.scene.control.*
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.layout.GridPane
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.util.Callback
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import wb.backend.createBoard
+import wb.load
+import wb.save
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileOutputStream
@@ -21,14 +27,39 @@ import java.util.*
 import javax.imageio.ImageIO
 import kotlin.concurrent.timerTask
 
+
+fun exportPNG(stage: Stage) {
+    val image = stage.scene.snapshot(null)
+    val bufferedImage = SwingFXUtils.fromFXImage(image, null)
+    val file = File("whiteboard.png")
+    ImageIO.write(bufferedImage, "png", file)
+}
+
+fun exportPDF(stage: Stage) {
+        val file = File("whiteboard.pdf")
+        val pageSize = Rectangle(stage.scene.width.toFloat(), stage.scene.height.toFloat())
+        val document = Document(pageSize)
+        val writer = PdfWriter.getInstance(document, FileOutputStream(file))
+        document.open()
+        document.newPage()
+        val cb = writer.directContent
+        val template = cb.createTemplate(stage.scene.width.toFloat(), stage.scene.height.toFloat())
+        val graphics = template.createGraphics(stage.scene.width.toDouble().toFloat(), stage.scene.height.toDouble().toFloat())
+        graphics.background = java.awt.Color.WHITE
+        stage.scene.root.snapshot(null, null)?.let {
+            val image = SwingFXUtils.fromFXImage(it, null)
+            graphics.drawImage(image, 0, 0, null)
+        }
+        graphics.dispose()
+        cb.addTemplate(template, 0f, 0f)
+        document.close()
+}
+
 //this is from the register dialog box
 class Credential(val username: String, val password: String)
 class VerifyCredential(val username: String, val password: String, val verifyPassword: String)
 
-class TopMenu(
-    setBackgroundColour: (color: Color) -> Unit,
-    save: () -> Unit, load: () -> Unit, stage: Stage
-) : MenuBar() {
+class TopMenu(stage: Stage) : MenuBar() {
 
 //    var rightLabel = Label("Logged in: ${wb.backend.username}")
 
@@ -77,9 +108,9 @@ class TopMenu(
         lightTheme.setOnAction { setBackgroundColour(Color.WHITE) }
 
         registerControllers(stage)
-        fileControllers(save, load, stage)
-        exportPNG(stage)
-        exportPDF(stage)
+        fileControllers(stage)
+        fileExPNG.setOnAction { exportPNG(stage) }
+        fileExPDF.setOnAction { exportPDF(stage) }
 
         menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
 
@@ -91,40 +122,12 @@ class TopMenu(
         }, 100, 100)
     }
 
-    private fun exportPNG(stage: Stage) {
-        fileExPNG.setOnAction {
-            val image = stage.scene.snapshot(null)
-            val bufferedImage = SwingFXUtils.fromFXImage(image, null)
-            val file = File("whiteboard.png")
-            ImageIO.write(bufferedImage, "png", file)
-        }
+    private fun setBackgroundColour(black: Color?) {
+
     }
 
-    private fun exportPDF(stage: Stage) {
-        fileExPDF.setOnAction {
-            val file = File("whiteboard.pdf")
-            val pageSize = Rectangle(scene.width.toFloat(), scene.height.toFloat())
-            val document = Document(pageSize)
-            val writer = PdfWriter.getInstance(document, FileOutputStream(file))
-            document.open()
-            document.newPage()
-            val cb = writer.directContent
-            val template = cb.createTemplate(stage.scene.width.toFloat(), stage.scene.height.toFloat())
-            val graphics = template.createGraphics(scene.width.toDouble().toFloat(), scene.height.toDouble().toFloat())
-            graphics.background = java.awt.Color.WHITE
-            scene.root.snapshot(null, null)?.let {
-                val image = SwingFXUtils.fromFXImage(it, null)
-                graphics.drawImage(image, 0, 0, null)
-            }
-            graphics.dispose()
-            cb.addTemplate(template, 0f, 0f)
-            document.close()
-        }
-    }
 
     private fun fileControllers(
-        save: () -> Unit,
-        load: () -> Unit,
         stage: Stage
     ) {
         fileNew.setOnAction {
@@ -316,4 +319,6 @@ class TopMenu(
             )
         )
     }
+
+
 }

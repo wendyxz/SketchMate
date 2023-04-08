@@ -14,9 +14,6 @@ fun addKeyListener(stage: Stage) {
 }
 
 fun keyPressHandler(event: KeyEvent, stage: Stage) {
-    println("keyhandler")
-    println(event.isShortcutDown)
-    println(event.code)
     if (event.isShortcutDown or event.isControlDown) {
         when (event.code) {
             // Edit Functions

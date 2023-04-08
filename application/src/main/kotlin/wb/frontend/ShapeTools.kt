@@ -18,7 +18,12 @@ private fun randomColor() : Color {
 }
 fun createRectangle() {
     val r = Rectangle(0.0, 0.0, 50.0, 50.0)
-    r.fill = randomColor()
+    r.apply{
+        fill = randomColor()
+        stroke = Color.BLACK
+        strokeWidth = 0.0
+    }
+
     rootcanvas.children.add(r)
     addSubmenu(r)
     DragResize.makeResizable(r, rootcanvas);
@@ -26,8 +31,12 @@ fun createRectangle() {
 
 fun createCircle() {
     val c = Circle(0.0, 0.0, 25.0, randomColor())
-    c.layoutX = 250.0
-    c.layoutY = 200.0
+    c.apply{
+        layoutX = 250.0
+        c.layoutY = 200.0
+        stroke = Color.BLACK
+        strokeWidth = 0.0
+    }
     rootcanvas.children.add(c)
     addSubmenu(c)
     DragResize.makeResizable(c, rootcanvas);

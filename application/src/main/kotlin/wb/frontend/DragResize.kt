@@ -289,7 +289,7 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
             canvas = canva
             val resizer = DragResize(node, null)
             node.onMousePressed = EventHandler { event ->
-                if (cursor != CursorType.pen) {
+                if (cursor != CursorType.pen && cursor != CursorType.eraser) {
                 resizer.mousePressed(event)}}
             node.onMouseDragged = EventHandler { event -> if (cursor != CursorType.pen) resizer.mouseDragged(event) }
             node.onMouseDragged = EventHandler { event -> if (cursor != CursorType.pen) resizer.mouseDragged(event) }

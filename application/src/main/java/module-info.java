@@ -11,5 +11,6 @@ module application {
     requires java.desktop;
     requires javafx.swing;
     requires itextpdf;
+    requires org.json;
     exports wb;
 }

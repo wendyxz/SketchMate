@@ -7,7 +7,7 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
 import javafx.scene.shape.*
 import javafx.scene.transform.Scale
-import wb.save
+import wb.helper.save
 
 import kotlin.math.max
 

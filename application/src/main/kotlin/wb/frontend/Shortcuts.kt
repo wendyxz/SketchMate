@@ -4,10 +4,9 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.stage.Stage
 import wb.backend.createBoard
-import wb.load
+import wb.helper.load
+import wb.helper.save
 import wb.pathTools
-import wb.save
-
 
 fun addKeyListener(stage: Stage) {
     stage.scene.addEventFilter(KeyEvent.KEY_PRESSED) { event -> keyPressHandler(event, stage) }

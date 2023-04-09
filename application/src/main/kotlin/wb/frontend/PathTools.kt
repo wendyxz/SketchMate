@@ -7,7 +7,7 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
 import javafx.scene.shape.*
 import javafx.scene.transform.Scale
-import wb.save
+import wb.helper.save
 
 import kotlin.math.max
 
@@ -72,7 +72,7 @@ class PathTools(Canvas: Pane) {
         path.elements.add(moveTo)
         rootcanvas.children.add(path)
         DragResize.makeResizable(path, rootcanvas)
-        print(path)
+        // print(path)
     }
 
     private val pathProcess = EventHandler<MouseEvent> { event ->

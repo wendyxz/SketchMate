@@ -1,5 +1,13 @@
 package wb.helper
 
+import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import javafx.scene.layout.VBox
+import javafx.scene.shape.Circle
+import javafx.scene.shape.Path
+import javafx.scene.shape.Rectangle
+import wb.frontend.*
+
 fun processJsonString(jsonString: String): String {
     var depth = -1
     var result = ""
@@ -40,3 +48,16 @@ fun removeDoubleQuotes(str: String): String {
     }
     return str
 }
+
+// Serializer/Deserializer
+val objectMapper = jacksonObjectMapper().registerModule(
+    SimpleModule()
+        .addSerializer(Rectangle::class.java, RectangleSerializer())
+        .addDeserializer(Rectangle::class.java, RectangleDeserializer())
+        .addSerializer(Circle::class.java, CircleSerializer())
+        .addDeserializer(Circle::class.java, CircleDeserializer())
+        .addSerializer(Path::class.java, PathSerializer())
+        .addDeserializer(Path::class.java, PathDeserializer())
+        .addSerializer(VBox::class.java, TextSerializer())
+        .addDeserializer(VBox::class.java, TextDeserializer())
+)

@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.shape.*
 import javafx.scene.text.Font
-import wb.save
+import wb.helper.save
 import java.util.*
 
 
@@ -224,8 +224,8 @@ class PathDeserializer : JsonDeserializer<Path>() {
         style = style.substring(1, style.length - 1)
         path.strokeWidth = width
         path.stroke = color
-        print("style: ")
-        println(style)
+        // print("style: ")
+        // println(style)
         if (style == "dotted") {
             path.strokeDashArray.addAll(5.0, 15.0)
         } else if (style == "dashed") {
@@ -247,7 +247,7 @@ class PathDeserializer : JsonDeserializer<Path>() {
                 }
             }
         }
-        println(path)
+        // println(path)
         return path
     }
 }

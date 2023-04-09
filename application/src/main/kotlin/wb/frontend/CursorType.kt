@@ -1,7 +1,7 @@
 package wb.frontend
 
+import wb.helper.save
 import wb.pathTools
-import wb.save
 import wb.textTools
 
 enum class CursorType {

@@ -108,7 +108,7 @@ class ShapeTools(resizableCanvas: Pane) {
     init {
         scale.pivotX = 0.0
         scale.pivotY = 0.0
-        println("ShapeTools initialized")
+        // println("ShapeTools initialized")
     }
 
     fun setScale(scene: Scene) {

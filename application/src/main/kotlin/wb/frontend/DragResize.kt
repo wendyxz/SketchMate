@@ -8,6 +8,7 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Rectangle
+import wb.helper.save
 import kotlin.math.max
 
 /**
@@ -92,7 +93,7 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
     }
 
     protected fun mouseReleased(event: MouseEvent) {
-        wb.save()
+        save()
         if (state == S.DRAG) {
             node.layoutX = max(-node.layoutBounds.minX, event.sceneX - offsetX)
             node.layoutY = max(-node.layoutBounds.minY, event.sceneY - offsetY)

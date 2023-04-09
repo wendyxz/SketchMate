@@ -15,10 +15,9 @@ import javafx.stage.Stage
 import javafx.util.Callback
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import wb.load
+import wb.helper.load
+import wb.helper.save
 import wb.rootcanvas
-import wb.save
-import wb.setBackgroundColour
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileOutputStream
@@ -123,6 +122,9 @@ class TopMenu(stage: Stage) : MenuBar() {
         }, 10000, 10000)
     }
 
+    private fun setBackgroundColour(color: Color) {
+        rootcanvas.background = Background(BackgroundFill(color, null, null))
+    }
 
     private fun fileControllers(
         stage: Stage
@@ -132,7 +134,6 @@ class TopMenu(stage: Stage) : MenuBar() {
             inputDialog.headerText = "Enter New Board name:"
             val result = inputDialog.showAndWait()
             result.ifPresent { fileName ->
-                // println("New board name: $fileName")
                 try {
                     wb.rootcanvas.children.clear()
                     save()
@@ -140,12 +141,9 @@ class TopMenu(stage: Stage) : MenuBar() {
                     val file = File(jsonname)
                     val reader = BufferedReader(FileReader(file))
                     var data = reader.readText()
-//                    data = Json.encodeToString(data).replace("\\", "")
-//                    data = Json.encodeToString(data).replace("\"", "\\\"")
+
                     data = Json.encodeToString(data).replace("\\", "").replace("\"", "\\\"")
-//                    println("!!!!!!!!!!!!!!!!!!!!!!!!!")
-//                    println("!!!!!!!!!!!!!!!!!!!!!!!!!")
-                    // println(data)
+
                     reader.close()
                     println(wb.backend.createBoard(fileName, data))
                     println(wb.backend.Blogin(fileName, ""))

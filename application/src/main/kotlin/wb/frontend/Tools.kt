@@ -9,7 +9,7 @@ private var cursorAnchorY = 0.0
 private var mouseOffsetX = 0.0
 private var mouseOffsetY = 0.0
 private fun onPressedEvent(node: Node, event: MouseEvent) {
-    println("pressed")
+    // println("pressed")
 //    println("${event.x} ${event.y}")
 //    println("${node.layoutX} ${node.layoutY}")
     if (cursor == CursorType.pen) return

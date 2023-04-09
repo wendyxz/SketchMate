@@ -122,7 +122,7 @@ fun save() {
         }
     }
 
-    print("done")
+    // print("done")
 }
 
 fun load() {
@@ -200,7 +200,7 @@ fun load() {
 
     // println("decoded")
 }
-private fun setBackgroundColour(color: Color) {
+fun setBackgroundColour(color: Color) {
     rootcanvas.background = Background(BackgroundFill(color, null, null))
 }
 

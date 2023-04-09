@@ -72,7 +72,7 @@ class PathTools(Canvas: Pane) {
         path.elements.add(moveTo)
         rootcanvas.children.add(path)
         DragResize.makeResizable(path, rootcanvas)
-        print(path)
+        // print(path)
     }
 
     private val pathProcess = EventHandler<MouseEvent> { event ->

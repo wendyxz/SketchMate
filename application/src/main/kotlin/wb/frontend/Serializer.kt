@@ -166,6 +166,17 @@ class CircleDeserializer : JsonDeserializer<Circle>() {
     }
 }
 
+class TriangleSerializer : JsonSerializer<Polygon>() {
+    override fun serialize(value: Polygon?, gen: JsonGenerator?, serializers: SerializerProvider?) {
+        gen?.writeStartObject()
+
+        gen?.writeEndObject()
+
+
+
+    }
+}
+
 class PathSerializer : JsonSerializer<Path>() {
     override fun serialize(
         value: Path,

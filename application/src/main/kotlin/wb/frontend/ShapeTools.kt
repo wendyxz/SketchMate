@@ -1,11 +1,13 @@
 package wb.frontend
 
 import javafx.scene.Scene
-import javafx.scene.control.*
+import javafx.scene.control.ColorPicker
+import javafx.scene.control.ComboBox
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
+import javafx.scene.shape.Polygon
 import javafx.scene.shape.Rectangle
 import javafx.scene.shape.Shape
 import javafx.scene.transform.Scale
@@ -23,7 +25,6 @@ fun createRectangle() {
         stroke = Color.BLACK
         strokeWidth = 0.0
     }
-
     rootcanvas.children.add(r)
     addSubmenu(r)
     DragResize.makeResizable(r, rootcanvas);
@@ -40,6 +41,15 @@ fun createCircle() {
     rootcanvas.children.add(c)
     addSubmenu(c)
     DragResize.makeResizable(c, rootcanvas);
+}
+
+fun createTriangle() {
+    val t = Polygon()
+    t.points.addAll(100.0, 100.0, 200.0, 200.0, 100.0, 200.0)
+    t.fill = Color.YELLOW
+    rootcanvas.children.add(t)
+    addSubmenu(t)
+    DragResize.makeResizable(t, rootcanvas)
 }
 
 private fun colorToHex(color: Color): String? {

@@ -27,6 +27,7 @@ class ToolMenu(
 
     private val rectangle = MenuItem("rect")
     private val circle = MenuItem("circ")
+    private val triangle = MenuItem("tri")
 
     init {
         orientationProperty().set(Orientation.VERTICAL)
@@ -64,7 +65,7 @@ class ToolMenu(
         eraser5.setOnAction { penTools.updatePen(10.0) }
 
         // Shapes: Rectangle, Circle
-        shapeOption.items.addAll(rectangle, circle)
+        shapeOption.items.addAll(rectangle, circle, triangle)
         rectangle.setOnAction {
             println("\nrect\n")
             setCursorType(CursorType.rectangle)
@@ -72,6 +73,9 @@ class ToolMenu(
         }
         circle.setOnAction {
             setCursorType(CursorType.circle)
+        }
+        triangle.setOnAction {
+            setCursorType(CursorType.triangle)
         }
         shapeOption.setOnMouseClicked { setCursorType(CursorType.cursor) }
 

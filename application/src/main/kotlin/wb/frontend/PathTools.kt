@@ -1,5 +1,6 @@
 package wb.frontend
 
+import javafx.collections.FXCollections
 import javafx.event.EventHandler
 import javafx.scene.Node
 import javafx.scene.Scene
@@ -8,7 +9,6 @@ import javafx.scene.layout.Pane
 import javafx.scene.shape.*
 import javafx.scene.transform.Scale
 import wb.save
-
 import kotlin.math.max
 
 class PathTools(Canvas: Pane) {
@@ -177,17 +177,35 @@ class PathTools(Canvas: Pane) {
 
             return false
         }
-        else if(shape is Circle){
+        else if(shape is Circle) {
             val pathLine = findLineList(path)
 
             val center = Point(shape.centerX + shape.layoutX, shape.centerY + shape.layoutY)
             val radius = shape.radius
 
-            for(eacPathLine in pathLine){
-                if(insideCircle(eacPathLine.first, center, radius)) return true;
-                if(insideCircle(eacPathLine.second, center, radius)) return true;
+            for (eacPathLine in pathLine) {
+                if (insideCircle(eacPathLine.first, center, radius)) return true;
+                if (insideCircle(eacPathLine.second, center, radius)) return true;
             }
 
+            return false
+        }
+        else if (shape is Polygon){ // shape is triangle
+            val points = shape.points
+            val lines: MutableList<Line> = FXCollections.observableArrayList()
+
+            for (i in 0 until points.size step 2) {
+                val x1 = points[i]
+                val y1 = points[i + 1]
+                val x2 = points[(i + 2) % points.size]
+                val y2 = points[(i + 3) % points.size]
+                val line = Line(Point(x1, y1), Point(x2, y2))
+                lines.add(line)
+            }
+            val pathLine = findLineList(path)
+            for (eacPathLine in pathLine) {
+                if (insideTriangle(eacPathLine.first, eacPathLine.second, shape)) return true;
+            }
             return false
         }
 
@@ -196,5 +214,9 @@ class PathTools(Canvas: Pane) {
 
     private fun insideCircle(point: Point, center: Point, radius: Double): Boolean {
         return (point.x-center.x)*(point.x-center.x)+(point.y-center.y)*(point.y-center.y) <= radius*radius
+    }
+
+    private fun insideTriangle(point1: Point, point2: Point, tri: Polygon): Boolean {
+        return tri.contains(point1.x, point1.y) && tri.contains(point2.x, point2.y)
     }
 }

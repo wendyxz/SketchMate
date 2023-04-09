@@ -246,7 +246,11 @@ class Main : Application() {
     private fun createShape(shape: String) {
         if (shape === "r") {
             createRectangle()
-        } else {
+        }
+        else if (shape == "t") {
+           createTriangle()
+        }
+        else {
             createCircle()
         }
     }

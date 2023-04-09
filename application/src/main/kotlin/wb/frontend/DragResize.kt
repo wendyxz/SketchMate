@@ -130,15 +130,9 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
             return
         }
         if (listener != null) {
-
-            val mouseX = parentX(event.x)
-            val mouseY = parentY(event.y)
             if (state == S.DRAG) {
                 node.translateX = event.sceneX - clickX
                 node.translateY = event.sceneY - clickY
-//                node.translateX = max(-node.layoutBounds.minX, event.sceneX - clickX)
-//                node.translateY = max(-node.layoutBounds.minY,event.sceneY - clickY)
-                //listener.onDrag(node, mouseX - clickX, mouseY - clickY, nodeH, nodeW)
             } else if (state != S.DEFAULT) {
                 //resizing
                 var newX = startX
@@ -148,23 +142,30 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
 
                 // Right Resize
                 if (state == S.E_RESIZE || state == S.NE_RESIZE || state == S.SE_RESIZE) {
-                    newW = startW + event.sceneX - clickX
+                    if (node is Circle) newW = startW - (clickX - event.sceneX)*2
+                    else newW = startW + event.sceneX - clickX
                 }
                 // Left Resize
                 if (state == S.W_RESIZE || state == S.NW_RESIZE || state == S.SW_RESIZE) {
-                    newX = startX + event.sceneX - clickX
-                    newW = startW + clickX - event.sceneX
+                    if (node is Circle) newW = startW - (-clickX + event.sceneX)*2
+                    else {
+                        newX = startX + event.sceneX - clickX
+                        newW = startW + clickX - event.sceneX
+                    }
                 }
 
                 // Bottom Resize
                 if (state == S.S_RESIZE || state == S.SE_RESIZE || state == S.SW_RESIZE) {
-                    newH = startH + event.sceneY - clickY
-
+                    if (node is Circle) newW = startW - (clickY - event.sceneY)*2
+                    else newH = startH + event.sceneY - clickY
                 }
                 // Top Resize
                 if (state == S.N_RESIZE || state == S.NW_RESIZE || state == S.NE_RESIZE) {
-                    newY = startY + event.sceneY - clickY
-                    newH = startH + clickY - event.sceneY
+                    if (node is Circle) newW = startW - (-clickY + event.sceneY)*2
+                    else {
+                        newY = startY + event.sceneY - clickY
+                        newH = startH + clickY - event.sceneY
+                    }
                 }
 
                 //min valid rect Size Check
@@ -176,7 +177,7 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
                     if (state == S.N_RESIZE || state == S.NW_RESIZE || state == S.NE_RESIZE) newY = newY + newH - MIN_H
                     newH = MIN_H
                 }
-                if (node is Circle) {listener.onResize(node, startX, startY, newH, newW)}
+                if (node is Circle) {listener.onResize(node, startX, startY, newW, newW)}
                 else {listener.onResize(node, newX, newY, newH, newW)}
             }
         }
@@ -190,15 +191,12 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
         nodeH = nodeH()
         nodeW = nodeW()
         state = if (isInResizeZone(event)) {
-            //setNewInitialEventCoordinates(event)
             clickX = event.sceneX
             clickY = event.sceneY
             startX = node.layoutX
             startY = node.layoutY
             startW = nodeW()
             startH = nodeH()
-//            offsetX = event.sceneX - node.layoutX
-//            offsetY = event.sceneY - node.layoutY
             currentMouseState(event)
         } else if (isInDragZone(event)) {
             clickX = event.sceneX
@@ -219,13 +217,6 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
     }
 
     private fun isInDragZone(event: MouseEvent): Boolean {
-//        val xPos = parentX(event.x)
-//        val yPos = parentY(event.y)
-//        val nodeX = nodeX() + MARGIN
-//        val nodeY = nodeY() + MARGIN
-//        val nodeX0 = nodeX() + nodeW() - MARGIN
-//        val nodeY0 = nodeY() + nodeH() - MARGIN
-        //return xPos > nodeX && xPos < nodeX0 && yPos > nodeY && yPos < nodeY0
         return true
     }
 
@@ -262,12 +253,10 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
     }
 
     private fun nodeX(): Double {
-       // return node.boundsInParent.minX
         return node.layoutX
     }
 
     private fun nodeY(): Double {
-        //return node.boundsInParent.minY
         return node.layoutY
     }
 
@@ -292,10 +281,15 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
             node.onMousePressed = EventHandler { event ->
                 if (cursor != CursorType.pen && cursor != CursorType.eraser) {
                 resizer.mousePressed(event)}}
-            node.onMouseDragged = EventHandler { event -> if (cursor != CursorType.pen) resizer.mouseDragged(event) }
-            node.onMouseDragged = EventHandler { event -> if (cursor != CursorType.pen) resizer.mouseDragged(event) }
-            node.onMouseMoved = EventHandler { event -> if (cursor != CursorType.pen) resizer.mouseOver(event) }
-            node.onMouseReleased = EventHandler { event -> if (cursor != CursorType.pen) resizer.mouseReleased(event) }
+            node.onMouseDragged = EventHandler {
+                    event -> if (cursor != CursorType.pen && cursor != CursorType.eraser) resizer.mouseDragged(event)
+            }
+            node.onMouseMoved = EventHandler {
+                    event -> if (cursor != CursorType.pen && cursor != CursorType.eraser) resizer.mouseOver(event)
+            }
+            node.onMouseReleased = EventHandler {
+                    event -> if (cursor != CursorType.pen && cursor != CursorType.eraser) resizer.mouseReleased(event)
+            }
         }
 
         private fun getCursorForState(state: S): Cursor {

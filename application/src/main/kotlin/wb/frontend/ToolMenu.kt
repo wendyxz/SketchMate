@@ -66,9 +66,9 @@ class ToolMenu(
         // Shapes: Rectangle, Circle
         shapeOption.items.addAll(rectangle, circle)
         rectangle.setOnAction {
-            println("\nrect\n")
+            // println("\nrect\n")
             setCursorType(CursorType.rectangle)
-            println("\nsetdone")
+            // println("\nsetdone")
         }
         circle.setOnAction {
             setCursorType(CursorType.circle)

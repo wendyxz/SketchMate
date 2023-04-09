@@ -26,7 +26,7 @@ fun createBoard(boardname: String, json: String): String {
         .build()
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
-    println("[CREATEBOARD] <$response> ${response.body()}")
+    // println("[CREATEBOARD] <$response> ${response.body()}")
     return if (response.statusCode() == 200) response.body() else ""
 }
 
@@ -34,8 +34,8 @@ fun updateBoard(boardname: String, json: String): String {
 //fun updateBoard(json: String): String {
 //    val body = "{\"name\": \"$boardname\", \"json\": \"$json\"}"
     val body = "{\"name\": \"$boardname\", \"json\": $json}"
-    println("!!!!!!!!!!!")
-    println(body)
+//    println("!!!!!!!!!!!")
+    // println(body)
     val client = HttpClient.newBuilder().build()
     val request = HttpRequest.newBuilder()
         .uri(URI.create("$baseURL/draw/update"))
@@ -148,6 +148,6 @@ fun getSingleBoard(): String {
         .build()
 
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-    println("[GETSINGLEBOARD] <$response> ${response.body()}")
+    // println("[GETSINGLEBOARD] <$response> ${response.body()}")
     return if (response.statusCode() == 200) response.body() else ""
 }

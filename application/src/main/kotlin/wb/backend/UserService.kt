@@ -5,7 +5,7 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
-private val baseURL = "http://localhost:8080"
+private val baseURL = "http://18.117.110.147:8080"
 var cookieValue = ""
 
 var userId = ""

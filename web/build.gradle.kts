@@ -43,6 +43,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
     implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+    testImplementation("io.mockk:mockk:1.12.0")
 }
 
 tasks.withType<KotlinCompile> {

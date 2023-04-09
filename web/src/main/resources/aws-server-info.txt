@@ -1,0 +1,13 @@
+EC2 instance id: i-04db5d6c2a5204568
+public address: 18.117.110.147
+
+to ensure key is not public viewable, run before ssh:
+chmod 400 cs346.cer
+
+connect to instance via ssh:
+ssh -i "cs346.cer" ec2-user@ec2-18-117-110-147.us-east-2.compute.amazonaws.com
+
+
+AWS info (not needed to connect ssh)
+account: luyihui2002@gmail.com
+password: cs34666!

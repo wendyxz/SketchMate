@@ -34,8 +34,6 @@ fun updateBoard(boardname: String, json: String): String {
 //fun updateBoard(json: String): String {
 //    val body = "{\"name\": \"$boardname\", \"json\": \"$json\"}"
     val body = "{\"name\": \"$boardname\", \"json\": $json}"
-//    println("!!!!!!!!!!!")
-    // println(body)
     val client = HttpClient.newBuilder().build()
     val request = HttpRequest.newBuilder()
         .uri(URI.create("$baseURL/draw/update"))
@@ -46,7 +44,7 @@ fun updateBoard(boardname: String, json: String): String {
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
     println("[UPDATEBOARD] <$response> ${response.body()}")
-    return if (response.statusCode() == 200) "Success" else ""
+    return if (response.statusCode() == 200) "Success" else "$response"
 }
 
 fun deleteBoard(): String {
@@ -73,7 +71,6 @@ fun Blogin(boardname: String, json: String): String {
         .header("Content-Type", "application/json")
         .POST(HttpRequest.BodyPublishers.ofString(body))
         .build()
-    println("[BLOGIN] $request")
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
     val setCookie = response.headers().map()["set-cookie"]
     cookieValueB = setCookie?.get(0)?.substringBefore(';').toString()
@@ -94,20 +91,6 @@ fun Blogout(): String {
     println("[LOGOUT] <$response> ${response.body()}")
     return if (response.statusCode() == 200) response.body() else ""
 }
-
-
-//fun getBoards(): String {
-//    val client = HttpClient.newBuilder().build()
-//    val request = HttpRequest.newBuilder()
-//        .uri(URI.create("$baseURL/draw/boards"))
-//        .header("Content-Type", "application/json")
-//        .GET()
-//        .build()
-//
-//    val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-//    println("[GETALLBOARDS] <$response> ${response.body()}")
-//    return if (response.statusCode() == 200) response.body() else ""
-//}
 
 fun getBoards(): List<Pair<String, String>> {
     val client = HttpClient.newBuilder().build()

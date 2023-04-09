@@ -109,6 +109,7 @@ fun getSingleUser(): String {
     val request = HttpRequest.newBuilder()
         .uri(URI.create("$baseURL/login/user"))
         .header("Content-Type", "application/json")
+        .header("Cookie", cookieValue)
         .GET()
         .build()
 

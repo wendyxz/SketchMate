@@ -26,7 +26,7 @@ fun createBoard(boardname: String, json: String): String {
         .build()
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
-    println("[CREATEBOARD] <$response> ${response.body()}")
+    // println("[CREATEBOARD] <$response> ${response.body()}")
     return if (response.statusCode() == 200) response.body() else ""
 }
 
@@ -131,6 +131,6 @@ fun getSingleBoard(): String {
         .build()
 
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-    println("[GETSINGLEBOARD] <$response> ${response.body()}")
+    // println("[GETSINGLEBOARD] <$response> ${response.body()}")
     return if (response.statusCode() == 200) response.body() else ""
 }

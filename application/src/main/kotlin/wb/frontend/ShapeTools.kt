@@ -13,6 +13,7 @@ import javafx.scene.shape.Shape
 import javafx.scene.transform.Scale
 import javafx.stage.Popup
 import wb.rootcanvas
+import java.lang.Math.sqrt
 import java.util.*
 import kotlin.random.Random
 private fun randomColor() : Color {
@@ -22,7 +23,7 @@ fun createRectangle() {
     val r = Rectangle(0.0, 0.0, 50.0, 50.0)
     r.apply{
         fill = randomColor()
-        stroke = Color.BLACK
+        stroke = randomColor()
         strokeWidth = 0.0
     }
     rootcanvas.children.add(r)
@@ -35,7 +36,7 @@ fun createCircle() {
     c.apply{
         layoutX = 250.0
         c.layoutY = 200.0
-        stroke = Color.BLACK
+        stroke = randomColor()
         strokeWidth = 0.0
     }
     rootcanvas.children.add(c)
@@ -45,8 +46,12 @@ fun createCircle() {
 
 fun createTriangle() {
     val t = Polygon()
-    t.points.addAll(100.0, 100.0, 200.0, 200.0, 100.0, 200.0)
-    t.fill = Color.YELLOW
+    t.points.addAll(200.0, 300.0, 300.0, 300.0, 250.0, 300.0-sqrt(3.0)/2*100)
+    t.apply{
+        fill = randomColor()
+        stroke = randomColor()
+        strokeWidth = 0.0
+    }
     rootcanvas.children.add(t)
     addSubmenu(t)
     DragResize.makeResizable(t, rootcanvas)

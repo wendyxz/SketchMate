@@ -34,6 +34,7 @@ class PenOption(penTools: PenTools) : ToggleButton("Pen (CMD +D)") {
     private val styleToggles = ToggleGroup()
     private val colourToggles = ToggleGroup()
     private val sizeToggles = ToggleGroup()
+    val lightStyle = "-fx-text-fill: crimson  ; -fx-font-size: 14px;"
 
     fun getStyles(): List<ToggleButton> {
         return listOf(
@@ -83,12 +84,15 @@ class PenOption(penTools: PenTools) : ToggleButton("Pen (CMD +D)") {
         var sizes = getSizes()
         for (button in styles) {
             button.setOnMouseClicked { penTools.updatePen(button.text) }
+            button.style=lightStyle
         }
         for (button in colors) {
             button.setOnMouseClicked { penTools.updatePen(Color.valueOf(button.text)) }
+            button.style=lightStyle
         }
         for (button in sizes) {
             button.setOnMouseClicked { penTools.updatePen(button.text.toDouble()) }
+            button.style=lightStyle
         }
 
         penMenu.items.addAll(

@@ -9,6 +9,7 @@ import javafx.stage.Stage
 import javafx.util.Callback
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import net.codebot.shared.VerifyCredential
 import wb.backend.Blogout
 import wb.backend.logout
 import wb.helper.*
@@ -17,7 +18,6 @@ import java.io.File
 import java.io.FileReader
 import java.util.*
 import kotlin.concurrent.timerTask
-import net.codebot.shared.VerifyCredential
 
 class TopMenu(stage: Stage) : MenuBar() {
 
@@ -55,6 +55,7 @@ class TopMenu(stage: Stage) : MenuBar() {
     // Theme sub-menu
     private val lightTheme = MenuItem("light")
     private val darkTheme = MenuItem("dark")
+    val lightStyle = "-fx-text-fill: crimson  ; -fx-font-size: 14px;"
 
     init {
         fileMenu.items.addAll(fileNew, fileOpen, fileSave, fileLoad, fileExPNG, fileExPDF, fileQuit, fileLocal)
@@ -62,8 +63,14 @@ class TopMenu(stage: Stage) : MenuBar() {
         helpMenu.items.addAll((helpAbout))
         accountMenu.items.addAll(accountLogOut, accountChangeP)
         themeMenu.items.addAll(lightTheme, darkTheme)
-        darkTheme.setOnAction { setBackgroundColour(Color.BLACK) }
-        lightTheme.setOnAction { setBackgroundColour(Color.WHITE) }
+        darkTheme.setOnAction {
+            setTheme("dark")
+            wb.toolMenu.setTheme("dark")
+        }
+        lightTheme.setOnAction {
+            setTheme("light")
+            wb.toolMenu.setTheme("light")
+        }
 
         registerControllers(stage)
         fileControllers(stage)
@@ -74,12 +81,67 @@ class TopMenu(stage: Stage) : MenuBar() {
 
         menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
 
+        setTheme("light")
+
         val autoSync: Timer = Timer()
         autoSync.scheduleAtFixedRate(timerTask() {
             Platform.runLater {
                 load()
             }
         }, 1000, 1000)
+    }
+
+    private fun setTheme(theme: String) {
+        if (theme == "light") {
+            style = "-fx-background-color: lightblue;"
+            fileMenu.style = "-fx-background-color: lightcyan  ;"
+            editMenu.style = "-fx-background-color: lightcyan  ;"
+            helpMenu.style = "-fx-background-color: lightcyan  ;"
+            accountMenu.style = "-fx-background-color: lightcyan  ;"
+            themeMenu.style = "-fx-background-color: lightcyan  ;"
+            fileNew.style = lightStyle
+            fileOpen.style = lightStyle
+            fileLocal.style = lightStyle
+            fileSave.style = lightStyle
+            fileLoad.style = lightStyle
+            fileExPNG.style = lightStyle
+            fileExPDF.style = lightStyle
+            fileQuit.style = lightStyle
+
+            editUndo.style = lightStyle
+            editRedo.style = lightStyle
+            editCut.style = lightStyle
+            editCopy.style = lightStyle
+            editPaste.style = lightStyle
+
+            helpAbout.style = lightStyle
+
+            accountLogOut.style = lightStyle
+            accountChangeP.style = lightStyle
+
+            lightTheme.style = lightStyle
+            darkTheme.style = lightStyle
+        } else {
+            style = "-fx-background-color: darkslategray;"
+            fileMenu.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
+            editMenu.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
+            helpMenu.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
+            accountMenu.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
+            themeMenu.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
+        }
+    }
+
+    private fun setTextColour(color: Color) {
+        style += "-fx-text-fill: ${toRGBCode(color)};"
+    }
+
+    private fun toRGBCode(color: Color): String {
+        return String.format(
+            "#%02X%02X%02X",
+            (color.red * 255).toInt(),
+            (color.green * 255).toInt(),
+            (color.blue * 255).toInt()
+        )
     }
 
 

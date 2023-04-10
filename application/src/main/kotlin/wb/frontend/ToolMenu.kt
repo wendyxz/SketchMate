@@ -3,7 +3,6 @@ package wb.frontend
 import javafx.geometry.Orientation
 import javafx.geometry.Side
 import javafx.scene.control.*
-import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import wb.frontend.Tools.CursorType
 import wb.frontend.Tools.PenOption
@@ -31,6 +30,8 @@ class ToolMenu(
     private val rectangle = MenuItem("rect (CMD+R)")
     private val circle = MenuItem("circ (CMD+C)")
     private val triangle = MenuItem("tri (CMD+T)")
+
+    val lightStyle = "-fx-text-fill: crimson  ; -fx-font-size: 14px;"
 
     init {
         orientationProperty().set(Orientation.VERTICAL)
@@ -81,5 +82,32 @@ class ToolMenu(
 
         // Tool Menu
         items.addAll(cursorOption, textOption, penOption, shapeOption, eraserOption)
+        setTheme("light")
+    }
+
+    fun setTheme(theme: String) {
+        if (theme == "light") {
+            style = "-fx-background-color: lightblue;"
+            cursorOption.style = "-fx-background-color: lightcyan;"
+            textOption.style = "-fx-background-color: lightcyan;"
+            penOption.style = "-fx-background-color: lightcyan;"
+            shapeOption.style = "-fx-background-color: lightcyan;"
+            eraserOption.style = "-fx-background-color: lightcyan;"
+            eraser1.style = lightStyle
+            eraser2.style = lightStyle
+            eraser3.style = lightStyle
+            eraser4.style = lightStyle
+            eraser5.style = lightStyle
+            rectangle.style = lightStyle
+            circle.style = lightStyle
+            triangle.style = lightStyle
+        } else {
+            style = "-fx-background-color: darkslategray;"
+            cursorOption.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
+                textOption.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
+            penOption.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
+//            shapeOption.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
+            eraserOption.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
+        }
     }
 }

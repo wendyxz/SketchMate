@@ -1,5 +1,6 @@
 package wb.frontend
 
+import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.HPos
 import javafx.geometry.Pos
 import javafx.scene.Scene
@@ -10,7 +11,6 @@ import javafx.scene.layout.GridPane
 import javafx.scene.text.Text
 import javafx.stage.Stage
 import javafx.util.Callback
-import javafx.beans.property.SimpleStringProperty
 import net.codebot.shared.VerifyCredential
 
 class LoginPage(root: BorderPane, stage: Stage, width: Double, height: Double) {
@@ -43,6 +43,8 @@ class LoginPage(root: BorderPane, stage: Stage, width: Double, height: Double) {
         grid.add(signUpButton, 1, 3)
         stage.scene = Scene(grid, width, height)
         stage.show()
+        title.style = "-fx-font-family: Arial; -fx-font-size: 40px; -fx-font-weight: bold; -fx-fill: dodgerblue ;"
+        grid.style = "-fx-background-color: lavenderblush ;"
 
         loginButton.setOnMouseClicked {
             if (username.text == "") {

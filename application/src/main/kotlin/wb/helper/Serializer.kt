@@ -241,8 +241,7 @@ class PathDeserializer : JsonDeserializer<Path>() {
         style = style.substring(1, style.length - 1)
         path.strokeWidth = width
         path.stroke = color
-        // print("style: ")
-        // println(style)
+
         if (style == "dotted") {
             path.strokeDashArray.addAll(5.0, 15.0)
         } else if (style == "dashed") {
@@ -339,7 +338,6 @@ class TextDeserializer() : JsonDeserializer<VBox>() {
         textBox.isWrapText = true
         textBox.prefRowCount = 5
         textBox.prefColumnCount = 10
-        println(text)
         textBox.text = text.replace("\\n", "\n")
         setStyle(textBox)
 

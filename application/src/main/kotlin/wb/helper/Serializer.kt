@@ -339,7 +339,8 @@ class TextDeserializer() : JsonDeserializer<VBox>() {
         textBox.isWrapText = true
         textBox.prefRowCount = 5
         textBox.prefColumnCount = 10
-        textBox.text = text
+        println(text)
+        textBox.text = text.replace("\\n", "\n")
         setStyle(textBox)
 
         // Create font, color, and size controls

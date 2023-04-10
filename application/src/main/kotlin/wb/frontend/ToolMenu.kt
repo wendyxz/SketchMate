@@ -15,7 +15,7 @@ class ToolMenu(
     penTools: PenTools
 ) : ToolBar() {
     private val cursorOption = Button("Cursor (CMD+V)")
-    private val textOption = Button("Text (CMD+T)")
+    private val textOption = Button("Text (CMD+B)")
     private val penOption = PenOption(penTools)
     private val shapeOption = MenuButton("Shape")
     private val eraserOption = Button("Eraser (CMD+E)")

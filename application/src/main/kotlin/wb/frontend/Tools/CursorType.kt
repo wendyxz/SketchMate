@@ -10,6 +10,7 @@ enum class CursorType {
     pen,
     rectangle,
     circle,
+    triangle,
     eraser
 }
 
@@ -34,6 +35,11 @@ fun setCursorType(ctype: CursorType) {
             createRectangle()
             setCursorType(CursorType.cursor)
         }
+        CursorType.triangle -> {
+            createTriangle()
+            setCursorType(CursorType.cursor)
+        }
+
         CursorType.eraser -> {
             pathTools.getPenTools().updateEraser(true)
             pathTools.initPath()

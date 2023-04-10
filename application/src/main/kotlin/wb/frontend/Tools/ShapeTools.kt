@@ -6,12 +6,14 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
+import javafx.scene.shape.Polygon
 import javafx.scene.shape.Rectangle
 import javafx.scene.shape.Shape
 import javafx.scene.transform.Scale
 import javafx.stage.Popup
 import wb.frontend.DragResize
 import wb.rootcanvas
+import java.lang.Math.sqrt
 import java.util.*
 import kotlin.random.Random
 private fun randomColor() : Color {
@@ -40,8 +42,22 @@ fun createCircle() {
     }
     rootcanvas.children.add(c)
     addSubmenu(c)
-    DragResize.makeResizable(c);
+    DragResize.makeResizable(c)
 }
+
+fun createTriangle() {
+    val t = Polygon()
+    t.points.addAll(200.0, 300.0, 300.0, 300.0, 250.0, 300.0 - sqrt(3.0) / 2 * 100)
+    t.apply {
+        fill = randomColor()
+        stroke = Color.BLACK
+        strokeWidth = 0.0
+    }
+    rootcanvas.children.add(t)
+    addSubmenu(t)
+    DragResize.makeResizable(t)
+}
+
 
 private fun colorToHex(color: Color): String? {
     val hex2: String

@@ -14,7 +14,7 @@ class ToolMenu(
     setCursorType: (ct: CursorType) -> Unit,
     penTools: PenTools
 ) : ToolBar() {
-    private val cursorOption = Button("Cursor")
+    private val cursorOption = Button("Cursor (CMD+V)")
     private val textOption = Button("Text (CMD+T)")
     private val penOption = PenOption(penTools)
     private val shapeOption = MenuButton("Shape")
@@ -30,6 +30,7 @@ class ToolMenu(
 
     private val rectangle = MenuItem("rect (CMD+R)")
     private val circle = MenuItem("circ (CMD+C)")
+    private val triangle = MenuItem("tri (CMD+T)")
 
     init {
         orientationProperty().set(Orientation.VERTICAL)
@@ -48,12 +49,15 @@ class ToolMenu(
         }
 
         // Shapes: Rectangle, Circle
-        shapeOption.items.addAll(rectangle, circle)
+        shapeOption.items.addAll(rectangle, circle, triangle)
         rectangle.setOnAction {
             setCursorType(CursorType.rectangle)
         }
         circle.setOnAction {
             setCursorType(CursorType.circle)
+        }
+        triangle.setOnAction {
+            setCursorType(CursorType.triangle)
         }
 
         // Eraser

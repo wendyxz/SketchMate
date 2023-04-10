@@ -1,4 +1,4 @@
-package wb.frontend
+package wb.frontend.Tools
 
 import javafx.geometry.Pos
 import javafx.scene.Scene
@@ -9,12 +9,13 @@ import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import javafx.scene.transform.Scale
+import wb.frontend.makeDraggable
 import wb.helper.save
+import wb.rootcanvas
 import java.util.*
 
 
-class TextTools(resizableCanvas: Pane) {
-    var canvas = resizableCanvas
+class TextTools() {
     private val scale = Scale()
     private var oldfont = "System";
     private var oldfill = colorToHex(Color.BLACK);
@@ -89,7 +90,7 @@ class TextTools(resizableCanvas: Pane) {
         group.layoutY = 100.0
         group.transforms.add(Scale(1.0 / scale.x, 1.0 / scale.y))
         group.transforms.add(scale)
-        canvas.children.add(group)
+        rootcanvas.children.add(group)
 
         // Add event listeners to update the text area's font, color, and size
         fontComboBox.setOnAction {
@@ -106,7 +107,7 @@ class TextTools(resizableCanvas: Pane) {
         }
 
         deleteButton.setOnAction {
-            canvas.children.remove(group)
+            rootcanvas.children.remove(group)
             save()
         }
 

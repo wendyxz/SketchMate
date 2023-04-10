@@ -1,4 +1,4 @@
-package wb.frontend
+package wb.frontend.Tools
 
 import javafx.event.EventHandler
 import javafx.scene.Cursor

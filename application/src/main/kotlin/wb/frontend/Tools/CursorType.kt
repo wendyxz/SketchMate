@@ -1,4 +1,4 @@
-package wb.frontend
+package wb.frontend.Tools
 
 import wb.helper.save
 import wb.pathTools
@@ -22,14 +22,10 @@ fun setCursorType(ctype: CursorType) {
     when (cursor) {
         CursorType.cursor -> pathTools.cancelPath()
         CursorType.textbox -> {
-            setCursorType(CursorType.cursor)
             textTools.createTextBox()
+            setCursorType(CursorType.cursor)
         }
         CursorType.pen -> pathTools.initPath()
-        CursorType.eraser -> {
-            pathTools.getPenTools().updateEraser(true)
-            pathTools.initPath()
-        }
         CursorType.circle -> {
             createCircle()
             setCursorType(CursorType.cursor)
@@ -37,6 +33,10 @@ fun setCursorType(ctype: CursorType) {
         CursorType.rectangle -> {
             createRectangle()
             setCursorType(CursorType.cursor)
+        }
+        CursorType.eraser -> {
+            pathTools.getPenTools().updateEraser(true)
+            pathTools.initPath()
         }
     }
     save()

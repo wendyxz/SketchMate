@@ -3,6 +3,8 @@ package wb.frontend
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.*
+import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import javafx.geometry.Pos
 import javafx.scene.control.*
 import javafx.scene.layout.HBox
@@ -10,10 +12,23 @@ import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.shape.*
 import javafx.scene.text.Font
+import wb.frontend.Tools.DragResizeMod
 import wb.helper.save
+import wb.rootcanvas
 import java.util.*
 
-
+// Serializer/Deserializer
+val objectMapper = jacksonObjectMapper().registerModule(
+    SimpleModule()
+        .addSerializer(Rectangle::class.java, RectangleSerializer())
+        .addDeserializer(Rectangle::class.java, RectangleDeserializer())
+        .addSerializer(Circle::class.java, CircleSerializer())
+        .addDeserializer(Circle::class.java, CircleDeserializer())
+        .addSerializer(Path::class.java, PathSerializer())
+        .addDeserializer(Path::class.java, PathDeserializer())
+        .addSerializer(VBox::class.java, TextSerializer())
+        .addDeserializer(VBox::class.java, TextDeserializer())
+)
 class RectangleSerializer : JsonSerializer<Rectangle>() {
     override fun serialize(value: Rectangle?, gen: JsonGenerator?, serializers: SerializerProvider?) {
         gen?.writeStartObject()
@@ -247,7 +262,7 @@ class PathDeserializer : JsonDeserializer<Path>() {
                 }
             }
         }
-        // println(path)
+        DragResize.makeResizable(path)
         return path
     }
 }

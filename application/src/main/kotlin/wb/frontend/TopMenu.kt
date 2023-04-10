@@ -1,67 +1,25 @@
 package wb.frontend
 
-import com.itextpdf.text.Document
-import com.itextpdf.text.Rectangle
-import com.itextpdf.text.pdf.PdfWriter
 import javafx.application.Platform
 import javafx.beans.property.SimpleStringProperty
-import javafx.embed.swing.SwingFXUtils
 import javafx.scene.control.*
-import javafx.scene.layout.Background
-import javafx.scene.layout.BackgroundFill
 import javafx.scene.layout.GridPane
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.util.Callback
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import wb.helper.load
-import wb.helper.save
-import wb.rootcanvas
+import wb.backend.Blogout
+import wb.backend.logout
+import wb.helper.*
 import java.io.BufferedReader
 import java.io.File
-import java.io.FileOutputStream
 import java.io.FileReader
 import java.util.*
-import javax.imageio.ImageIO
 import kotlin.concurrent.timerTask
-
-
-fun exportPNG(stage: Stage) {
-    val image = stage.scene.snapshot(null)
-    val bufferedImage = SwingFXUtils.fromFXImage(image, null)
-    val file = File("whiteboard.png")
-    ImageIO.write(bufferedImage, "png", file)
-}
-
-fun exportPDF(stage: Stage) {
-    val file = File("whiteboard.pdf")
-    val pageSize = Rectangle(stage.scene.width.toFloat(), stage.scene.height.toFloat())
-    val document = Document(pageSize)
-    val writer = PdfWriter.getInstance(document, FileOutputStream(file))
-    document.open()
-    document.newPage()
-    val cb = writer.directContent
-    val template = cb.createTemplate(stage.scene.width.toFloat(), stage.scene.height.toFloat())
-    val graphics =
-        template.createGraphics(stage.scene.width.toDouble().toFloat(), stage.scene.height.toDouble().toFloat())
-    graphics.background = java.awt.Color.WHITE
-    stage.scene.root.snapshot(null, null)?.let {
-        val image = SwingFXUtils.fromFXImage(it, null)
-        graphics.drawImage(image, 0, 0, null)
-    }
-    graphics.dispose()
-    cb.addTemplate(template, 0f, 0f)
-    document.close()
-}
-
-//this is from the register dialog box
-class Credential(val username: String, val password: String)
-class VerifyCredential(val username: String, val password: String, val verifyPassword: String)
+import net.codebot.shared.VerifyCredential
 
 class TopMenu(stage: Stage) : MenuBar() {
-
-//    var rightLabel = Label("Logged in: ${wb.backend.username}")
 
     // Menu choices
     private val fileMenu = Menu("File")
@@ -119,12 +77,9 @@ class TopMenu(stage: Stage) : MenuBar() {
             Platform.runLater {
                 load()
             }
-        }, 10000, 10000)
+        }, 1000, 1000)
     }
 
-    private fun setBackgroundColour(color: Color) {
-        rootcanvas.background = Background(BackgroundFill(color, null, null))
-    }
 
     private fun fileControllers(
         stage: Stage
@@ -156,7 +111,7 @@ class TopMenu(stage: Stage) : MenuBar() {
         }
 
         fileLocal.setOnAction {
-            showWarnDialog("message", wb.backend.Blogout())
+            showWarnDialog("message", Blogout())
             wb.backend.boardname = ""
             wb.backend.boardname = ""
             wb.backend.json = ""
@@ -231,7 +186,6 @@ class TopMenu(stage: Stage) : MenuBar() {
             val password = PasswordField()
             val verifyPassword = PasswordField()
 
-            //val buttonTypeOk = Button("Sign Up")
             val buttonTypeOk = ButtonType("Sign In", ButtonBar.ButtonData.OK_DONE)
 
             val grid = GridPane()
@@ -243,11 +197,6 @@ class TopMenu(stage: Stage) : MenuBar() {
 
             dialog.dialogPane.buttonTypes.add(buttonTypeOk)
 
-            // set dialog pos
-//            val X = this.stage.x + this.viewModel.model.stage.width / 2
-//            val Y = this.viewModel.model.stage.y + this.viewModel.model.stage.height / 2
-//            dialog.x = X
-//            dialog.y = Y
             dialog.x = 400.0
             dialog.y = 400.0
 
@@ -287,7 +236,7 @@ class TopMenu(stage: Stage) : MenuBar() {
 
         accountLogOut.setOnAction {
 
-            showWarnDialog("message", wb.backend.logout())
+            showWarnDialog("message", logout())
             wb.backend.username = ""
             wb.backend.userId = ""
             wb.backend.password = ""

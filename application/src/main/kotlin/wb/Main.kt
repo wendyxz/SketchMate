@@ -1,21 +1,19 @@
 package wb
 
-import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import wb.helper.saveWindow
 import javafx.application.Application
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
-import javafx.scene.shape.Circle
-import javafx.scene.shape.Path
-import javafx.scene.shape.Rectangle
 import javafx.stage.Stage
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import wb.frontend.*
-import wb.helper.objectMapper
-import wb.helper.saveWindow
+import wb.frontend.Tools.PathTools
+import wb.frontend.Tools.ShapeTools
+import wb.frontend.Tools.TextTools
+import wb.frontend.Tools.setCursorType
+import wb.frontend.LoginPage
 import java.io.*
 
 @Serializable
@@ -33,9 +31,9 @@ class UpdateBoardRequestBody(val name: String, val json: TypeWrapper)
 var root = BorderPane()
 var autoSyncTimeStamp = -1L
 val rootcanvas = Pane()
-val shapeTools = ShapeTools(rootcanvas)
-val textTools = TextTools(rootcanvas)
-val pathTools = PathTools(rootcanvas)
+val shapeTools = ShapeTools()
+val textTools = TextTools()
+val pathTools = PathTools()
 
 
 class Main : Application() {
@@ -61,7 +59,7 @@ class Main : Application() {
         root.top = TopMenu(stage)
         root.left = ToolMenu(::setCursorType, pathTools.getPenTools())
         rootcanvas.background = background
-        var loginMenu = LoginMenu(root, stage, sceneWidth, sceneHeight)
+        LoginPage(root, stage, sceneWidth, sceneHeight)
         pathTools.setScale(stage.scene)
         shapeTools.setScale(stage.scene)
         textTools.setScale(stage.scene)

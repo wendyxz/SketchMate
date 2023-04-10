@@ -43,7 +43,7 @@ fun updateBoard(boardname: String, json: String): String {
         .build()
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
-    println("[UPDATEBOARD] <$response> ${response.body()}")
+    // println("[UPDATEBOARD] <$response> ${response.body()}")
     return if (response.statusCode() == 200) "Success" else "$response"
 }
 

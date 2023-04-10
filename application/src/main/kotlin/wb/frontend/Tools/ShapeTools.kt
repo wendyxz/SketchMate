@@ -1,4 +1,4 @@
-package wb.frontend
+package wb.frontend.Tools
 
 import javafx.scene.Scene
 import javafx.scene.control.*
@@ -10,6 +10,7 @@ import javafx.scene.shape.Rectangle
 import javafx.scene.shape.Shape
 import javafx.scene.transform.Scale
 import javafx.stage.Popup
+import wb.frontend.DragResize
 import wb.rootcanvas
 import java.util.*
 import kotlin.random.Random
@@ -26,7 +27,7 @@ fun createRectangle() {
 
     rootcanvas.children.add(r)
     addSubmenu(r)
-    DragResize.makeResizable(r, rootcanvas);
+    DragResize.makeResizable(r);
 }
 
 fun createCircle() {
@@ -39,7 +40,7 @@ fun createCircle() {
     }
     rootcanvas.children.add(c)
     addSubmenu(c)
-    DragResize.makeResizable(c, rootcanvas);
+    DragResize.makeResizable(c);
 }
 
 private fun colorToHex(color: Color): String? {
@@ -57,8 +58,6 @@ private fun colorToHex(color: Color): String? {
     return hex2
 }
 fun addSubmenu(shape :Shape) {
-    // Create font, color, and size controls
-
     var fillPicker = ColorPicker(shape.fill as Color?)
     fillPicker.prefWidth = 50.0;
     var borderPicker = ColorPicker(shape.stroke as Color?)
@@ -93,29 +92,18 @@ fun addSubmenu(shape :Shape) {
         val y: Double = event.screenY - shape.layoutBounds.height/2 - 10.0
         popup.show(shape, x, y)
     }
-//        canvas.children.add(controlsBox)
-
 }
 
-class ShapeTools(resizableCanvas: Pane) {
-    var cursorAnchorX = 0.0
-    var cursorAnchorY = 0.0
-    var mouseOffsetX = 0.0
-    var mouseOffsetY = 0.0
-    var canvas = resizableCanvas
+class ShapeTools() {
     private val scale = Scale()
 
     init {
         scale.pivotX = 0.0
         scale.pivotY = 0.0
-        // println("ShapeTools initialized")
     }
 
     fun setScale(scene: Scene) {
         scale.xProperty().bind(scene.widthProperty())
         scale.yProperty().bind(scene.heightProperty())
     }
-
-    // create shapes
-
 }

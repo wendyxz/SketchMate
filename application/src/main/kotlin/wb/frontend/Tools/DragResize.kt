@@ -8,6 +8,8 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Rectangle
+import wb.frontend.Tools.CursorType
+import wb.frontend.Tools.cursor
 import wb.helper.save
 import kotlin.math.max
 
@@ -51,11 +53,7 @@ class OnDragResizeEL: OnDragResizeEventListener {
     private fun setNodeSize(node: Node, x: Double, y: Double, h: Double, w: Double) {
         node.layoutX = x
         node.layoutY = y
-        // TODO find generic way to set width and height of any node
-        // here we cant set height and width to node directly.
-        // or i just cant find how to do it,
-        // so you have to wright resize code anyway for your Nodes...
-        //something like this
+
         if (node is Canvas) {
             node.width = w
             node.height = h
@@ -88,12 +86,7 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
     private var state = S.DEFAULT
     private val listener: OnDragResizeEventListener? = defaultListener
 
-    init {
-        //if (listener != null) this.listener = listener
-    }
-
     protected fun mouseReleased(event: MouseEvent) {
-        save()
         if (state == S.DRAG) {
             node.layoutX = max(-node.layoutBounds.minX, event.sceneX - offsetX)
             node.layoutY = max(-node.layoutBounds.minY, event.sceneY - offsetY)
@@ -103,6 +96,7 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
         }
         node.cursor = Cursor.DEFAULT
         state = S.DEFAULT
+        save()
     }
 
     protected fun mouseOver(event: MouseEvent) {
@@ -185,7 +179,7 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
 
     protected fun mousePressed(event: MouseEvent) {
         cursor = CursorType.cursor
-//        print(event.x)
+
         nodeX = nodeX()
         nodeY = nodeY()
         nodeH = nodeH()
@@ -203,7 +197,7 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
             clickY = event.sceneY
             offsetX = event.sceneX - node.layoutX
             offsetY = event.sceneY - node.layoutY
-            //setNewInitialEventCoordinates(event)
+
             S.DRAG
         } else {
             S.DEFAULT
@@ -244,14 +238,6 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
         return side + MARGIN > point && side - MARGIN < point
     }
 
-    private fun parentX(localX: Double): Double {
-        return nodeX() + localX
-    }
-
-    private fun parentY(localY: Double): Double {
-        return nodeY() + localY
-    }
-
     private fun nodeX(): Double {
         return node.layoutX
     }
@@ -275,8 +261,7 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
         private const val MIN_W = 30.0
         private const val MIN_H = 20.0
         @JvmOverloads
-        fun makeResizable(node: Node, canva: Pane) {
-            canvas = canva
+        fun makeResizable(node: Node) {
             val resizer = DragResize(node, null)
             node.onMousePressed = EventHandler { event ->
                 if (cursor != CursorType.pen && cursor != CursorType.eraser) {

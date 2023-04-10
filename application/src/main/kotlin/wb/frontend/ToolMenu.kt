@@ -15,10 +15,10 @@ class ToolMenu(
     penTools: PenTools
 ) : ToolBar() {
     private val cursorOption = Button("Cursor")
-    private val textOption = Button("Text")
+    private val textOption = Button("Text (CMD+T)")
     private val penOption = PenOption(penTools)
     private val shapeOption = MenuButton("Shape")
-    private val eraserOption = Button("Eraser")
+    private val eraserOption = Button("Eraser (CMD+E)")
 
     private val eraserMenu = ContextMenu()
 
@@ -28,8 +28,8 @@ class ToolMenu(
     private val eraser4 = MenuItem("8.0")
     private val eraser5 = MenuItem("10.0")
 
-    private val rectangle = MenuItem("rect")
-    private val circle = MenuItem("circ")
+    private val rectangle = MenuItem("rect (CMD+R)")
+    private val circle = MenuItem("circ (CMD+C)")
 
     init {
         orientationProperty().set(Orientation.VERTICAL)

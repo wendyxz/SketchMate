@@ -29,13 +29,13 @@ class TopMenu(stage: Stage) : MenuBar() {
     private val themeMenu = Menu("Theme")
 
     // File sub-menu
-    private val fileNew = MenuItem("New Remote Board")
+    private val fileNew = MenuItem("New Remote Board (CMD+N)")
     private val fileOpen = MenuItem("Open Remote Board")
     private val fileLocal = MenuItem("Return to Local Board")
-    private val fileSave = MenuItem("Save")
-    private val fileLoad = MenuItem("Load")
-    private val fileExPNG = MenuItem("Export as PNG")
-    private val fileExPDF = MenuItem("Export as PDF")
+    private val fileSave = MenuItem("Save (CMD+S)")
+    private val fileLoad = MenuItem("Load (CMD+O)")
+    private val fileExPNG = MenuItem("Export as PNG (CMD+I)")
+    private val fileExPDF = MenuItem("Export as PDF (CMD+P)")
     private val fileQuit = MenuItem("Quit")
 
     // Edit sub-menu

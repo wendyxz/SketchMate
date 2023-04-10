@@ -167,15 +167,69 @@ class CircleDeserializer : JsonDeserializer<Circle>() {
 }
 
 class TriangleSerializer : JsonSerializer<Polygon>() {
-    override fun serialize(value: Polygon?, gen: JsonGenerator?, serializers: SerializerProvider?) {
+    override fun serialize(value: Polygon, gen: JsonGenerator?, serializers: SerializerProvider?) {
         gen?.writeStartObject()
+        gen?.writeNumberField("x1", value?.points[0])
+        gen?.writeNumberField("y1", value?.points[1])
+        gen?.writeNumberField("x2", value?.points[2])
+        gen?.writeNumberField("y2", value?.points[3])
+        gen?.writeNumberField("x3", value?.points[4])
+        gen?.writeNumberField("y3", value?.points[5])
+        gen?.writeFieldName("fill")
+        gen?.writeStartObject()
+        var color: Color? = value?.fill as? Color
+        if (color != null) {
+            gen?.writeBooleanField("opaque", color.isOpaque)
+            gen?.writeNumberField("hue", color.hue)
+            gen?.writeNumberField("saturation", color.saturation)
+            gen?.writeNumberField("brightness", color.brightness)
+        }
+        gen?.writeEndObject()
+        gen?.writeFieldName("stroke")
+        gen?.writeStartObject()
+        color = value?.stroke as? Color
+        if (color != null) {
+            gen?.writeBooleanField("opaque", color.isOpaque)
+            gen?.writeNumberField("hue", color.hue)
+            gen?.writeNumberField("saturation", color.saturation)
+            gen?.writeNumberField("brightness", color.brightness)
+        }
+        gen?.writeEndObject()
+        gen?.writeNumberField("strokeWidth", value?.strokeWidth ?: 0.0)
 
         gen?.writeEndObject()
-
-
-
     }
 }
+
+class TriangleDeserializer : JsonDeserializer<Polygon>() {
+    override fun deserialize(p: JsonParser?, ctxt: DeserializationContext?):Polygon? {
+        p?.let {
+            val codec = it.codec
+            val node: JsonNode = codec.readTree(p)
+            val x1 = node.get("x1").asDouble()
+            val y1 = node.get("y1").asDouble()
+            val x2 = node.get("x2").asDouble()
+            val y2 = node.get("y2").asDouble()
+            val x3 = node.get("x3").asDouble()
+            val y3 = node.get("y3").asDouble()
+
+            val fill = getColor(node.get("fill"))
+            val stroke = getColor(node.get("stroke"))
+            val strokeWidth = node.get("strokeWidth").asDouble()
+            var shape = Polygon()
+            shape.points.addAll(x1,y1, x2,y2, x3,y3)
+            shape.apply {
+                this.fill = fill
+                this.stroke = stroke
+                this.strokeWidth = strokeWidth
+            }
+            return shape
+        }
+
+        return null
+    }
+}
+
 
 class PathSerializer : JsonSerializer<Path>() {
     override fun serialize(

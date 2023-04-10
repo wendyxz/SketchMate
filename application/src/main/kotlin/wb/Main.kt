@@ -7,6 +7,7 @@ import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Path
+import javafx.scene.shape.Polygon
 import javafx.scene.shape.Rectangle
 import javafx.stage.Stage
 import kotlinx.serialization.Serializable
@@ -48,6 +49,8 @@ val objectMapper = jacksonObjectMapper().registerModule(
         .addDeserializer(Path::class.java, PathDeserializer())
         .addSerializer(VBox::class.java, TextSerializer())
         .addDeserializer(VBox::class.java, TextDeserializer())
+        .addSerializer(Polygon::class.java, TriangleSerializer())
+        .addDeserializer(Polygon::class.java, TriangleDeserializer())
 )
 
 fun save() {
@@ -79,6 +82,12 @@ fun save() {
                 elements.add(
                     Json.encodeToString(
                         TypeWrapper("VBox", objectMapper.writeValueAsString(element))
+                    )
+                )
+            is Polygon ->
+                elements.add(
+                    Json.encodeToString(
+                        TypeWrapper("Triangle", objectMapper.writeValueAsString(element))
                     )
                 )
 
@@ -187,10 +196,18 @@ fun load() {
                     rootcanvas.children.add(c)
                 }
 
-                "Path" -> rootcanvas.children.add(objectMapper.readValue(element.string, Path::class.java))
+                "Path" -> {
+                    rootcanvas.children.add(objectMapper.readValue(element.string, Path::class.java))
+                }
                 "VBox" -> {
                     rootcanvas.children.add(objectMapper.readValue(element.string, VBox::class.java))
                 }
+                "Triangle" -> {
+                    val t = objectMapper.readValue(element.string, Polygon::class.java)
+                    DragResize.makeResizable(t, rootcanvas)
+                    rootcanvas.children.add(t)
+                }
+
 
                 else -> error("LOAD ERROR !!! ")
             }

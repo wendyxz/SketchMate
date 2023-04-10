@@ -70,6 +70,8 @@ class TopMenu(stage: Stage) : MenuBar() {
         fileExPNG.setOnAction { exportPNG(stage) }
         fileExPDF.setOnAction { exportPDF(stage) }
 
+        helpAbout.setOnAction { showCopyright() }
+
         menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
 
         val autoSync: Timer = Timer()

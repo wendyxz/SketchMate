@@ -3,6 +3,7 @@ package wb.helper
 import javafx.scene.layout.VBox
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Path
+import javafx.scene.shape.Polygon
 import javafx.scene.shape.Rectangle
 import javafx.stage.Stage
 import kotlinx.serialization.encodeToString
@@ -48,6 +49,13 @@ fun save() {
                 elements.add(
                     Json.encodeToString(
                         TypeWrapper("VBox", objectMapper.writeValueAsString(element))
+                    )
+                )
+
+            is Polygon ->
+                elements.add(
+                    Json.encodeToString(
+                        TypeWrapper("Triangle", objectMapper.writeValueAsString(element))
                     )
                 )
 

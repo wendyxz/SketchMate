@@ -2,6 +2,7 @@ package wb.helper
 import javafx.scene.layout.VBox
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Path
+import javafx.scene.shape.Polygon
 import javafx.scene.shape.Rectangle
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -77,9 +78,16 @@ fun load() {
                     rootcanvas.children.add(c)
                 }
 
-                "Path" -> rootcanvas.children.add(objectMapper.readValue(element.string, Path::class.java))
+                "Path" -> {
+                    rootcanvas.children.add(objectMapper.readValue(element.string, Path::class.java))
+                }
                 "VBox" -> {
                     rootcanvas.children.add(objectMapper.readValue(element.string, VBox::class.java))
+                }
+                "Triangle" -> {
+                    val t = objectMapper.readValue(element.string, Polygon::class.java)
+                    DragResize.makeResizable(t)
+                    rootcanvas.children.add(t)
                 }
 
                 else -> error("LOAD ERROR !!! ")

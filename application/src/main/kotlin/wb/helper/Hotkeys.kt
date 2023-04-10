@@ -31,9 +31,10 @@ fun keyPressHandler(event: KeyEvent, stage: Stage) {
             KeyCode.V -> { setCursorType(CursorType.cursor)}
             KeyCode.R -> { setCursorType(CursorType.rectangle) }
             KeyCode.C -> { setCursorType(CursorType.circle) }
+            KeyCode.T -> { setCursorType(CursorType.triangle) }
             KeyCode.D -> { setCursorType(CursorType.pen) } // with previous style
             KeyCode.E -> { setCursorType(CursorType.eraser) }
-            KeyCode.T -> { setCursorType(CursorType.textbox) }
+            KeyCode.B -> { setCursorType(CursorType.textbox) }
         }
     }
 }

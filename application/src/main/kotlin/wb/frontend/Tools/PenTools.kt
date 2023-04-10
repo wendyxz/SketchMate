@@ -29,7 +29,7 @@ class PenTools() {
 
 
 
-class PenOption(penTools: PenTools) : ToggleButton("Pen") {
+class PenOption(penTools: PenTools) : ToggleButton("Pen (CMD +D)") {
     private val penMenu = ContextMenu()
     private val styleToggles = ToggleGroup()
     private val colourToggles = ToggleGroup()

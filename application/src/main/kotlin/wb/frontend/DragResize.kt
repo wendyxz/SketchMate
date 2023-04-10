@@ -7,6 +7,7 @@ import javafx.scene.canvas.Canvas
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Circle
+import javafx.scene.shape.Polygon
 import javafx.scene.shape.Rectangle
 import kotlin.math.max
 
@@ -84,6 +85,9 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
     private var startY = 0.0
     private var startH = 0.0
     private var startW = 0.0
+    private var minX = 0.0
+    private var maxX = 0.0
+    private var minY = 0.0
     private var state = S.DEFAULT
     private val listener: OnDragResizeEventListener? = defaultListener
 
@@ -94,8 +98,17 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
     protected fun mouseReleased(event: MouseEvent) {
         wb.save()
         if (state == S.DRAG) {
-            node.layoutX = max(-node.layoutBounds.minX, event.sceneX - offsetX)
-            node.layoutY = max(-node.layoutBounds.minY, event.sceneY - offsetY)
+            if (node is Polygon) {
+                for (i in 0..5 step 2) {
+                    node.points[i] += node.translateX
+                }
+                for (i in 1..5 step 2) {
+                    node.points[i] += node.translateY
+                }
+            } else {
+                node.layoutX = max(-node.layoutBounds.minX, event.sceneX - offsetX)
+                node.layoutY = max(-node.layoutBounds.minY, event.sceneY - offsetY)
+            }
 
             node.translateX = 0.0
             node.translateY = 0.0
@@ -112,14 +125,27 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
 
     private fun currentMouseState(event: MouseEvent): S {
         var state = S.DEFAULT
-        val left = isLeftResizeZone(event)
-        val right = isRightResizeZone(event)
-        val top = isTopResizeZone(event)
-        val bottom = isBottomResizeZone(event)
-        if (left && top) state = S.NW_RESIZE else if (left && bottom) state = S.SW_RESIZE else if (right && top) state =
-            S.NE_RESIZE else if (right && bottom) state = S.SE_RESIZE else if (right) state =
-            S.E_RESIZE else if (left) state = S.W_RESIZE else if (top) state = S.N_RESIZE else if (bottom) state =
-            S.S_RESIZE else if (isInDragZone(event)) state = S.DRAG
+        if (node is Polygon) {
+            val x = event.x
+            val y = event.y
+            if (node.points[0]+node.layoutX - MARGIN <= x && x <= node.points[0]+node.layoutX + MARGIN) {
+                state = S.W_RESIZE
+            } else if (node.points[2]+node.layoutX + MARGIN >= x && x >= node.points[2]+node.layoutX - MARGIN) {
+                state = S.E_RESIZE
+            } else if (node.points[5]+node.layoutY- MARGIN <= y && y <= node.points[5]+node.layoutY + MARGIN) {
+                state = S.N_RESIZE
+            }
+        } else {
+            val left = isLeftResizeZone(event)
+            val right = isRightResizeZone(event)
+            val top = isTopResizeZone(event)
+            val bottom = isBottomResizeZone(event)
+            if (left && top) state = S.NW_RESIZE else if (left && bottom) state =
+                S.SW_RESIZE else if (right && top) state =
+                S.NE_RESIZE else if (right && bottom) state = S.SE_RESIZE else if (right) state =
+                S.E_RESIZE else if (left) state = S.W_RESIZE else if (top) state = S.N_RESIZE else if (bottom) state =
+                S.S_RESIZE else if (isInDragZone(event)) state = S.DRAG
+        }
         return state
     }
 
@@ -139,6 +165,14 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
 //                node.translateY = max(-node.layoutBounds.minY,event.sceneY - clickY)
                 //listener.onDrag(node, mouseX - clickX, mouseY - clickY, nodeH, nodeW)
             } else if (state != S.DEFAULT) {
+                if (node is Polygon) {
+                    when (state) {
+                        S.N_RESIZE -> node.points[5] = minY + event.sceneY - clickY
+                        S.W_RESIZE -> node.points[0] = minX - clickX + event.sceneX
+                        S.E_RESIZE -> node.points[2] = maxX + event.sceneX - clickX
+                    }
+                    return
+                }
                 //resizing
                 var newX = startX
                 var newY = startY
@@ -211,8 +245,20 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
         }
     }
 
-
+    private fun isTriangleResizeZone(node: Polygon, event: MouseEvent) : Boolean {
+        minX = node.points[0]
+        maxX = node.points[2]
+        minY = node.points[5]
+        val x = event.x
+        val y = event.y
+        return  node.points[0] - MARGIN <= x && x <= node.points[0] + MARGIN ||
+                node.points[2] + MARGIN >= x && x >= node.points[2] - MARGIN ||
+                node.points[5] - MARGIN <= y && y <= node.points[5] + MARGIN
+    }
     private fun isInResizeZone(event: MouseEvent): Boolean {
+        if (node is Polygon) {
+            return isTriangleResizeZone(node, event)
+        }
         return (isLeftResizeZone(event) || isRightResizeZone(event)
                 || isBottomResizeZone(event) || isTopResizeZone(event))
     }

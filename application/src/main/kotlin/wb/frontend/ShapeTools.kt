@@ -16,6 +16,9 @@ import wb.rootcanvas
 import java.lang.Math.sqrt
 import java.util.*
 import kotlin.random.Random
+
+
+val coefficient = sqrt(3.0)/2
 private fun randomColor() : Color {
     return Color.rgb(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
 }
@@ -46,7 +49,7 @@ fun createCircle() {
 
 fun createTriangle() {
     val t = Polygon()
-    t.points.addAll(200.0, 300.0, 300.0, 300.0, 250.0, 300.0-sqrt(3.0)/2*100)
+    t.points.addAll(200.0, 300.0, 300.0, 300.0, 250.0, 300.0- coefficient*100)
     t.apply{
         fill = randomColor()
         stroke = randomColor()

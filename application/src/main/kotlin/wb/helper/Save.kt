@@ -8,7 +8,7 @@ import javafx.stage.Stage
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import wb.*
-import wb.frontend.showWarnDialog
+import wb.frontend.objectMapper
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter

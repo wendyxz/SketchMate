@@ -1,5 +1,4 @@
 package wb.helper
-
 import javafx.scene.layout.VBox
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Path
@@ -10,13 +9,14 @@ import wb.TimeSerializer
 import wb.TypeWrapper
 import wb.autoSyncTimeStamp
 import wb.frontend.DragResize
-import wb.frontend.addSubmenu
-import wb.frontend.showWarnDialog
+import wb.frontend.Tools.addSubmenu
+import wb.frontend.objectMapper
 import wb.rootcanvas
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
-
+import net.codebot.shared.processJsonString
+import net.codebot.shared.removeDoubleQuotes
 
 
 fun load() {
@@ -34,8 +34,8 @@ fun load() {
         try {
             // todo: add some output to this
             data = wb.backend.getSingleBoard()
-            data = wb.helper.processJsonString(data)
-            data = wb.helper.removeDoubleQuotes(data)
+            data = processJsonString(data)
+            data = removeDoubleQuotes(data)
             when (data) {
                 "" -> {
                     // this should be not finding such user case
@@ -66,14 +66,14 @@ fun load() {
                 "Rectangle" -> {
                     val r = objectMapper.readValue(element.string, Rectangle::class.java)
                     addSubmenu(r)
-                    DragResize.makeResizable(r, rootcanvas);
+                    DragResize.makeResizable(r);
                     rootcanvas.children.add(r)
                 }
 
                 "Circle" -> {
                     val c = objectMapper.readValue(element.string, Circle::class.java)
                     addSubmenu(c)
-                    DragResize.makeResizable(c, rootcanvas);
+                    DragResize.makeResizable(c);
                     rootcanvas.children.add(c)
                 }
 

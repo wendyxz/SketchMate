@@ -12,8 +12,6 @@ var userId = ""
 var username = ""
 var password = ""
 
-/*User*/
-
 fun createUser(username: String, password: String): String {
     val body = "{\"name\": \"$username\", \"password\": \"$password\"}"
     val client = HttpClient.newBuilder().build()
@@ -101,7 +99,6 @@ fun getUsers(): String {
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
     println("[GETUSERS] <$response> ${response.body()}")
     return if (response.statusCode() == 200) response.body() else ""
-
 }
 
 fun getSingleUser(): String {

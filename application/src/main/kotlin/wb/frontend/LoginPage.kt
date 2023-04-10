@@ -11,8 +11,9 @@ import javafx.scene.text.Text
 import javafx.stage.Stage
 import javafx.util.Callback
 import javafx.beans.property.SimpleStringProperty
+import net.codebot.shared.VerifyCredential
 
-class LoginMenu(root: BorderPane, stage: Stage, width: Double, height: Double) {
+class LoginPage(root: BorderPane, stage: Stage, width: Double, height: Double) {
     private val title = Text("User Login / Sign up")
     private val loginButton = Button("Log in")
     private val signUpButton = Button("Sign up")
@@ -91,7 +92,6 @@ class LoginMenu(root: BorderPane, stage: Stage, width: Double, height: Double) {
             val password = PasswordField()
             val passwordRepeat = PasswordField()
 
-            //val buttonTypeOk = Button("Sign Up")
             val buttonTypeOk = ButtonType("Okay", ButtonBar.ButtonData.OK_DONE)
 
             val grid = GridPane()
@@ -105,25 +105,18 @@ class LoginMenu(root: BorderPane, stage: Stage, width: Double, height: Double) {
 
             dialog.dialogPane.buttonTypes.add(buttonTypeOk)
 
-            // set dialog pos
-//            val X = this.viewModel.model.stage.x + this.viewModel.model.stage.width / 2
-//            val Y = this.viewModel.model.stage.y + this.viewModel.model.stage.height / 2
-//            dialog.x = X
-//            dialog.y = Y
             dialog.x = 400.0
             dialog.y = 400.0
 
-            dialog.resultConverter = Callback<ButtonType?, VerifyCredential?> {
+            dialog.resultConverter = Callback {
                 if (it == buttonTypeOk) VerifyCredential(username.text, password.text, passwordRepeat.text) else null
             }
 
-            // 'x' functionality.
             dialog.setOnCloseRequest {
                 dialog.hide()
             }
 
             val result = dialog.showAndWait()
-            //println("${result.get().username} ${result.get().password} ${result.get().verifyPassword}")
 
             if (result.isPresent) {
                 // now we check if two password is the same
@@ -146,16 +139,13 @@ class LoginMenu(root: BorderPane, stage: Stage, width: Double, height: Double) {
         }
     }
 
-    fun showWarnDialog(title: String, content: String?) {
+    private fun showWarnDialog(title: String, content: String?) {
         var displayContent = content
         if (displayContent == null) {
             displayContent = "Unspecified"
         }
         val alert = Alert(Alert.AlertType.INFORMATION)
-//        val X = stage.x + stage.width / 2
-//        val Y = stage.y + stage.height / 2
-//        alert.x = X
-//        alert.y = Y
+
         alert.x = 400.0
         alert.y = 400.0
         alert.title = title
@@ -177,5 +167,4 @@ class LoginMenu(root: BorderPane, stage: Stage, width: Double, height: Double) {
             )
         )
     }
-
 }

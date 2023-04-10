@@ -1,9 +1,8 @@
-package wb.frontend;
+package wb.helper;
 
 import javafx.scene.canvas.Canvas
 
-
-class ResizableCanvas : Canvas() {
+class ResizeCanvas : Canvas() {
     override fun isResizable(): Boolean {
         return true
     }

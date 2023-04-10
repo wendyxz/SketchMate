@@ -1,4 +1,4 @@
-package wb.frontend
+package wb.frontend.Tools
 
 import javafx.event.EventHandler
 import javafx.scene.Node
@@ -7,14 +7,15 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
 import javafx.scene.shape.*
 import javafx.scene.transform.Scale
+import wb.frontend.DragResize
 import wb.helper.save
+import wb.rootcanvas
 
 import kotlin.math.max
 
-class PathTools(Canvas: Pane) {
+class PathTools() {
     private var path = Path()
     private var penTools = PenTools()
-    private var rootcanvas = Canvas
     private val scale = Scale()
 
     init {
@@ -71,8 +72,7 @@ class PathTools(Canvas: Pane) {
         moveTo.y = max(penTools.strokeWidth * 0.5, event.y)
         path.elements.add(moveTo)
         rootcanvas.children.add(path)
-        DragResize.makeResizable(path, rootcanvas)
-        // print(path)
+        DragResize.makeResizable(path)
     }
 
     private val pathProcess = EventHandler<MouseEvent> { event ->
@@ -152,12 +152,6 @@ class PathTools(Canvas: Pane) {
     }
 
     private fun eraseShape(shape: Shape): Boolean{
-//        println("start")
-//        println(shape)
-//        println("layout ${shape.layoutX} ${shape.layoutY}")
-//        println("translate ${shape.translateX} ${shape.translateY}")
-//        println("finish")
-
         if(shape is Rectangle){
             val smallerX = shape.x + shape.layoutX
             val greaterX = smallerX + shape.width

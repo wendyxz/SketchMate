@@ -1,3 +1,0 @@
-
-rootProject.name = "exposed-cities"
-

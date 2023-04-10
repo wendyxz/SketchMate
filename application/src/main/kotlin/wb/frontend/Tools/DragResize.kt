@@ -7,6 +7,7 @@ import javafx.scene.canvas.Canvas
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Circle
+import javafx.scene.shape.Path
 import javafx.scene.shape.Polygon
 import javafx.scene.shape.Rectangle
 import wb.frontend.Tools.CursorType
@@ -115,7 +116,10 @@ class DragResize private constructor(private val node: Node, listener: OnDragRes
 
     protected fun mouseOver(event: MouseEvent) {
         val state = currentMouseState(event)
-        val cursor = getCursorForState(state)
+        var cursor =  Cursor.DEFAULT
+        if (node !is Path) {
+            cursor = getCursorForState(state)
+        }
         node.cursor = cursor
     }
 

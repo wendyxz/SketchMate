@@ -45,5 +45,5 @@ fun setCursorType(ctype: CursorType) {
             pathTools.initPath()
         }
     }
-    save()
+    if(cursor != CursorType.cursor) save()
 }

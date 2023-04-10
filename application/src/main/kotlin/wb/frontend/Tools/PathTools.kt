@@ -184,7 +184,21 @@ class PathTools() {
 
             return false
         }
+        else if(shape is Polygon){
+            val pathLine = findLineList(path)
 
+            val basePoint1 = Point(shape.points[0], shape.points[1])
+            val basePoint2 = Point(shape.points[2], shape.points[3])
+            val thirdPoint = Point(shape.points[4], shape.points[5])
+
+            for(eacPathLine in pathLine){
+                if(lineIntersect(eacPathLine, Line(basePoint1, basePoint2))) return true;
+                if(lineIntersect(eacPathLine, Line(basePoint1, thirdPoint))) return true;
+                if(lineIntersect(eacPathLine, Line(basePoint2, thirdPoint))) return true;
+            }
+
+            return false
+        }
         return false
     }
 

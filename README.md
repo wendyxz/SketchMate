@@ -58,10 +58,10 @@ Installers can be found in release pages. No additional dependency installation 
 - There are tools that support:
     -  drawing (multiple pen styles and colours),
     -  inserting text (multiple fonts, sizes and colours).
-    -  inserting shapes (rectangles, circle and triangle, which can drag each sides to change shape)
+    -  inserting shapes (rectangles, circle and triangle, multiple fill and border colours, draggable and resizable)
     -  editing existing content (Move, Remove, change Styles, etc.)
     -  selecting and moving content around the whiteboard
-    -  erasing content
+    -  erasing content (object eraser)
 
 
 ## Releases

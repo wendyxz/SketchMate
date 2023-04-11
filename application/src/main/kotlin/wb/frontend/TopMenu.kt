@@ -4,7 +4,6 @@ import javafx.application.Platform
 import javafx.beans.property.SimpleStringProperty
 import javafx.scene.control.*
 import javafx.scene.layout.GridPane
-import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.util.Callback
 import kotlinx.serialization.encodeToString
@@ -18,12 +17,13 @@ import java.io.File
 import java.io.FileReader
 import java.util.*
 import kotlin.concurrent.timerTask
+import kotlin.system.exitProcess
 
 class TopMenu(stage: Stage) : MenuBar() {
 
     // Menu choices
     private val fileMenu = Menu("File")
-    private val editMenu = Menu("Edit")
+//    private val editMenu = Menu("Edit")
     private val helpMenu = Menu("Help")
     private val accountMenu = Menu("Account")
     private val themeMenu = Menu("Theme")
@@ -59,9 +59,10 @@ class TopMenu(stage: Stage) : MenuBar() {
 
     init {
         fileMenu.items.addAll(fileNew, fileOpen, fileSave, fileLoad, fileExPNG, fileExPDF, fileQuit, fileLocal)
-        editMenu.items.addAll(editUndo, editRedo, editCut, editCopy, editPaste)
+//        editMenu.items.addAll(editUndo, editRedo, editCut, editCopy, editPaste)
         helpMenu.items.addAll((helpAbout))
-        accountMenu.items.addAll(accountLogOut, accountChangeP)
+//        accountMenu.items.addAll(accountLogOut, accountChangeP)
+        accountMenu.items.add(accountChangeP)
         themeMenu.items.addAll(lightTheme, darkTheme)
         darkTheme.setOnAction {
             setTheme("dark")
@@ -72,6 +73,12 @@ class TopMenu(stage: Stage) : MenuBar() {
             wb.toolMenu.setTheme("light")
         }
 
+        // Add ActionListener to the MenuItem
+        fileQuit.setOnAction {
+            // Handle the action event
+            exitProcess(0) // Exit the app with status code 0 (successful termination)
+        }
+
         registerControllers(stage)
         fileControllers(stage)
         fileExPNG.setOnAction { exportPNG(stage) }
@@ -79,7 +86,8 @@ class TopMenu(stage: Stage) : MenuBar() {
 
         helpAbout.setOnAction { showCopyright() }
 
-        menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
+//        menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
+        menus.addAll(fileMenu, helpMenu, accountMenu, themeMenu)
 
         setTheme("light")
 
@@ -95,7 +103,7 @@ class TopMenu(stage: Stage) : MenuBar() {
         if (theme == "light") {
             style = "-fx-background-color: lightblue;"
             fileMenu.style = "-fx-background-color: lightcyan  ;"
-            editMenu.style = "-fx-background-color: lightcyan  ;"
+//            editMenu.style = "-fx-background-color: lightcyan  ;"
             helpMenu.style = "-fx-background-color: lightcyan  ;"
             accountMenu.style = "-fx-background-color: lightcyan  ;"
             themeMenu.style = "-fx-background-color: lightcyan  ;"
@@ -124,24 +132,11 @@ class TopMenu(stage: Stage) : MenuBar() {
         } else {
             style = "-fx-background-color: darkslategray;"
             fileMenu.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
-            editMenu.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
+//            editMenu.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
             helpMenu.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
             accountMenu.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
             themeMenu.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
         }
-    }
-
-    private fun setTextColour(color: Color) {
-        style += "-fx-text-fill: ${toRGBCode(color)};"
-    }
-
-    private fun toRGBCode(color: Color): String {
-        return String.format(
-            "#%02X%02X%02X",
-            (color.red * 255).toInt(),
-            (color.green * 255).toInt(),
-            (color.blue * 255).toInt()
-        )
     }
 
 
@@ -184,31 +179,31 @@ class TopMenu(stage: Stage) : MenuBar() {
         }
 
         fileSave.setOnAction {
-            val choiceDialog = ChoiceDialog("local", "local", "remote ${wb.backend.boardname}")
-            choiceDialog.headerText = "Select save location:"
-            val result = choiceDialog.showAndWait()
-            result.ifPresent { location ->
-                if (location == "local") {
+//            val choiceDialog = ChoiceDialog("local", "local", "remote ${wb.backend.boardname}")
+//            choiceDialog.headerText = "Select save location:"
+//            val result = choiceDialog.showAndWait()
+//            result.ifPresent { location ->
+//                if (location == "local") {
+//                    save()
+//                } else {
                     save()
-                } else {
-                    save()
-                }
-            }
+//                }
+//            }
         }
 
         fileLoad.setOnAction {
-            val choices = listOf("local", "remote ${wb.backend.boardname}")
-            val choiceDialog = ChoiceDialog(choices[0], choices)
-            choiceDialog.headerText = "Select file to load:"
-            val result = choiceDialog.showAndWait()
-            result.ifPresent { selection ->
-                if (selection == "local") {
+//            val choices = listOf("local", "remote ${wb.backend.boardname}")
+//            val choiceDialog = ChoiceDialog(choices[0], choices)
+//            choiceDialog.headerText = "Select file to load:"
+//            val result = choiceDialog.showAndWait()
+//            result.ifPresent { selection ->
+//                if (selection == "local") {
                     load()
-                } else {
-                    load()
-                }
-                println("Load selection: $selection")
-            }
+//                } else {
+//                    load()
+//                }
+//                println("Load selection: $selection")
+//            }
         }
 
         fileOpen.setOnAction {

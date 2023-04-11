@@ -1,9 +1,9 @@
 package wb.frontend.Tools
 
 import javafx.scene.Scene
-import javafx.scene.control.*
+import javafx.scene.control.ColorPicker
+import javafx.scene.control.ComboBox
 import javafx.scene.layout.HBox
-import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Polygon
@@ -16,12 +16,14 @@ import wb.rootcanvas
 import java.lang.Math.sqrt
 import java.util.*
 import kotlin.random.Random
-private fun randomColor() : Color {
+
+private fun randomColor(): Color {
     return Color.rgb(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
 }
+
 fun createRectangle() {
     val r = Rectangle(0.0, 0.0, 50.0, 50.0)
-    r.apply{
+    r.apply {
         fill = randomColor()
         stroke = Color.BLACK
         strokeWidth = 0.0
@@ -34,7 +36,7 @@ fun createRectangle() {
 
 fun createCircle() {
     val c = Circle(0.0, 0.0, 25.0, randomColor())
-    c.apply{
+    c.apply {
         layoutX = 250.0
         c.layoutY = 200.0
         stroke = Color.BLACK
@@ -73,7 +75,8 @@ private fun colorToHex(color: Color): String? {
     }
     return hex2
 }
-fun addSubmenu(shape :Shape) {
+
+fun addSubmenu(shape: Shape) {
     var fillPicker = ColorPicker(shape.fill as Color?)
     fillPicker.prefWidth = 50.0;
     var borderPicker = ColorPicker(shape.stroke as Color?)
@@ -85,7 +88,7 @@ fun addSubmenu(shape :Shape) {
 
     // Create a horizontal box to hold the controls
     var controlsBox = HBox()
-    controlsBox.spacing =0.0
+    controlsBox.spacing = 0.0
     controlsBox.children.addAll(fillPicker, borderPicker, sizeComboBox)
 
     fillPicker.setOnAction {
@@ -93,7 +96,7 @@ fun addSubmenu(shape :Shape) {
         shape.fill = Color.web(hexcolor)
     }
     borderPicker.setOnAction {
-        val hexcolor= colorToHex(borderPicker.value)
+        val hexcolor = colorToHex(borderPicker.value)
         shape.stroke = Color.web(hexcolor)
     }
     sizeComboBox.setOnAction {
@@ -105,7 +108,7 @@ fun addSubmenu(shape :Shape) {
     popup.isAutoHide = true
     shape.setOnMouseClicked { event ->
         val x: Double = event.screenX - 30.0
-        val y: Double = event.screenY - shape.layoutBounds.height/2 - 10.0
+        val y: Double = event.screenY - shape.layoutBounds.height / 2 - 10.0
         popup.show(shape, x, y)
     }
 }

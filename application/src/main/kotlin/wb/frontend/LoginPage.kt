@@ -53,7 +53,6 @@ class LoginPage(root: BorderPane, stage: Stage, width: Double, height: Double) {
                 showWarnDialog("Unspecified Password!", "Please enter password!")
             }
             try {
-                // todo: add some output to this
                 val str = wb.backend.login(username.text, password.text)
                 when (str) {
                     "Success" -> {
@@ -130,7 +129,6 @@ class LoginPage(root: BorderPane, stage: Stage, width: Double, height: Double) {
                     showWarnDialog("Unspecified Password!", "Please enter password!")
                 } else {
                     try {
-                        // todo: add some output to this
                         println(wb.backend.createUser(result.get().username, result.get().password))
                         showWarnDialog("Success", "Successfully signed up, please log in!")
                     } catch (e: Exception) {

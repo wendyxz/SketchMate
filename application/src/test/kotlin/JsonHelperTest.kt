@@ -31,7 +31,8 @@ class JsonHelperTest {
     @Test
     fun `test processJsonString with multiple levels of nesting and escaped quotes`() {
         val jsonString = """{"name": "John \"Doe\"", "age": 30, "address": {"city": "New \"York\"", "state": "NY"}}"""
-        val expected = """{"name": "John \"Doe\"", "age": 30, "address": {\"city\": \"New \\"York\\"\", \"state\": \"NY\"}}"""
+        val expected =
+            """{"name": "John \"Doe\"", "age": 30, "address": {\"city\": \"New \\"York\\"\", \"state\": \"NY\"}}"""
         assertEquals(expected, processJsonString(jsonString))
     }
 

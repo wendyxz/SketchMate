@@ -23,7 +23,8 @@ class TopMenu(stage: Stage) : MenuBar() {
 
     // Menu choices
     private val fileMenu = Menu("File")
-//    private val editMenu = Menu("Edit")
+
+    //    private val editMenu = Menu("Edit")
     private val helpMenu = Menu("Help")
     private val accountMenu = Menu("Account")
     private val themeMenu = Menu("Theme")
@@ -59,9 +60,9 @@ class TopMenu(stage: Stage) : MenuBar() {
 
     init {
         fileMenu.items.addAll(fileNew, fileOpen, fileSave, fileLoad, fileExPNG, fileExPDF, fileQuit, fileLocal)
-//        editMenu.items.addAll(editUndo, editRedo, editCut, editCopy, editPaste)
+
         helpMenu.items.addAll((helpAbout))
-//        accountMenu.items.addAll(accountLogOut, accountChangeP)
+
         accountMenu.items.add(accountChangeP)
         themeMenu.items.addAll(lightTheme, darkTheme)
         darkTheme.setOnAction {
@@ -86,7 +87,7 @@ class TopMenu(stage: Stage) : MenuBar() {
 
         helpAbout.setOnAction { showCopyright() }
 
-//        menus.addAll(fileMenu, editMenu, helpMenu, accountMenu, themeMenu)
+
         menus.addAll(fileMenu, helpMenu, accountMenu, themeMenu)
 
         setTheme("light")
@@ -103,7 +104,7 @@ class TopMenu(stage: Stage) : MenuBar() {
         if (theme == "light") {
             style = "-fx-background-color: lightblue;"
             fileMenu.style = "-fx-background-color: lightcyan  ;"
-//            editMenu.style = "-fx-background-color: lightcyan  ;"
+
             helpMenu.style = "-fx-background-color: lightcyan  ;"
             accountMenu.style = "-fx-background-color: lightcyan  ;"
             themeMenu.style = "-fx-background-color: lightcyan  ;"
@@ -132,7 +133,7 @@ class TopMenu(stage: Stage) : MenuBar() {
         } else {
             style = "-fx-background-color: darkslategray;"
             fileMenu.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
-//            editMenu.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
+
             helpMenu.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
             accountMenu.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
             themeMenu.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
@@ -179,31 +180,11 @@ class TopMenu(stage: Stage) : MenuBar() {
         }
 
         fileSave.setOnAction {
-//            val choiceDialog = ChoiceDialog("local", "local", "remote ${wb.backend.boardname}")
-//            choiceDialog.headerText = "Select save location:"
-//            val result = choiceDialog.showAndWait()
-//            result.ifPresent { location ->
-//                if (location == "local") {
-//                    save()
-//                } else {
-                    save()
-//                }
-//            }
+            save()
         }
 
         fileLoad.setOnAction {
-//            val choices = listOf("local", "remote ${wb.backend.boardname}")
-//            val choiceDialog = ChoiceDialog(choices[0], choices)
-//            choiceDialog.headerText = "Select file to load:"
-//            val result = choiceDialog.showAndWait()
-//            result.ifPresent { selection ->
-//                if (selection == "local") {
-                    load()
-//                } else {
-//                    load()
-//                }
-//                println("Load selection: $selection")
-//            }
+            load()
         }
 
         fileOpen.setOnAction {

@@ -8,7 +8,6 @@ import io.jsonwebtoken.SignatureAlgorithm
 import java.util.*
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
-//import jakarta.xml.bind.DatatypeConverter as DatatypeConverter
 
 @RestController
 @RequestMapping("/login")
@@ -28,9 +27,6 @@ class UserController(var userService: UserService) {
                 return ResponseEntity.status(401).body("Unauthorized")
             }
 
-//            val body = Jwts.parser().setSigningKey("secret").parseClaimsJws(jwt).body
-
-//            var usr = userService.findUser(body.issuer)
             var usr = userService.findUser(jwt)
             return ResponseEntity.ok(usr)
         } catch (e: Exception) {
@@ -55,11 +51,6 @@ class UserController(var userService: UserService) {
 
         val issuer = usr!!.id
 
-//        val jwt = Jwts.builder()
-//            .setIssuer(issuer)
-//            .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
-//            .signWith(SignatureAlgorithm.HS512, "secret")
-//            .compact()
         val jwt = issuer
         var cookie = Cookie("jwt", jwt)
         cookie.maxAge = -1
@@ -97,8 +88,6 @@ class UserController(var userService: UserService) {
             if (jwt == null) {
                 return ResponseEntity.status(401).body("Unauthorized")
             }
-//            val body = Jwts.parser().setSigningKey("secret").parseClaimsJws(jwt).body
-//            var suc = userService.updateUser(body.issuer, user)
             var suc = userService.updateUser(jwt, user)
             return ResponseEntity.ok(suc)
         } catch (e: Exception) {
@@ -120,8 +109,6 @@ class UserController(var userService: UserService) {
             if (jwt == null) {
                 return ResponseEntity.status(401).body("Unauthorized")
             }
-//            val body = Jwts.parser().setSigningKey("secret").parseClaimsJws(jwt).body
-//            var suc = userService.deleteUser(body.issuer)
             var suc = userService.deleteUser(jwt)
             return ResponseEntity.ok(suc)
         } catch (e: Exception) {

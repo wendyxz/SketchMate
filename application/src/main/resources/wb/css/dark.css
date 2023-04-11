@@ -1,0 +1,174 @@
+
+/* Set button color to a light blue */
+.button {
+  -fx-background-color: #b3d9ff;
+}
+
+/* Set hover color for buttons */
+.button:hover {
+  -fx-background-color: #99ccff;
+}
+
+/* Set color for selected buttons */
+.button:pressed, .button:default {
+  -fx-background-color: #66b2ff;
+}
+
+/* Set color for disabled buttons */
+.button:disabled {
+  -fx-background-color: #f2f2f2;
+}
+
+
+
+/* Set color for javafx.scene.text.Text */
+.text {
+-fx-fill: #134124;
+-fx-font-family: "Segoe UI", sans-serif;
+-fx-font-size: 14px;
+}
+
+/* Set color and font for Label */
+.label {
+-fx-text-fill: #333333;
+-fx-font-family: "Segoe UI", sans-serif;
+-fx-font-size: 14px;
+}
+
+/* Set color, font and border for TextField */
+.text-field {
+-fx-text-fill: #333333;
+-fx-font-family: "Segoe UI", sans-serif;
+-fx-font-size: 14px;
+-fx-border-color: #b3d9ff;
+-fx-border-radius: 5px;
+}
+
+/* Set color, font and border for PasswordField */
+.password-field {
+-fx-text-fill: #333333;
+-fx-font-family: "Segoe UI", sans-serif;
+-fx-font-size: 14px;
+-fx-border-color: #b3d9ff;
+-fx-border-radius: 5px;
+}
+
+/* Set color, font and border for GridPane */
+.grid-pane {
+-fx-text-fill: #333333;
+-fx-font-family: "Segoe UI", sans-serif;
+-fx-font-size: 14px;
+-fx-border-color: #b3d9ff;
+-fx-border-radius: 5px;
+}
+
+.text-field {
+    -fx-text-fill: blue; /* sets the text color to blue */
+    -fx-font-size: 14px; /* sets the font size to 14px */
+    -fx-background-color: white; /* sets the background color to white */
+}
+.label {
+    -fx-text-fill: red; /* sets the text color to red */
+    -fx-font-size: 16px; /* sets the font size to 16px */
+    -fx-font-weight: bold; /* sets the font weight to bold */
+}
+
+.grid-pane {
+    -fx-background-color: #e0ffff ; /* sets the background color to light gray */
+    -fx-hgap: 10px; /* sets the horizontal gap between columns to 10px */
+    -fx-vgap: 10px; /* sets the vertical gap between rows to 10px */
+}
+.grid-pane label {
+    -fx-font-size: 14px; /* sets the font size to 14px */
+    -fx-font-weight: bold; /* sets the font weight to bold */
+}
+/* Style for TopMenu */
+.border-pane .menuBar {
+    -fx-background-color: #4db6ac; /* sets the background color to a light blue */
+}
+
+.border-pane .menu {
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+}
+
+.border-pane .menu .label {
+    -fx-padding: 5px;
+}
+
+.border-pane .menu:hover {
+    -fx-background-color: #26a69a; /* sets the background color to a darker blue when the mouse hovers over it */
+}
+
+.border-pane .menu .menu-item {
+    -fx-text-fill: white;
+}
+
+.border-pane .menu .menu-item:hover {
+    -fx-background-color: #26a69a; /* sets the background color to a darker blue when the mouse hovers over it */
+}
+
+/* Style for ToolMenu */
+.tool-menu {
+    -fx-background-color: #e0f2f1; /* sets the background color to a light blue */
+}
+
+.tool-menu .button {
+    -fx-font-size: 14px;
+    -fx-background-color: transparent;
+    -fx-text-fill: #37474f;
+    -fx-padding: 5px;
+}
+
+.tool-menu .button:hover {
+    -fx-background-color: #b2dfdb; /* sets the background color to a lighter blue when the mouse hovers over it */
+}
+
+/* Set background color for the scene */
+.root {
+    -fx-background-color: #eceff1; /* sets the background color to a light blue */
+}
+
+/* Style for TopMenu */
+.menuBar {
+    -fx-background-color: #4db6ac; /* sets the background color to a light blue */
+}
+
+.menu {
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+}
+
+.menu .label {
+    -fx-padding: 5px;
+}
+
+.menu:hover {
+    -fx-background-color: #26a69a; /* sets the background color to a darker blue when the mouse hovers over it */
+}
+
+.menu .menu-item {
+    -fx-text-fill: white;
+}
+
+.menu .menu-item:hover {
+    -fx-background-color: #26a69a; /* sets the background color to a darker blue when the mouse hovers over it */
+}
+
+/* Style for ToolMenu */
+.tool-menu {
+    -fx-background-color: #e0f2f1; /* sets the background color to a light blue */
+}
+
+.tool-menu .button {
+    -fx-font-size: 14px;
+    -fx-background-color: transparent;
+    -fx-text-fill: #37474f;
+    -fx-padding: 5px;
+}
+
+.tool-menu .button:hover {
+    -fx-background-color: #b2dfdb; /* sets the background color to a lighter blue when the mouse hovers over it */
+}
+
+

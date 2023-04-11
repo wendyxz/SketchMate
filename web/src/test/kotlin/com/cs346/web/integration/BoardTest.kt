@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup
 
 @AutoConfigureMockMvc
-internal class BoardTest :BaseIntegrationTest() {
+internal class BoardTest : BaseIntegrationTest() {
     @Test
     @DirtiesContext
     fun `Test_Add_New_Board`() {
@@ -32,7 +32,7 @@ internal class BoardTest :BaseIntegrationTest() {
         )
 
             .andDo(MockMvcResultHandlers.print())
-            .andExpect (
+            .andExpect(
                 status().isOk(),
             )
 
@@ -44,11 +44,11 @@ internal class BoardTest :BaseIntegrationTest() {
         )
 
         logoutResult.andDo(MockMvcResultHandlers.print())
-            .andExpect (
+            .andExpect(
                 status().isOk(),
             )
             .andExpect(
-                cookie().maxAge("jwt",0)
+                cookie().maxAge("jwt", 0)
             )
 
     }
@@ -71,7 +71,7 @@ internal class BoardTest :BaseIntegrationTest() {
         )
 
             .andDo(MockMvcResultHandlers.print())
-            .andExpect (
+            .andExpect(
                 status().isOk(),
             )
             .andExpect(
@@ -86,7 +86,7 @@ internal class BoardTest :BaseIntegrationTest() {
         )
 
             .andDo(MockMvcResultHandlers.print())
-            .andExpect (
+            .andExpect(
                 status().isOk(),
             )
             .andExpect(
@@ -100,7 +100,7 @@ internal class BoardTest :BaseIntegrationTest() {
         )
 
             .andDo(MockMvcResultHandlers.print())
-            .andExpect (
+            .andExpect(
                 status().isOk(),
             )
             .andExpect(

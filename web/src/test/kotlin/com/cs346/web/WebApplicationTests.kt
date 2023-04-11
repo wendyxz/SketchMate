@@ -24,7 +24,7 @@ import jakarta.servlet.http.Cookie
     ]
 )
 @AutoConfigureMockMvc
-class BaseIntegrationTest{
+class BaseIntegrationTest {
 
     @Autowired
     private val jdbcTemplate: JdbcTemplate = JdbcTemplate()
@@ -40,7 +40,7 @@ class BaseIntegrationTest{
 
 
     @Transactional
-    protected fun initDB(){
+    protected fun initDB() {
         jdbcTemplate.execute("Drop TABLE IF EXISTS users;")
         jdbcTemplate.execute("Drop TABLE IF EXISTS boards;")
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS users (id text PRIMARY KEY, name VARCHAR(20), password VARCHAR(30));")
@@ -58,7 +58,7 @@ class BaseIntegrationTest{
         jdbcTemplate?.execute(sql)
     }
 
-    protected fun getSession(newUser: CreateUserDTO): Cookie?{
+    protected fun getSession(newUser: CreateUserDTO): Cookie? {
         // when/then
         val baseUrl = "/login/create"
         val createResult = mockMvc.post(baseUrl) {
@@ -79,9 +79,10 @@ class BaseIntegrationTest{
                 MockMvcRequestBuilders.post("/login")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(newUser))
-                    .accept(MediaType.APPLICATION_JSON))
+                    .accept(MediaType.APPLICATION_JSON)
+            )
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect (
+                .andExpect(
                     MockMvcResultMatchers.status().isOk(),
                 )
                 .andExpect(
@@ -95,7 +96,7 @@ class BaseIntegrationTest{
         return session
     }
 
-    protected fun getBSession(newUser: CreateBoardDTO): Cookie?{
+    protected fun getBSession(newUser: CreateBoardDTO): Cookie? {
         // when/then
         val baseUrl = "/draw/create"
         val createResult = mockMvc.post(baseUrl) {
@@ -116,9 +117,10 @@ class BaseIntegrationTest{
                 MockMvcRequestBuilders.post("/draw/login")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(newUser))
-                    .accept(MediaType.APPLICATION_JSON))
+                    .accept(MediaType.APPLICATION_JSON)
+            )
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect (
+                .andExpect(
                     MockMvcResultMatchers.status().isOk(),
                 )
                 .andExpect(
@@ -132,13 +134,3 @@ class BaseIntegrationTest{
         return session
     }
 }
-
-
-//@SpringBootTest
-//class WebApplicationTests {
-//
-//    @Test
-//    fun contextLoads() {
-//    }
-//
-//}

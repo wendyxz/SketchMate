@@ -6,7 +6,6 @@ import java.util.*
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 
-//import jakarta.xml.bind.DatatypeConverter as DatatypeConverter
 
 @RestController
 @RequestMapping("/draw")
@@ -45,11 +44,6 @@ class BoardController(var boardService: BoardService) {
 
         val issuer = brd!!.id
 
-//        val jwt = Jwts.builder()
-//            .setIssuer(issuer)
-//            .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
-//            .signWith(SignatureAlgorithm.HS512, "secret")
-//            .compact()
         val jwt = issuer
         var cookie = Cookie("jwt", jwt)
         cookie.maxAge = -1
@@ -81,15 +75,12 @@ class BoardController(var boardService: BoardService) {
     @PatchMapping(value = ["/update"])
     fun updateBoard(
         @RequestBody req: LoginDTO,
-//        @RequestBody board: Board,
         @CookieValue("jwt") jwt: String
     ): ResponseEntity<Any>? {
         try {
             if (jwt == null) {
                 return ResponseEntity.status(401).body("Unauthorized")
             }
-//            val body = Jwts.parser().setSigningKey("secret").parseClaimsJws(jwt).body
-//            var suc = boardService.updateBoard(body.issuer, board)
             var suc = boardService.updateBoard(jwt, req)
             return ResponseEntity.ok(suc)
         } catch (e: Exception) {
@@ -111,8 +102,6 @@ class BoardController(var boardService: BoardService) {
             if (jwt == null) {
                 return ResponseEntity.status(401).body("Unauthorized")
             }
-//            val body = Jwts.parser().setSigningKey("secret").parseClaimsJws(jwt).body
-//            var suc = boardService.deleteBoard(body.issuer)
             var suc = boardService.deleteBoard(jwt)
             return ResponseEntity.ok(suc)
         } catch (e: Exception) {

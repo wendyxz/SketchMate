@@ -224,41 +224,21 @@ class DragResizeMod private constructor(node: Node, listener: OnDragResizeEventL
     companion object {
         private val defaultListener: OnDragResizeEventListener = object : OnDragResizeEventListener {
             override fun onDrag(node: Node?, x: Double, y: Double, h: Double, w: Double) {
-                /*
-            // TODO find generic way to get parent width and height of any node
-            // can perform out of bounds check here if you know your parent size
-            if (x > width - w ) x = width - w;
-            if (y > height - h) y = height - h;
-            if (x < 0) x = 0;
-            if (y < 0) y = 0;
-            */
+
                 if (node != null) {
                     setNodeSize(node, x, y, h, w)
                 }
             }
 
             override fun onResize(node: Node?, x: Double, y: Double, h: Double, w: Double) {
-                /*
-            // TODO find generic way to get parent width and height of any node
-            // can perform out of bounds check here if you know your parent size
-            if (w > width - x) w = width - x;
-            if (h > height - y) h = height - y;
-            if (x < 0) x = 0;
-            if (y < 0) y = 0;
-            */
+
                 if (node != null) {
                     setNodeSize(node, x, y, h, w)
                 }
             }
 
             private fun setNodeSize(node: Node, x: Double, y: Double, h: Double, w: Double) {
-//                node.setLayoutX(x)
-//                node.setLayoutY(y)
-                // TODO find generic way to set width and height of any node
-                // here we cant set height and width to node directly.
-                // or i just cant find how to do it,
-                // so you have to wright resize code anyway for your Nodes...
-                //something like this
+
                 if (node is Canvas) {
                     (node as Canvas).width = w
                     (node as Canvas).height = h

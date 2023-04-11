@@ -14,7 +14,6 @@ import javafx.scene.shape.*
 import javafx.scene.text.Font
 import wb.frontend.Tools.DragResizeMod
 import wb.helper.save
-import wb.rootcanvas
 import java.util.*
 
 // Serializer/Deserializer
@@ -31,6 +30,7 @@ val objectMapper = jacksonObjectMapper().registerModule(
         .addSerializer(Polygon::class.java, TriangleSerializer())
         .addDeserializer(Polygon::class.java, TriangleDeserializer())
 )
+
 class RectangleSerializer : JsonSerializer<Rectangle>() {
     override fun serialize(value: Rectangle?, gen: JsonGenerator?, serializers: SerializerProvider?) {
         gen?.writeStartObject()
@@ -175,7 +175,6 @@ class CircleDeserializer : JsonDeserializer<Circle>() {
                 this.translateX = translateX
                 this.translateY = translateY
             }
-//            makeDraggable(shape)
             return shape
         }
 
@@ -448,7 +447,7 @@ class TriangleSerializer : JsonSerializer<Polygon>() {
 }
 
 class TriangleDeserializer : JsonDeserializer<Polygon>() {
-    override fun deserialize(p: JsonParser?, ctxt: DeserializationContext?):Polygon? {
+    override fun deserialize(p: JsonParser?, ctxt: DeserializationContext?): Polygon? {
         p?.let {
             val codec = it.codec
             val node: JsonNode = codec.readTree(p)
@@ -463,7 +462,7 @@ class TriangleDeserializer : JsonDeserializer<Polygon>() {
             val stroke = getColor(node.get("stroke"))
             val strokeWidth = node.get("strokeWidth").asDouble()
             var shape = Polygon()
-            shape.points.addAll(x1,y1, x2,y2, x3,y3)
+            shape.points.addAll(x1, y1, x2, y2, x3, y3)
             shape.apply {
                 this.fill = fill
                 this.stroke = stroke

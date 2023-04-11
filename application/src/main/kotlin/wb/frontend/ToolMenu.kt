@@ -104,7 +104,7 @@ class ToolMenu(
         } else {
             style = "-fx-background-color: darkslategray;"
             cursorOption.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
-                textOption.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
+            textOption.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
             penOption.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
             shapeOption.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"
             eraserOption.style = "-fx-text-fill: aliceblue   ;-fx-background-color: indigo  ;"

@@ -26,15 +26,18 @@ fun setCursorType(ctype: CursorType) {
             textTools.createTextBox()
             setCursorType(CursorType.cursor)
         }
+
         CursorType.pen -> pathTools.initPath()
         CursorType.circle -> {
             createCircle()
             setCursorType(CursorType.cursor)
         }
+
         CursorType.rectangle -> {
             createRectangle()
             setCursorType(CursorType.cursor)
         }
+
         CursorType.triangle -> {
             createTriangle()
             setCursorType(CursorType.cursor)
@@ -45,5 +48,5 @@ fun setCursorType(ctype: CursorType) {
             pathTools.initPath()
         }
     }
-    if(cursor != CursorType.cursor) save()
+    if (cursor != CursorType.cursor) save()
 }

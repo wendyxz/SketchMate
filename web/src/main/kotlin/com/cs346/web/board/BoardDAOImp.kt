@@ -9,18 +9,6 @@ import java.util.*
 @Repository
 class BoardDAOImpl(val jdbcTemplate: JdbcTemplate) : BoardDAO {
 
-//    override fun getAllBoards(): List<Board>? {
-//        var rowMapper: RowMapper<Board> = RowMapper<Board> { resultSet: ResultSet, _: Int ->
-//            Board(
-//                resultSet.getString("id"),
-//                resultSet.getString("name"), resultSet.getString("json")
-//            )
-//        }
-//        val sql = "SELECT name FROM boards"
-//        var results = jdbcTemplate.query(sql, rowMapper)
-//        return results
-//    }
-
     override fun getAllBoards(): List<Pair<String, String>>? {
         val sql = "SELECT id, name FROM boards"
         return jdbcTemplate?.query(sql) { rs, _ ->
@@ -29,9 +17,6 @@ class BoardDAOImpl(val jdbcTemplate: JdbcTemplate) : BoardDAO {
     }
 
     override fun findBoard(id: String): String? {
-//        var rowMapper: RowMapper<String> = RowMapper<String> { resultSet: ResultSet, _: Int ->
-//            String
-//        }
         val sql = "SELECT json FROM boards WHERE id=?"
         return jdbcTemplate?.queryForObject(sql, String::class.java, id)
     }

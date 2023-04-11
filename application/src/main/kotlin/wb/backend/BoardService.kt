@@ -1,11 +1,10 @@
 package wb.backend
 
-import kotlinx.serialization.json.Json
+import org.json.JSONArray
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
-import org.json.*
 
 private val baseURL = "http://18.117.110.147:8080"
 var cookieValueB = ""
@@ -26,13 +25,10 @@ fun createBoard(boardname: String, json: String): String {
         .build()
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
-    // println("[CREATEBOARD] <$response> ${response.body()}")
     return if (response.statusCode() == 200) response.body() else ""
 }
 
 fun updateBoard(boardname: String, json: String): String {
-//fun updateBoard(json: String): String {
-//    val body = "{\"name\": \"$boardname\", \"json\": \"$json\"}"
     val body = "{\"name\": \"$boardname\", \"json\": $json}"
     val client = HttpClient.newBuilder().build()
     val request = HttpRequest.newBuilder()
@@ -43,7 +39,6 @@ fun updateBoard(boardname: String, json: String): String {
         .build()
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
-    // println("[UPDATEBOARD] <$response> ${response.body()}")
     return if (response.statusCode() == 200) "Success" else "$response"
 }
 
@@ -131,6 +126,5 @@ fun getSingleBoard(): String {
         .build()
 
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-    // println("[GETSINGLEBOARD] <$response> ${response.body()}")
     return if (response.statusCode() == 200) response.body() else ""
 }

@@ -1,4 +1,5 @@
 package wb.helper
+
 import javafx.scene.layout.VBox
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Path
@@ -6,6 +7,8 @@ import javafx.scene.shape.Polygon
 import javafx.scene.shape.Rectangle
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import net.codebot.shared.processJsonString
+import net.codebot.shared.removeDoubleQuotes
 import wb.TimeSerializer
 import wb.TypeWrapper
 import wb.autoSyncTimeStamp
@@ -16,8 +19,6 @@ import wb.rootcanvas
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
-import net.codebot.shared.processJsonString
-import net.codebot.shared.removeDoubleQuotes
 
 
 fun load() {
@@ -81,9 +82,11 @@ fun load() {
                 "Path" -> {
                     rootcanvas.children.add(objectMapper.readValue(element.string, Path::class.java))
                 }
+
                 "VBox" -> {
                     rootcanvas.children.add(objectMapper.readValue(element.string, VBox::class.java))
                 }
+
                 "Triangle" -> {
                     val t = objectMapper.readValue(element.string, Polygon::class.java)
                     DragResize.makeResizable(t)

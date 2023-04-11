@@ -21,7 +21,7 @@
 ## Folders
 - application/ : client side, unit tests included
 - web/ : server side, unit tests included
-- shared/ : shared model layer, unit tests included
+- shared/ : shared model layer, unit tests included in application/
 
 ## Goal
 Digital Whiteboard is a Kotlin desktop application that provides a virtual canvas for users to create, share, and collaborate on digital content in real-time. The application offers a range of features designed to facilitate creativity and productivity, including drawing tools, text input, shape insertion, and exporting features.
